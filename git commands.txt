@@ -1,0 +1,2 @@
+# Zertifikat-Probleme unter Windows: 
+git config --global http.sslbackend schannel

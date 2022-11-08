@@ -1,0 +1,47 @@
+- Im Rahmen SWT User Projekt: Aufzeigen, wie Datenaustausch geräteunabhängig gestaltet werden kann
+- Unser Anwendungsfall: Sensornetzwerk mit verschiedenen Sensoren/Aktoren zur Raumüberwachung
+
+- Hierzu: 
+	- Server-Client-Architektur
+	- Mehrere Knoten als Clients
+	- Datenaustausch Bidirektional			-> Sensoren / Aktoren
+	- Datenaustausch unterschiedlicher Datenformate -> Modellierung
+	- Datenaustausch Plattformunabhängig		-> OPCUA
+	- Datenaustausch Ortsunabhängig			-> IP-Netzwerk / VPN
+
+- Knoten
+	- Ansteuerung/Auslesen unterschiedlicher Aktoren/Sensoren
+	- Plattformunabhängig (Ein-Platinen-Computer, SPSen untersch. Hersteller, Server/VMs, ...)
+	- Aufbau dynamisch (Unterschiedliche Sensoren/Aktoren pro Knoten -> NTH: dynamisch austauschbar/steckbar?)
+	
+	- Für unser Projekt:
+		- Knotenhardware: RPi
+		- Sensoren:
+			- Temperatursensor, Feuchtigkeitssensor, Luftdrucksensor
+			- Bewegungssensor -> Anwesenheitserkennung
+			- NTH: Luftqualitätssensor
+		- Eingesetzte Aktoren: 
+			- LEDs (z.B. Luftqualitätswarnung)
+			- Buzzer (z.B. Warnung)
+			- NTH: LCD-Displays
+
+	- NTH: Caching auf Knoten wenn keine Kommunikation zu Server
+	- Konfiguration/Parametrierung der Knoten über OPCUA
+	
+
+- Kommunikation
+	- OPCUA 
+		-> Erfüllt Anforderung an Plattformunabhängigkeit
+
+- Herausforderung:
+	- Hardwaretechnische Verdrahtung/Ansteuerung der Sensoren (ggf. Zusatzhardware wie µC erforderlich)
+		
+
+
+- Server
+	- Zentrale Speicherung der Daten
+	- Ansteuerung der Knoten/Aktoren
+
+
+Wie erweiterbar:
+	- Weitere Aktoren (z.B. Raumtemperatursteuerung, Lüftersteuerung, 
