@@ -60,12 +60,12 @@ OPC UA Sensornetz
 
 Ziel dieses Projektes soll die Entwicklung eines Sensor-Netzwerks für den Heimbereich auf Basis von OPC-UA sein. 
 Verschiedene Sensorknoten sollen mit entsprechender Sensorik und Aktorik ausgestattet sein, um bestimmte Daten des eigenen Zuhauses zu sammeln. 
-Für Nutzer sollen diese Daten auf einer Weboberfläche übersichtlich dargestellt und ebenso eine Steuerungsfunktionalität ermöglicht werden, um z.B. eine Heizung oder eine Lüftungsanlage ein- bzw. auszuschalten. 
+Eine graphische Oberfläche ermöglicht dem Nutzer das Abrufen der Daten und außerdem Steuerungsfunktionalitäten, um z.B. eine Heizung oder eine Lüftungsanlage ein- bzw. auszuschalten. 
 Hierdurch ergeben sich große Energiesparpotentiale, da man so nur lüftet bzw. heizt, wenn die Luftqualität/Temperatur dies erfordert.  
 
 OPC-UA steht hierbei für „Open Platform Communication – Unified Architecture“ und ist eine aktuelle Technologie aus dem Industrie-4.0-Umfeld. OPC-UA soll die plattformunabhängige Machine-to-Machine Kommunikation ermöglichen. 
 Dies wird durch ein zu modellierendes Informationsmodell möglich, welches den realen Sachverhalt abbildet und von einem zentralen Server verwaltet wird. 
-Clients können sich mit dem Server verbinden und dort relevante Informationen ablegen bzw. diese abrufen. Die Informationen werden auf dem Server hierbei in einer Baumstruktur verwaltet. 
+Clients können sich mit dem Server verbinden und dort relevante Informationen ablegen bzw. diese abrufen, bzw. durch Publish/Subscribe auch vom Server Daten erhalten. Die Informationen werden auf dem Server hierbei in einer Baumstruktur verwaltet. 
 Durch die entsprechende Modellierung der Knoten des Baums, erhalten diese z.B. durch die Festlegung eigener Datentypen eine semantische Bedeutung.
 
 
@@ -74,7 +74,7 @@ Durch die entsprechende Modellierung der Knoten des Baums, erhalten diese z.B. d
 
 Als Inspiration für das Projekt dienen verschiedenste Smart-Home-Lösungen, die in den letzten Jahren von einer Vielzahl von Anbietern auf den Markt gebracht wurden. 
 Durch die Vernetzung entsprechender Geräte, wie z.B. Lüftungsanlagen und Heizungsreglern in Kombination mit dazu passender Sensorik, können viele Vorgänge im Heimbereich automatisiert und digitalisiert werden. 
-Ergänzt werden solche Systeme häufig durch eine Bedienoberfläche, über die Einstellungen getroffen werden können und Informationen abgerufen werden.
+Eine Bedienoberfläche ergänzt solche Systeme häufig durch eine Ein- und Ausgabemöglichkeit, in welcher der Benutzer Einstellungen tätigen und wichtige Informationen abrufen kann.
 
 Außerdem ergeben sich durch den intelligenten Einsatz von Technik gerade im Heimbereich enorme Energiesparpotentiale, da sinnloses Heizen so automatisch verhindert werden kann. 
 Dies ist gerade im Hinblick auf die aktuelle Energiekrise in Europa eine sinnvolle Innovation. 
@@ -135,13 +135,14 @@ Teile der Architektur wurden bereits in Abschnitt III. erwähnt, jedoch werden d
 
 \subsection{Sensoren + Kommunikation}
 
+
 \subsection{Backend}
 
 Das Backend ist eine Python Anwendung, welche in regelmäßigen Abständen die Sensordaten mittels OPC-UA sammelt.
 Diese Daten werden anschließend in einer Datenbank gespeichert, was bsp. einen zeitlichen Vergleich ermöglicht.
 
 Neben dem Sammeln der Daten soll es außerdem möglich sein, Aktuatoren zu steuern. 
-Ein Beispiel dafür wäre, ein entsprechendes Licht leuchten zu lassen, sofern ein definierter Schwellwert überschritten wurde.
+Beispiel hierfür wäre eine optische Anzeige mittels LED, sofern ein definierter Schwellwert überschritten wurde.
 
 Zusätzlich können die Daten per REST-API vom Frontend angefordert werden. 
 Neben der Wahl der Sensoren, kann obendrein noch ein Zeitraum mit angegeben werden. 
