@@ -134,7 +134,9 @@ Als Entwickler möchte ich eine ausreichende Testabdeckung, damit Fehler frühze
 Teile der Architektur wurden bereits in Abschnitt III. erwähnt, jedoch werden diese nochmal detaillierter spezifiziert.
 
 \subsection{Sensoren + Kommunikation}
+Als Sensorknoten werden Raspberry Pi 3 eingesetzt. Allerdings verfügen diese über keine analogen Eingänge, was das Auslesen von rein analogen Sensoren wie z.B. Luftqualitäts- und Erdfeuchtesensoren standardmäßig nicht ermöglicht. Hier werden noch, auf einer aufsteckbaren Platine aufgebrachte, passende Analog-Digital-Wandler vorgeschalten.
 
+Auf dem Raspberry Pi wird eine Python-Anwendung zum zyklischen Sammeln der Sensordaten und zum Übertragen der Sensordaten an das Backend mittels OPC-UA eingesetzt. Steuerungsanfragen für die Aktoren aus dem Backend werden über die Publish/Subscribe-Mechanismen von OPC-UA azyklisch an die Sensorknoten übergeben.
 
 \subsection{Backend}
 
