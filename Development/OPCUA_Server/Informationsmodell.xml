@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UANodeSet LastModified="2022-11-25T18:05:11.645Z" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:si="http://www.siemens.com/OPCUA/2017/SimaticNodeSetExtensions" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <NamespaceUris>
+        <Uri>http://opcuasensornetzwerk.oth-aw.de</Uri>
+    </NamespaceUris>
+    <Models>
+        <Model ModelUri="http://opcuasensornetzwerk.oth-aw.de" PublicationDate="2022-11-24T00:00:00Z" Version="1.00">
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/" PublicationDate="2019-05-01T00:00:00Z" Version="1.05"/>
+        </Model>
+    </Models>
+    <Aliases>
+        <Alias Alias="Boolean">i=1</Alias>
+        <Alias Alias="Double">i=11</Alias>
+        <Alias Alias="DateTime">i=13</Alias>
+        <Alias Alias="String">i=12</Alias>
+        <Alias Alias="HasComponent">i=47</Alias>
+        <Alias Alias="HasProperty">i=46</Alias>
+        <Alias Alias="Organizes">i=35</Alias>
+        <Alias Alias="HasSubtype">i=45</Alias>
+        <Alias Alias="HasTypeDefinition">i=40</Alias>
+        <Alias Alias="HasModellingRule">i=37</Alias>
+    </Aliases>
+    <Extensions>
+        <Extension>
+            <si:Generator Product="SiOME" Edition="Standard" Version="2.0.4"/>
+        </Extension>
+    </Extensions>
+    <UAObject SymbolicName="http___opcuasensornetzwerk_oth_aw_de" NodeId="ns=1;i=1000" BrowseName="1:http://opcuasensornetzwerk.oth-aw.de">
+        <DisplayName>http://opcuasensornetzwerk.oth-aw.de</DisplayName>
+        <References>
+            <Reference ReferenceType="HasComponent" IsForward="false">i=11715</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=11616</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="Boolean" NodeId="ns=1;i=1001" BrowseName="IsNamespaceSubset" ParentNodeId="ns=1;i=1000">
+        <DisplayName>IsNamespaceSubset</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="DateTime" NodeId="ns=1;i=1002" BrowseName="NamespacePublicationDate" ParentNodeId="ns=1;i=1000">
+        <DisplayName>NamespacePublicationDate</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+        <Value>
+            <uax:DateTime>2022-11-24T00:00:00Z</uax:DateTime>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1003" BrowseName="NamespaceUri" ParentNodeId="ns=1;i=1000">
+        <DisplayName>NamespaceUri</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+        <Value>
+            <uax:String>http://opcuasensornetzwerk.oth-aw.de</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1004" BrowseName="NamespaceVersion" ParentNodeId="ns=1;i=1000">
+        <DisplayName>NamespaceVersion</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+        <Value>
+            <uax:String>1.00</uax:String>
+        </Value>
+    </UAVariable>
+    <UAVariable DataType="i=256" ValueRank="1" NodeId="ns=1;i=1005" ArrayDimensions="0" BrowseName="StaticNodeIdTypes" ParentNodeId="ns=1;i=1000">
+        <DisplayName>StaticNodeIdTypes</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="i=291" ValueRank="1" NodeId="ns=1;i=1006" ArrayDimensions="0" BrowseName="StaticNumericNodeIdRange" ParentNodeId="ns=1;i=1000">
+        <DisplayName>StaticNumericNodeIdRange</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1007" BrowseName="StaticStringNodeIdPattern" ParentNodeId="ns=1;i=1000">
+        <DisplayName>StaticStringNodeIdPattern</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="i=96" ValueRank="1" NodeId="ns=1;i=1008" ArrayDimensions="0" BrowseName="DefaultRolePermissions">
+        <DisplayName>DefaultRolePermissions</DisplayName>
+        <References>
+            <Reference ReferenceType="HasProperty" IsForward="false">ns=1;i=1000</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+        </References>
+    </UAVariable>
+    <UAObjectType NodeId="ns=1;i=1009" BrowseName="1:SensorknotenType">
+        <DisplayName>SensorknotenType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
+        </References>
+    </UAObjectType>
+    <UAReferenceType NodeId="ns=1;i=1010" BrowseName="1:HasSensor">
+        <DisplayName>HasSensor</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=33</Reference>
+        </References>
+        <InverseName>IsPluggedTo</InverseName>
+    </UAReferenceType>
+    <UAObject NodeId="ns=1;i=1011" BrowseName="1:BME280">
+        <DisplayName>BME280</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1010" IsForward="false">ns=1;i=1009</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+            <Reference ReferenceType="HasModellingRule">i=80</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1015</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1017</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1016</Reference>
+            <Reference ReferenceType="ns=1;i=1020">ns=1;i=1019</Reference>
+        </References>
+    </UAObject>
+    <UAObjectType NodeId="ns=1;i=1012" BrowseName="1:SensorNetworkFolder">
+        <DisplayName>SensorNetworkFolder</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=58</Reference>
+        </References>
+    </UAObjectType>
+    <UAObjectType NodeId="ns=1;i=1014" BrowseName="1:Sensor">
+        <DisplayName>Sensor</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=1012</Reference>
+        </References>
+    </UAObjectType>
+    <UAObjectType NodeId="ns=1;i=1015" BrowseName="1:TemperatureSensor">
+        <DisplayName>TemperatureSensor</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=1012</Reference>
+            <Reference ReferenceType="ns=1;i=1018">ns=1;i=1014</Reference>
+        </References>
+    </UAObjectType>
+    <UAObjectType NodeId="ns=1;i=1017" BrowseName="1:HumiditySensor">
+        <DisplayName>HumiditySensor</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=1012</Reference>
+        </References>
+    </UAObjectType>
+    <UAReferenceType NodeId="ns=1;i=1018" BrowseName="1:IsA">
+        <DisplayName>IsA</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=32</Reference>
+        </References>
+        <InverseName>CouldBeA</InverseName>
+    </UAReferenceType>
+    <UAReferenceType NodeId="ns=1;i=1013" BrowseName="1:HasType">
+        <DisplayName>HasType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=32</Reference>
+        </References>
+        <InverseName>CouldBe</InverseName>
+    </UAReferenceType>
+    <UAObjectType NodeId="ns=1;i=1016" BrowseName="1:AirPressureSensor">
+        <DisplayName>AirPressureSensor</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=1012</Reference>
+        </References>
+    </UAObjectType>
+    <UAObjectType NodeId="ns=1;i=1019" BrowseName="1:DigitalSensor">
+        <DisplayName>DigitalSensor</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">ns=1;i=1012</Reference>
+        </References>
+    </UAObjectType>
+    <UAReferenceType NodeId="ns=1;i=1020" BrowseName="1:HasSensorType">
+        <DisplayName>HasSensorType</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=32</Reference>
+        </References>
+        <InverseName>CouldBe</InverseName>
+    </UAReferenceType>
+    <UAObject NodeId="ns=1;i=1021" BrowseName="1:Temperature">
+        <DisplayName>Temperature</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1011</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1022" BrowseName="1:Value" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1021</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1023" BrowseName="1:Unit" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1021</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAVariable>
+    <UAReferenceType NodeId="ns=1;i=1024" BrowseName="1:Measures" Symmetric="true">
+        <DisplayName>Measures</DisplayName>
+        <References>
+            <Reference ReferenceType="HasSubtype" IsForward="false">i=33</Reference>
+        </References>
+    </UAReferenceType>
+    <UAObject NodeId="ns=1;i=1025" BrowseName="1:Humidity">
+        <DisplayName>Humidity</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1011</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1026" BrowseName="1:Value" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1025</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1027" BrowseName="1:Unit" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1025</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAVariable>
+    <UAObject NodeId="ns=1;i=1029" BrowseName="1:AirPressure">
+        <DisplayName>AirPressure</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1011</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1030" BrowseName="1:Value" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1029</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1031" BrowseName="1:Unit" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1029</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+            <Reference ReferenceType="HasModellingRule">i=78</Reference>
+        </References>
+    </UAVariable>
+    <UAObject NodeId="ns=1;i=1036" BrowseName="1:SensorNetwork">
+        <DisplayName>SensorNetwork</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">i=85</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1037" BrowseName="1:SensorNode_1">
+        <DisplayName>SensorNode_1</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1036</Reference>
+            <Reference ReferenceType="HasTypeDefinition">ns=1;i=1009</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1038" BrowseName="1:BME280">
+        <DisplayName>BME280</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1010" IsForward="false">ns=1;i=1037</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1015</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1017</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1016</Reference>
+            <Reference ReferenceType="ns=1;i=1020">ns=1;i=1019</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1039" BrowseName="1:AirPressure">
+        <DisplayName>AirPressure</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1038</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1040" BrowseName="1:Temperature">
+        <DisplayName>Temperature</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1038</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1041" BrowseName="1:Humidity">
+        <DisplayName>Humidity</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1038</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="String" NodeId="ns=1;i=1042" BrowseName="1:Unit" UserAccessLevel="111" AccessLevel="111">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1039</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1043" BrowseName="1:Value" UserAccessLevel="111" AccessLevel="111">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1039</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1044" BrowseName="1:Unit" UserAccessLevel="111" AccessLevel="111">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1041</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1045" BrowseName="1:Value" UserAccessLevel="111" AccessLevel="111">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1041</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1046" BrowseName="1:Unit" UserAccessLevel="111" AccessLevel="111">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1040</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1047" BrowseName="1:Value" UserAccessLevel="111" AccessLevel="111">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1040</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAObject NodeId="ns=1;i=1048" BrowseName="1:SensorNode_2">
+        <DisplayName>SensorNode_2</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1036</Reference>
+            <Reference ReferenceType="HasTypeDefinition">ns=1;i=1009</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1049" BrowseName="1:BME280">
+        <DisplayName>BME280</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1010" IsForward="false">ns=1;i=1048</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1015</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1017</Reference>
+            <Reference ReferenceType="ns=1;i=1013">ns=1;i=1016</Reference>
+            <Reference ReferenceType="ns=1;i=1020">ns=1;i=1019</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1050" BrowseName="1:AirPressure">
+        <DisplayName>AirPressure</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1049</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1051" BrowseName="1:Humidity">
+        <DisplayName>Humidity</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1049</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAObject NodeId="ns=1;i=1052" BrowseName="1:Temperature">
+        <DisplayName>Temperature</DisplayName>
+        <References>
+            <Reference ReferenceType="ns=1;i=1024" IsForward="false">ns=1;i=1049</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=58</Reference>
+        </References>
+    </UAObject>
+    <UAVariable DataType="String" NodeId="ns=1;i=1053" BrowseName="1:Unit" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1050</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1054" BrowseName="1:Value" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1050</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1055" BrowseName="1:Unit" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1051</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1056" BrowseName="1:Value" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1051</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="String" NodeId="ns=1;i=1057" BrowseName="1:Unit" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Unit</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1052</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+    <UAVariable DataType="Double" NodeId="ns=1;i=1058" BrowseName="1:Value" UserAccessLevel="3" AccessLevel="3">
+        <DisplayName>Value</DisplayName>
+        <References>
+            <Reference ReferenceType="Organizes" IsForward="false">ns=1;i=1052</Reference>
+            <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
+        </References>
+    </UAVariable>
+</UANodeSet>
