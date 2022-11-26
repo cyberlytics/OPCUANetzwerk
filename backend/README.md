@@ -69,4 +69,4 @@ If you want to run the tests and check code coverage, use (`PYTHONPATH` needs to
 pytest -s --cov=backend
 ```
 
-The current test coverage is: ...
+The current test coverage is:
