@@ -31,8 +31,9 @@ tls-client                                 # SSL Verschlüsselte Verbindung
 ca "sensornetzwerk_ca.crt"                 # Zertifikat CA
 cert "sensornetzwerk_client.crt"           # Client Public Key 
 key "sensornetzwerk_client.key"            # Client Private Key
+remote-cert-tls server                     # Server-Zertifikat prüfen
 auth-user-pass .secret                     # Zusätzliche Authentifizierung Via Username/Passwort
-auth SHA1                                  # Authentifizierung via SHA1
+auth SHA512                                # Authentifizierung via SHA1
 
 cipher AES-256-CBC                         # AES256 CBC Verschlüsselung benutzen
 pull                                       
