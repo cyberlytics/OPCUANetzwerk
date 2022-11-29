@@ -294,7 +294,7 @@ def install_vpn():
 ### MAIN ###
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(prog=Path(__file__).name, description="Installationsscript zum Einrichten des Sensorknotens")
+    parser = argparse.ArgumentParser(prog=Path(__file__).name, description="Installationsscript zum Einrichten des Servers")
     
     parser.add_argument("-a", "--all", action='store_true', help="Alle Pakete installieren")
     parser.add_argument("-v", "--vpn", action='store_true', help="Installiert und Konfiguriert den VPN-Zugang")
