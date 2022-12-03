@@ -2,8 +2,8 @@ from opcua import Client
 from datetime import datetime
 
 class Sensor:
-
-    def __init__(self, sensornode, sensorname, sensortyp, unit, valueNode):
+    """Wrapper for a sensor and all of his meta data"""
+    def __init__(self, sensornode:str, sensorname:str, sensortyp:str, unit:str, valueNode:str):
         self.sensornode = sensornode
         self.sensorname = sensorname
         self.sensortyp = sensortyp
@@ -11,6 +11,7 @@ class Sensor:
         self.valueNode = valueNode
         
     def getSensorValue(self):
+        """Get the current value of sensor + additional meta as a dict """
         try:
             return { 
             "sensornode": self.sensornode,
@@ -22,3 +23,6 @@ class Sensor:
             }
         except: 
             print("Could not get Value for sensor: ", self.sensorname)
+    
+    def get_sensor_name(self):
+        return f'{self.sensornode}-{self.sensorname}-{self.sensortyp}'

@@ -30,7 +30,6 @@ def establish_connection(mongo_uri:str) -> pymongo.mongo_client.MongoClient:
             return None
 
 
-
 conn = establish_connection(config.MONGO_URI)
 #conn is only none, when no db was found under the configure mongo_uri or the default mongo_uri
 if conn is None:
