@@ -11,7 +11,8 @@ class Sensor:
         self.valueNode = valueNode
         
     def getSensorValue(self):
-        return { 
+        try:
+            return { 
             "sensornode": self.sensornode,
             "sensorname": self.sensorname,
             "sensortyp": self.sensortyp,
@@ -19,3 +20,5 @@ class Sensor:
             "value": self.valueNode.get_value(),
             "timestamp": datetime.now().isoformat()
             }
+        except: 
+            print("Could not get Value for sensor: ", self.sensorname)
