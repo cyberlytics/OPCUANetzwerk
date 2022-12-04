@@ -12,3 +12,8 @@ db_sensors = conn[config.DB_NAME].sensors
 async def get_sensor_names():
     """Return an example JSON to test structure of app"""
     return opcua_client.get_sensor_names()
+
+@router_sensors.get('/sensorvalues',tags=['Sensors'], response_model=list[SensorValueDto])
+async def get_all_sensor_values():
+    """Return an example JSON to test structure of app"""
+    return opcua_client.get_sensor_values()
