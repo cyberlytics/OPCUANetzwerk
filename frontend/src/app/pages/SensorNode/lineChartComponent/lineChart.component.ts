@@ -1,29 +1,40 @@
-import {Component, OnDestroy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { SolarData } from '../../../@core/data/solar';
-
-interface CardSettings {
-  title: string;
-  iconClass: string;
-  type: string;
-}
+import {echarts} from 'echarts';
+import { EChartsOption } from 'echarts';
+import * as moment from 'moment';
+import { LineChartDataSeries } from './LineChartDataClass';
 
 @Component({
   selector: 'LineChart',
   styleUrls: ['./lineChart.component.scss'],
   templateUrl: './lineChart.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LineChartComponent implements OnDestroy {
+export class LineChartComponent implements OnDestroy, OnChanges {
+
+
+  echartsIntance: any;
 
   constructor(private theme: NbThemeService,) {}
 
-  options: any = {};
+  ngOnChanges(changes: SimpleChanges): void {
+    this.options.series = changes.data.currentValue;
+    this.refreshOptions();
+  }
+
+  @Input() data: LineChartDataSeries[];
+
+  options: EChartsOption = {};
   themeSubscription: any;
 
   ngAfterViewInit() {
 
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
+
+      console.log("config changed");
 
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
@@ -32,23 +43,13 @@ export class LineChartComponent implements OnDestroy {
         backgroundColor: echarts.bg,
         color: [colors.danger, colors.primary, colors.info],
         tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c}',
+          trigger: 'axis'
         },
-        legend: {
-          left: 'left',
-          data: ['Line 1', 'Line 2', 'Line 3'],
-          textStyle: {
-            color: echarts.textColor,
-          },
-        },
+        legend: {        },
         xAxis: [
           {
-            type: 'category',
-            data: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
-            axisTick: {
-              alignWithLabel: true,
-            },
+             type: 'time',
+             boundaryGap:false,
             axisLine: {
               lineStyle: {
                 color: echarts.axisLineColor,
@@ -58,6 +59,9 @@ export class LineChartComponent implements OnDestroy {
               textStyle: {
                 color: echarts.textColor,
               },
+              formatter: (function(value){
+                  return moment(value).format('DD.MM.yyyy HH:mm:ss');
+              })
             },
           },
         ],
@@ -87,31 +91,31 @@ export class LineChartComponent implements OnDestroy {
           bottom: '3%',
           containLabel: true,
         },
-        series: [
-          {
-            name: 'Line 1',
-            type: 'line',
-            data: [
-              [0,50,3],
-              [1,100,1],
-              [4,500,3],
-
-                  ]
-          },
-          {
-            name: 'Line 2',
-            type: 'line',
-            data: [1, 2, 4, 8, 16, 32, 64, 128, 256],
-          },
-          {
-            name: 'Line 3',
-            type: 'line',
-            data: [1 / 2, 1 / 4, 1 / 8, 1 / 16, 1 / 32, 1 / 64, 1 / 128, 1 / 256, 1 / 512],
-          },
-        ],
+        series: this.data
       };
+      this.refreshOptions();
+      console.log("options", this.options);
     });
+
   }
+
+  onChartInit(echarts) {
+    this.echartsIntance = echarts;
+  }
+
+  
+  resizeChart() {
+    if (this.echartsIntance) {
+      this.echartsIntance.resize();
+    }
+  }
+
+  refreshOptions() {
+    if(this.echartsIntance) {
+      this.echartsIntance.setOption(this.options);
+    }
+  }
+  
   private alive = true;
   ngOnDestroy() {
     this.alive = false;
