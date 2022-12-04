@@ -1,1 +1,5 @@
-<div echarts [options]="options" class="echart"></div>
+<div echarts 
+[options]="options" 
+[merge]="options"
+class="echart"
+(chartInit)="onChartInit($event)"></div>
