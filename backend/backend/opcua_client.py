@@ -39,4 +39,7 @@ class OPCUAClient:
     def get_sensor_names(self):
         return [s.get_sensor_name() for s in self.sensors]
 
+    def get_sensor_values(self):
+        return [s.get_sensor_value() for s in self.sensors if s.get_sensor_value() is not None]
+
 opcua_client = OPCUAClient(config.SENSOR_NETWORK_URL)

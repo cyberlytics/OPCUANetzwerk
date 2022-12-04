@@ -10,19 +10,23 @@ class Sensor:
         self.unit = unit
         self.valueNode = valueNode
         
-    def getSensorValue(self):
+    def get_sensor_value(self):
         """Get the current value of sensor + additional meta as a dict """
         try:
-            return { 
-            "sensornode": self.sensornode,
-            "sensorname": self.sensorname,
-            "sensortyp": self.sensortyp,
-            "unit": self.unit,
-            "value": self.valueNode.get_value(),
-            "timestamp": datetime.now().isoformat()
-            }
+            value = self.valueNode.get_value()
+            if(value):
+                return { 
+                "sensornode": self.sensornode,
+                "sensorname": self.sensorname,
+                "sensortyp": self.sensortyp,
+                "unit": self.unit,
+                "value": value,
+                "timestamp": datetime.now().isoformat()
+                }
+            else:
+                print("Value for sensor: ", self.get_sensor_name() + "was null - This seems suspicious!")
         except: 
-            print("Could not get Value for sensor: ", self.sensorname)
+            print("Could not get Value for sensor: ", self.get_sensor_name())
     
     def get_sensor_name(self):
         return f'{self.sensornode}-{self.sensorname}-{self.sensortyp}'
