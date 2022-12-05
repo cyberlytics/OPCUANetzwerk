@@ -93,8 +93,8 @@ export class LineChartComponent implements OnDestroy, OnChanges {
         },
         series: this.data
       };
-      this.refreshOptions();
-      console.log("options", this.options);
+      //this.refreshOptions();
+      //console.log("options", this.options);
     });
 
   }
