@@ -3,6 +3,7 @@ import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { SolarData } from '../../@core/data/solar';
 import {  LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
+import {TemperatureGaugeDataSeries} from './temperatureGauge/temperatureGaugeData'
 
 interface CardSettings {
   title: string;
@@ -45,6 +46,16 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   ChartDataObj: LineChartDataSeries[] = [this.Series1, this.Series2];
   ChartDataObj2: LineChartDataSeries[] = [this.Series3, this.Series4];
 
+  //Zufällige Temperatur
+  random = +(Math.random() * 60).toFixed(2);
+
+  tempSeries1: TemperatureGaugeDataSeries = {
+    name: 'Temperature',
+    type: 'gauge',
+    data: [this.random]
+  }
+
+  TempDataObj: TemperatureGaugeDataSeries = this.tempSeries1;
 
   constructor(private theme: NbThemeService,) {
   }
@@ -57,5 +68,14 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   setChartData() {
     console.log("setChartData");
     this.ChartDataObj = this.ChartDataObj2;
+    //Zufällige Temperatur
+    this.random = +(Math.random() * 60).toFixed(2);
+    this.tempSeries1 = {
+      name: 'Temperature',
+      type: 'gauge',
+      data: [this.random]
+    }
+  
+    this.TempDataObj = this.tempSeries1;
   }
 }
