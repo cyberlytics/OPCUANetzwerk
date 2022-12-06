@@ -46,7 +46,8 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   ChartDataObj: LineChartDataSeries[] = [this.Series1, this.Series2];
   ChartDataObj2: LineChartDataSeries[] = [this.Series3, this.Series4];
 
-  //Zufällige Temperatur
+
+  //Start Temperatur
   random = +(Math.random() * 60).toFixed(2);
 
   tempSeries1: TemperatureGaugeDataSeries = {
@@ -56,8 +57,57 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   }
 
   TempDataObj: TemperatureGaugeDataSeries = this.tempSeries1;
+  //End Temperatur
+
+
+  //START Switch Button
+  statusCards: string;
+
+  lightCard: CardSettings = {
+    title: 'Licht',
+    iconClass: 'nb-lightbulb',
+    type: 'primary',
+  };
+  rollerShadesCard: CardSettings = {
+    title: 'Heizung',
+    iconClass: 'nb-flame-circled',
+    type: 'warning',
+  };
+
+  commonStatusCardsSet: CardSettings[] = [
+    this.lightCard,
+    this.rollerShadesCard,
+  ];
+
+  //Set Theme Design
+  statusCardsByThemes: {
+    default: CardSettings[];
+    cosmic: CardSettings[];
+    corporate: CardSettings[];
+    dark: CardSettings[];
+  } = {
+    default: this.commonStatusCardsSet,
+    cosmic: this.commonStatusCardsSet,
+    corporate: [
+      {
+        ...this.lightCard,
+        type: 'warning',
+      },
+      {
+        ...this.rollerShadesCard,
+        type: 'primary',
+      }
+    ],
+    dark: this.commonStatusCardsSet,
+  };
+  //END Switch Button
 
   constructor(private theme: NbThemeService,) {
+    this.theme.getJsTheme()
+    .pipe(takeWhile(() => this.alive))
+    .subscribe(theme => {
+      this.statusCards = this.statusCardsByThemes[theme.name];
+  });
   }
 
   private alive = true;

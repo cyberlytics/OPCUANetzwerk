@@ -16,11 +16,13 @@ import { FormsModule } from '@angular/forms';
 import { SensorNodeDashboardComponent } from './sensornode-dashboard.component';
 import { LineChartComponent } from './lineChartComponent/lineChart.component';
 import { TemperatureGaugeComponent } from './temperatureGauge/temperatureGauge.component';
+import { SwitchComponent } from './switch/switch.component';
 
 const components = [
   SensorNodeDashboardComponent,
   LineChartComponent,
-  TemperatureGaugeComponent
+  TemperatureGaugeComponent,
+  SwitchComponent,
 ];
 
 @NgModule({
@@ -39,6 +41,6 @@ const components = [
     NbButtonModule,
     NgxEchartsModule,
   ],
-  declarations: [ ...components, TemperatureGaugeComponent ],
+  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent ],
 })
 export class SensorNodeDashboardModule { }
