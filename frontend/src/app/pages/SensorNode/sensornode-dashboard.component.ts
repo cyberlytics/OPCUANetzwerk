@@ -136,11 +136,10 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   }
 
   setChartData() {
-    console.log("setChartData");
     this.ChartDataObj = this.ChartDataObj2;
     //Zufällige Temperatur
     this.random = +(Math.random() * 60).toFixed(2);
-    
+
     this.tempSeries1 = this.random;
     this.gaugeRandom = this.random;
     this.TempDataObj = this.tempSeries1;

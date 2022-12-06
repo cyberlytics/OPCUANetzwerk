@@ -39,7 +39,6 @@ export class TemoSensorCardComponent implements OnDestroy, OnChanges {
 
   ngAfterViewInit() {
 
-    console.log("temperature input: ", this.Temperature)
 
     this.ChartDataObj = [this.Temperature, this.Humidity, this.AirPresure]
 
@@ -48,9 +47,7 @@ export class TemoSensorCardComponent implements OnDestroy, OnChanges {
     this.GaugeAirPresure = this.AirPresure.data[this.AirPresure.data.length-1][1]
     
     //printe GaugeTemperature, GaugeHumidity, GaugeAirPresure
-    console.log("GaugeTemperature: ", this.GaugeTemperature)
-    console.log("GaugeHumidity: ", this.GaugeHumidity)
-    console.log("GaugeAirPresure: ", this.GaugeAirPresure)
+
   }
 
   Series1: LineChartDataSeries = {
