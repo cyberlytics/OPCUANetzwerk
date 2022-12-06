@@ -67,7 +67,7 @@ export class LineChartComponent implements OnDestroy, OnChanges {
         ],
         yAxis: [
           {
-            type: 'log',
+            type: 'value',
             axisLine: {
               lineStyle: {
                 color: echarts.axisLineColor,
