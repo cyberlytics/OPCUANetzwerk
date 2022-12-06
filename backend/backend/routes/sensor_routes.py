@@ -37,7 +37,7 @@ async def get_sensor_values_with_filter(sensornode:str = None,
     if startTimestamp is not None:
         time_filter['$gte']=startTimestamp
     if endTimestamp is not None:
-        time_filter['$lt']=startTimestamp
+        time_filter['$lt']=endTimestamp
     #add to filter dict if not empty
     if time_filter:
         filter_dict['timestamp']=time_filter
