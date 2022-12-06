@@ -1,5 +1,5 @@
 from opcua import Client
-from datetime import datetime
+import datetime
 
 class Sensor:
     """Wrapper for a sensor and all of his meta data"""
@@ -21,7 +21,7 @@ class Sensor:
                 "sensortyp": self.sensortyp,
                 "unit": self.unit,
                 "value": value,
-                "timestamp": datetime.now()#.isoformat()
+                "timestamp": datetime.datetime.now()#.isoformat()
                 }
             else:
                 print("Value for sensor: ", self.get_sensor_name() + "was null - This seems suspicious!")
