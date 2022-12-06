@@ -1,0 +1,79 @@
+\section{BACKEND + DATENBANK}\label{ch:backend}
+
+Das Backend wurde mit dem Framework \textbf{FastAPI} in Python umgesetzt und ist die einzige Schnittstelle zur Datenbank \textbf{MongoDB}.
+
+\subsection{Datenbank}
+Um eine MongoDB lokal (für die Entwicklung) zu starten:
+\begin{itemize}
+\item Herunterladen von MongoDB über die offizielle Website oder einen Package Manager (z.B. ABT)
+\item Ausführung der in der ReadMe-Datei hinterlegten Konsolenbefehle
+\end{itemize}
+Die Datenbank wird dabei in der Standardkonfiguration genutzt, somit ist es nicht erforderlich Nutzer oder anderes anzulegen.
+Lediglich sollte die Datenbank über den Standardport 27017 erreichbar sein. \\
+
+MongoDB enthält zu Beginn einige Tabellen die zur Konfiguration und zur internen Konsistenz genutzt werden.
+Die eigentlichen Daten werden dabei in einer neuen Datenbank (der Name dieser kann konfiguriert werden) gespeichert.
+Eine solche Datenbank kann mehrere Collectionen beinhalten, das Äquivalent zu Tabellen in einer SQL Datenbank.
+Diese Collectionen beinhalten i.d.R ähnliche Documente im Format BSON (Binary JSON). 
+
+\subsection{Datenformat}
+Es werden Datenformate genutzt, die jeweils in Collections gespeichert werden : \textbf{Sensoren}.
+
+Listing \ref{lst:sensor_dtype} zeigt ein Sensor Objekt, wie es in der Datenbank gespeichert sein könnte.
+\begin{lstlisting}[caption={Sensor Objekt},captionpos=b,showstringspaces=false, basicstyle=\small,label={lst:sensor_dtype}]
+{
+    "_id": ObjectID(abc123def456),
+    "sensornode": "SensorNode_1",
+    "sensorname": "BME280",
+    "sensortyp" : "AirPressure",
+    "unit"      : "hPa,
+    "value"     : 1040.6999999999991,
+    "timestamp" : ISODate("2022-12-06T15:15:28.112Z"
+}
+\end{lstlisting}
+
+Das Feld \textbf{'\_id'} ist ein Primärschlüssel, welcher einzigartig ist und automatisch von MongoDB vergeben wird. 
+Mit diesem können Objekte eindeutig referenziert werden.
+Über \textbf{'sensornode'} wird die Bezeichnung der einzlenen Nodes gespeichert.
+Das Feld \textbf{'sensorname'} speichert den technische Namen eines Sensors als String und das Feld \textbf{'sensortyp'} die tatsächliche Sensorbezeichnung. 
+Dadruch können die Sensoren eindeutig zugeordnet werden, sowie im Frontend passend der Name angezeigt werden. \\
+
+Die Datenbankobjekte werden im Code als Pydantic Dataclasses hinterlegt, was das Parsen dieser Objekte (z.B. als JSON Payload) erleichtert. 
+Dabei werden die Klassen mit dem Decorator \textbf{@dataclass} verziert und erhalten \textbf{TypeHints} mit entsprechden Datentypen
+
+\begin{lstlisting}[language=python,caption={Sensor Dataclass},captionpos=b,showstringspaces=false, basicstyle=\small,label={lst:dataclass}]
+@dataclass
+class SensorValueDto():
+    sensornode: str
+    sensorname: str
+    sensortyp: str
+    unit: str
+    value: float
+    timestamp: datetime
+\end{lstlisting}
+
+\subsection{Backend}
+Mittels dem Python Framework \textbf{FastAPI} werden diverse Endpoints bereitgestellt, die das Erstellen und Ausgeben der Datenobjekte ermöglicht.
+
+Die Sensoren können über folgende Routen ausgegeben werden:
+\begin{itemize}
+\item \textbf{GET /sensornames/}: Gibt eine List aller zur verfügung stehenden Sensoren zurück.
+\item \textbf{GET /sensorvalues/current}: Gibt den aktuellen Wert jedes Sensors zurück.
+\item \textbf{GET /sensorvalues}: Gibt eine List von Sensoren zurück, welche sich nach ihren Attributen filtern lassen.
+\end{itemize}
+
+Die Endpunkte nutzen dabei ein automatisiertes Umwandeln zu entsprechenden Dataclasses.
+Dies sorgt dafür, dass Pflichtfelder übergeben werden und nicht benötigte Elemente verworfen werden.\\
+Über einen PyMongo Client werden diese Dataclasses also entweder von Route zur Datenbank weitergeleitet, oder aus der Datenbank zur Route.
+Die Verbindung erfolgt dabei über eine \textbf{MONGO\_URI}, welche Hostnamen und Port beinhaltet. Dieser String sieht wie folgt aus: \textit{mongodb://localhost:27017/}. \\
+Als tatsächlicher Webserver wird \textbf{uvicorn} genutzt, welcher im \textbf{\_\_main\_\_.py} gestartet wird. Dies ermöglicht es, das Backend mittels des Befehlt \textit{python -m backend} zu starten.
+
+\subsection{Tests}
+In einem separaten Testscript \textbf{test\_backend.py} werden die Routen getestet. 
+Hierbei wird jedoch eine Testtabelle in der Datenbank genutzt, um nicht mit anderen Daten zu interferieren. 
+In einer Setup-Methode werden dabei die Referenzen auf die Tabelle ausgetauscht. 
+Der Server wird ebenfalls durch einen \textbf{TestClient} ersetzt, welcher in dem FastAPI Framework integriert ist.\\
+
+!!! TODO: Beschreibung der Test selbst !!!
+
+Die Tests können mittels des Befehls \textit{python -m pytest -s} gestartet werden.
