@@ -17,12 +17,14 @@ import { SensorNodeDashboardComponent } from './sensornode-dashboard.component';
 import { LineChartComponent } from './lineChartComponent/lineChart.component';
 import { TemperatureGaugeComponent } from './temperatureGauge/temperatureGauge.component';
 import { SwitchComponent } from './switch/switch.component';
+import { GanttComponent } from './gantt/gantt.component';
 
 const components = [
   SensorNodeDashboardComponent,
   LineChartComponent,
   TemperatureGaugeComponent,
   SwitchComponent,
+  GanttComponent,
 ];
 
 @NgModule({
@@ -41,6 +43,6 @@ const components = [
     NbButtonModule,
     NgxEchartsModule,
   ],
-  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent ],
+  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent ],
 })
 export class SensorNodeDashboardModule { }
