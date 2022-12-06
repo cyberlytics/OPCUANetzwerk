@@ -34,7 +34,6 @@ export class LineChartComponent implements OnDestroy, OnChanges {
 
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
-      console.log("config changed");
 
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
@@ -95,7 +94,6 @@ export class LineChartComponent implements OnDestroy, OnChanges {
         series: this.data
       };
       this.refreshOptions();
-      console.log("options2", this.options);
       
     });
 
@@ -114,7 +112,6 @@ export class LineChartComponent implements OnDestroy, OnChanges {
 
   refreshOptions() {
     if(this.echartsIntance) {
-      console.log("options2", this.options);
 
       this.echartsIntance.setOption(this.options);
     }

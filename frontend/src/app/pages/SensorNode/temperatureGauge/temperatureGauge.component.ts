@@ -15,7 +15,16 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
   constructor(private theme: NbThemeService,) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log("GAUGE CHANGED", changes.data.currentValue)
+
+    //if data or unit changed for the first time, do nothing
+    if(changes.data != undefined){
+      if(changes.data.firstChange == true) return;
+    }
+    if(changes.unit != undefined){
+      if(changes.unit.firstChange == true) return;
+    };
+
+    //if data or unit changed, update the gauge
     this.options.series[0].data[0].value = changes.data.currentValue;
     this.refreshOptions();
   }
@@ -23,17 +32,16 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
   // @Input() data: TemperatureGaugeDataSeries;
   @Input() data: number;
   @Input() unit: string;
+  @Input() title?: string;
 
   options: EChartsOption = {};
   themeSubscription: any;
 
   ngAfterViewInit() {
 
-    console.log("DATA", this.data)
 
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
-      console.log("config changed", config);
 
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
@@ -103,6 +111,7 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
               {
                 value: this.data,
                 color: colors.primary,
+                name: this.title
               }
             ]
           }
@@ -111,7 +120,6 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
 
 
       this.refreshOptions();
-      console.log("options", this.options);
     });
 
   }
@@ -131,7 +139,6 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
 
   refreshOptions() {
     if(this.echartsIntance) {
-      console.log("options2", this.options);
       
       this.echartsIntance.setOption(this.options);
     }
