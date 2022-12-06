@@ -5,7 +5,6 @@ import { SolarData } from '../../../@core/data/solar';
 import {echarts} from 'echarts';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
-import { TemperatureGaugeDataSeries } from '../temperatureGauge/temperatureGaugeData';
 import { LineChartDataSeries } from '../lineChartComponent/LineChartDataClass';
 
 @Component({
@@ -21,9 +20,9 @@ export class TemoSensorCardComponent implements OnDestroy, OnChanges {
   @Input() Humidity: LineChartDataSeries;
   @Input() AirPresure: LineChartDataSeries;
 
-  GaugeTemperature: TemperatureGaugeDataSeries
-  GaugeHumidity: TemperatureGaugeDataSeries
-  GaugeAirPresure: TemperatureGaugeDataSeries
+  GaugeTemperature: number
+  GaugeHumidity: number
+  GaugeAirPresure: number
 
   ChartDataObj: LineChartDataSeries[] 
 
@@ -44,23 +43,14 @@ export class TemoSensorCardComponent implements OnDestroy, OnChanges {
 
     this.ChartDataObj = [this.Temperature, this.Humidity, this.AirPresure]
 
-    this.GaugeTemperature = {
-      name: 'Temperature',
-      type: 'gauge',
-      data: [this.Temperature.data[this.Temperature.data.length-1][1]],
-    }
-
-    this.GaugeHumidity = {
-      name: 'Humidity',
-      type: 'gauge',
-      data: [this.Humidity.data[this.Humidity.data.length-1][1]],
-    }
-
-    this.GaugeAirPresure = {
-      name: 'AirPresure',
-      type: 'gauge',
-      data: [this.AirPresure.data[this.AirPresure.data.length-1][1]],
-    }
+    this.GaugeTemperature = this.Temperature.data[this.Temperature.data.length-1][1]
+    this.GaugeHumidity = this.Humidity.data[this.Humidity.data.length-1][1]
+    this.GaugeAirPresure = this.AirPresure.data[this.AirPresure.data.length-1][1]
+    
+    //printe GaugeTemperature, GaugeHumidity, GaugeAirPresure
+    console.log("GaugeTemperature: ", this.GaugeTemperature)
+    console.log("GaugeHumidity: ", this.GaugeHumidity)
+    console.log("GaugeAirPresure: ", this.GaugeAirPresure)
   }
 
   Series1: LineChartDataSeries = {

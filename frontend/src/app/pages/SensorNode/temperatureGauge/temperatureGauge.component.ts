@@ -3,7 +3,6 @@ import { NbThemeService } from '@nebular/theme';
 import { colorSets } from '@swimlane/ngx-charts';
 import {echarts} from 'echarts';
 import { EChartsOption } from 'echarts';
-import { TemperatureGaugeDataSeries } from './temperatureGaugeData';
 
 @Component({
   selector: 'TemperatureGauge',
@@ -12,17 +11,17 @@ import { TemperatureGaugeDataSeries } from './temperatureGaugeData';
 export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
 
   echartsIntance: any;
-  keys: any;
-  value: any;
   
   constructor(private theme: NbThemeService,) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.options.series = changes.data.currentValue;
+    console.log("GAUGE CHANGED", changes.data.currentValue)
+    this.options.series[0].data[0].value = changes.data.currentValue;
     this.refreshOptions();
   }
 
-  @Input() data: TemperatureGaugeDataSeries[];
+  // @Input() data: TemperatureGaugeDataSeries;
+  @Input() data: number;
   @Input() unit: string;
 
   options: EChartsOption = {};
@@ -30,22 +29,19 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
 
   ngAfterViewInit() {
 
+    console.log("DATA", this.data)
+
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
       console.log("config changed", config);
 
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
-   
-      //get value
-      this.keys = Object.keys(this.data)
-      this.value = this.keys.map(k => this.data[k])
-
 
       this.options = {
         series: [
           {
-            type: this.value[1],
+            type: 'gauge',
             center: ['50%', '65%'],
             startAngle: 200,
             endAngle: -20,
@@ -105,7 +101,7 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
 
             data: [
               {
-                value: this.value[2],
+                value: this.data,
                 color: colors.primary,
               }
             ]

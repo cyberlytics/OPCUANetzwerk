@@ -3,7 +3,6 @@ import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { SolarData } from '../../@core/data/solar';
 import {  LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
-import {TemperatureGaugeDataSeries} from './temperatureGauge/temperatureGaugeData'
 
 interface CardSettings {
   title: string;
@@ -50,13 +49,9 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   //Start Temperatur
   random = +(Math.random() * 60).toFixed(2);
 
-  tempSeries1: TemperatureGaugeDataSeries = {
-    name: 'Temperature',
-    type: 'gauge',
-    data: [this.random]
-  }
+  tempSeries1: number = this.random;
 
-  TempDataObj: TemperatureGaugeDataSeries = this.tempSeries1;
+  TempDataObj = this.tempSeries1;
   //End Temperatur
 
 
@@ -117,21 +112,22 @@ export class SensorNodeDashboardComponent implements OnDestroy {
     name: "Temperature",
     type: "line",
     //10 Random Values for data
-    data: [["2018-08-15T10:04:01.339Z",Math.random() * 100],["2018-08-16T10:14:13.914Z",Math.random() * 100],["2018-08-17T10:04:01.339Z",Math.random() * 100],["2018-08-18T10:14:13.914Z",Math.random() * 100],["2018-08-19T10:04:01.339Z",Math.random() * 100],["2018-08-20T10:14:13.914Z",Math.random() * 100],["2018-08-21T10:04:01.339Z",Math.random() * 100],["2018-08-22T10:14:13.914Z",Math.random() * 100],["2018-08-23T10:04:01.339Z",Math.random() * 100],["2018-08-24T10:14:13.914Z",Math.random() * 100]]
+    data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
   }
   Humidity: LineChartDataSeries = {
     name: "Humidity",
     type: "line",
     //10 Random Values for data
-    data: [["2018-08-15T10:04:01.339Z",Math.random() * 100],["2018-08-16T10:14:13.914Z",Math.random() * 100],["2018-08-17T10:04:01.339Z",Math.random() * 100],["2018-08-18T10:14:13.914Z",Math.random() * 100],["2018-08-19T10:04:01.339Z",Math.random() * 100],["2018-08-20T10:14:13.914Z",Math.random() * 100],["2018-08-21T10:04:01.339Z",Math.random() * 100],["2018-08-22T10:14:13.914Z",Math.random() * 100],["2018-08-23T10:04:01.339Z",Math.random() * 100],["2018-08-24T10:14:13.914Z",Math.random() * 100]]
+    data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
   }
   AirPresure: LineChartDataSeries = {
     name: "Air Presure",
     type: "line",
     //10 Random Values for data
-    data: [["2018-08-15T10:04:01.339Z",Math.random() * 100],["2018-08-16T10:14:13.914Z",Math.random() * 100],["2018-08-17T10:04:01.339Z",Math.random() * 100],["2018-08-18T10:14:13.914Z",Math.random() * 100],["2018-08-19T10:04:01.339Z",Math.random() * 100],["2018-08-20T10:14:13.914Z",Math.random() * 100],["2018-08-21T10:04:01.339Z",Math.random() * 100],["2018-08-22T10:14:13.914Z",Math.random() * 100],["2018-08-23T10:04:01.339Z",Math.random() * 100],["2018-08-24T10:14:13.914Z",Math.random() * 100]]
+    data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
   }
   
+  gaugeRandom : number = 10;
 
   //END FLIP CARD
   private alive = true;
@@ -144,12 +140,9 @@ export class SensorNodeDashboardComponent implements OnDestroy {
     this.ChartDataObj = this.ChartDataObj2;
     //Zufällige Temperatur
     this.random = +(Math.random() * 60).toFixed(2);
-    this.tempSeries1 = {
-      name: 'Temperature',
-      type: 'gauge',
-      data: [this.random]
-    }
-  
+    
+    this.tempSeries1 = this.random;
+    this.gaugeRandom = this.random;
     this.TempDataObj = this.tempSeries1;
   }
 }
