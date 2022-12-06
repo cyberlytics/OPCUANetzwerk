@@ -28,7 +28,7 @@ Listing \ref{lst:sensor_dtype} zeigt ein Sensor Objekt, wie es in der Datenbank 
     "sensortyp" : "AirPressure",
     "unit"      : "hPa,
     "value"     : 1040.6999999999991,
-    "timestamp" : ISODate("2022-12-06T15:15:28.112Z"
+    "timestamp" : "2022-12-06T15:15:28.112Z"
 }
 \end{lstlisting}
 
@@ -36,7 +36,7 @@ Das Feld \textbf{'\_id'} ist ein Primärschlüssel, welcher einzigartig ist und 
 Mit diesem können Objekte eindeutig referenziert werden.
 Über \textbf{'sensornode'} wird die Bezeichnung der einzlenen Nodes gespeichert.
 Das Feld \textbf{'sensorname'} speichert den technische Namen eines Sensors als String und das Feld \textbf{'sensortyp'} die tatsächliche Sensorbezeichnung. 
-Dadruch können die Sensoren eindeutig zugeordnet werden, sowie im Frontend passend der Name angezeigt werden. \\
+Dadruch können die Sensoren eindeutig zugeordnet werden, sowie im Frontend passend der Name angezeigt werden.
 
 Die Datenbankobjekte werden im Code als Pydantic Dataclasses hinterlegt, was das Parsen dieser Objekte (z.B. als JSON Payload) erleichtert. 
 Dabei werden die Klassen mit dem Decorator \textbf{@dataclass} verziert und erhalten \textbf{TypeHints} mit entsprechden Datentypen
