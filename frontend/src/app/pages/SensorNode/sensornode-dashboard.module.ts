@@ -18,6 +18,7 @@ import { LineChartComponent } from './lineChartComponent/lineChart.component';
 import { TemperatureGaugeComponent } from './temperatureGauge/temperatureGauge.component';
 import { SwitchComponent } from './switch/switch.component';
 import { GanttComponent } from './gantt/gantt.component';
+import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.component';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -25,6 +26,7 @@ const components = [
   TemperatureGaugeComponent,
   SwitchComponent,
   GanttComponent,
+  TemoSensorCardComponent,
 ];
 
 @NgModule({

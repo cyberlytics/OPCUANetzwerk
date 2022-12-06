@@ -1,6 +1,12 @@
-<LineChart [data]="ChartDataObj"></LineChart>
+<tempSensorCard
+[Temperature]="Temperature"
+[Humidity]="Humidity"
+[AirPresure]="AirPresure"
+></tempSensorCard>
+
+<!-- <LineChart [data]="ChartDataObj"></LineChart> -->
 <!-- Button to set data to the chart-->
-<button (click)="setChartData()">Set Chart Data</button>
+<!-- <button (click)="setChartData()">Set Chart Data</button>
 
 
 <TemperatureGauge [data]="TempDataObj"></TemperatureGauge>
@@ -13,4 +19,4 @@
       </div>
 </div>
 
-<Gantt></Gantt>
+<Gantt></Gantt> -->

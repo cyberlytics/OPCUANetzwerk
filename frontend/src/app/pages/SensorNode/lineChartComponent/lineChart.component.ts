@@ -41,6 +41,7 @@ export class LineChartComponent implements OnDestroy, OnChanges {
 
       this.options = {
         backgroundColor: echarts.bg,
+        responsive: true,
         color: [colors.danger, colors.primary, colors.info],
         tooltip: {
           trigger: 'axis'
