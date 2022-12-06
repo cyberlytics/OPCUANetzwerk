@@ -110,6 +110,30 @@ export class SensorNodeDashboardComponent implements OnDestroy {
   });
   }
 
+
+  //START FLIP CARD
+
+ Temperature: LineChartDataSeries = {
+    name: "Temperature",
+    type: "line",
+    //10 Random Values for data
+    data: [["2018-08-15T10:04:01.339Z",Math.random() * 100],["2018-08-16T10:14:13.914Z",Math.random() * 100],["2018-08-17T10:04:01.339Z",Math.random() * 100],["2018-08-18T10:14:13.914Z",Math.random() * 100],["2018-08-19T10:04:01.339Z",Math.random() * 100],["2018-08-20T10:14:13.914Z",Math.random() * 100],["2018-08-21T10:04:01.339Z",Math.random() * 100],["2018-08-22T10:14:13.914Z",Math.random() * 100],["2018-08-23T10:04:01.339Z",Math.random() * 100],["2018-08-24T10:14:13.914Z",Math.random() * 100]]
+  }
+  Humidity: LineChartDataSeries = {
+    name: "Humidity",
+    type: "line",
+    //10 Random Values for data
+    data: [["2018-08-15T10:04:01.339Z",Math.random() * 100],["2018-08-16T10:14:13.914Z",Math.random() * 100],["2018-08-17T10:04:01.339Z",Math.random() * 100],["2018-08-18T10:14:13.914Z",Math.random() * 100],["2018-08-19T10:04:01.339Z",Math.random() * 100],["2018-08-20T10:14:13.914Z",Math.random() * 100],["2018-08-21T10:04:01.339Z",Math.random() * 100],["2018-08-22T10:14:13.914Z",Math.random() * 100],["2018-08-23T10:04:01.339Z",Math.random() * 100],["2018-08-24T10:14:13.914Z",Math.random() * 100]]
+  }
+  AirPresure: LineChartDataSeries = {
+    name: "Air Presure",
+    type: "line",
+    //10 Random Values for data
+    data: [["2018-08-15T10:04:01.339Z",Math.random() * 100],["2018-08-16T10:14:13.914Z",Math.random() * 100],["2018-08-17T10:04:01.339Z",Math.random() * 100],["2018-08-18T10:14:13.914Z",Math.random() * 100],["2018-08-19T10:04:01.339Z",Math.random() * 100],["2018-08-20T10:14:13.914Z",Math.random() * 100],["2018-08-21T10:04:01.339Z",Math.random() * 100],["2018-08-22T10:14:13.914Z",Math.random() * 100],["2018-08-23T10:04:01.339Z",Math.random() * 100],["2018-08-24T10:14:13.914Z",Math.random() * 100]]
+  }
+  
+
+  //END FLIP CARD
   private alive = true;
   ngOnDestroy() {
     this.alive = false;

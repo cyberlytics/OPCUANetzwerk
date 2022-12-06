@@ -23,6 +23,7 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
   }
 
   @Input() data: TemperatureGaugeDataSeries[];
+  @Input() unit: string;
 
   options: EChartsOption = {};
   themeSubscription: any;
@@ -35,7 +36,7 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
 
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
-
+   
       //get value
       this.keys = Object.keys(this.data)
       this.value = this.keys.map(k => this.data[k])
@@ -45,12 +46,19 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
         series: [
           {
             type: this.value[1],
-            center: ['50%', '50%'],
+            center: ['50%', '65%'],
             startAngle: 200,
             endAngle: -20,
+            radius: '100%',
             min: 0,
             max: 60,
             splitNumber: 12,
+            grid:{
+              left: '10%',
+              right: '10%',
+              top: 50,
+              bottom: 50
+            },
             progress: {
               show: true,
               width: 20,
@@ -62,7 +70,7 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
               valueAnimation: true,
               fontSize: 30,
               fontWeight: 'bolder',
-              formatter: '{value} °C',
+              formatter: '{value} '+this.unit,
               color: colors.primary
             },
             pointer: {
