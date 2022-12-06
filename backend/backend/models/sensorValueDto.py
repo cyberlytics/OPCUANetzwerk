@@ -1,5 +1,5 @@
 from pydantic.dataclasses import dataclass
-
+import datetime
 
 @dataclass
 class SensorValueDto:
@@ -8,7 +8,7 @@ class SensorValueDto:
     sensortyp: str
     unit: str
     value: float
-    timestamp: str
+    timestamp: datetime.datetime
 
 
 SensorValueDto.__pydantic_model__.update_forward_refs()

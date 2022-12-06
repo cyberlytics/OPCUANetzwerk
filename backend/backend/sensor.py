@@ -21,7 +21,7 @@ class Sensor:
                 "sensortyp": self.sensortyp,
                 "unit": self.unit,
                 "value": value,
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now()#.isoformat()
                 }
             else:
                 print("Value for sensor: ", self.get_sensor_name() + "was null - This seems suspicious!")
