@@ -9,7 +9,7 @@ Um eine MongoDB lokal (für die Entwicklung) zu starten:
 \item Ausführung der in der ReadMe-Datei hinterlegten Konsolenbefehle
 \end{itemize}
 Die Datenbank wird dabei in der Standardkonfiguration genutzt, somit ist es nicht erforderlich Nutzer oder anderes anzulegen.
-Lediglich sollte die Datenbank über den Standardport 27017 erreichbar sein. \\
+Lediglich sollte die Datenbank über den Standardport 27017 erreichbar sein.
 
 MongoDB enthält zu Beginn einige Tabellen die zur Konfiguration und zur internen Konsistenz genutzt werden.
 Die eigentlichen Daten werden dabei in einer neuen Datenbank (der Name dieser kann konfiguriert werden) gespeichert.
@@ -36,7 +36,7 @@ Das Feld \textbf{'\_id'} ist ein Primärschlüssel, welcher einzigartig ist und 
 Mit diesem können Objekte eindeutig referenziert werden.
 Über \textbf{'sensornode'} wird die Bezeichnung der einzlenen Nodes gespeichert.
 Das Feld \textbf{'sensorname'} speichert den technische Namen eines Sensors als String und das Feld \textbf{'sensortyp'} die tatsächliche Sensorbezeichnung. 
-Dadruch können die Sensoren eindeutig zugeordnet werden, sowie im Frontend passend der Name angezeigt werden.
+Durch Kombination dieser drei Werte können die Sensoren eindeutig zugeordnet werden, sowie im Frontend passend der per Name angezeigt werden.
 
 Die Datenbankobjekte werden im Code als Pydantic Dataclasses hinterlegt, was das Parsen dieser Objekte (z.B. als JSON Payload) erleichtert. 
 Dabei werden die Klassen mit dem Decorator \textbf{@dataclass} verziert und erhalten \textbf{TypeHints} mit entsprechden Datentypen
@@ -72,7 +72,7 @@ Als tatsächlicher Webserver wird \textbf{uvicorn} genutzt, welcher im \textbf{\
 In einem separaten Testscript \textbf{test\_backend.py} werden die Routen getestet. 
 Hierbei wird jedoch eine Testtabelle in der Datenbank genutzt, um nicht mit anderen Daten zu interferieren. 
 In einer Setup-Methode werden dabei die Referenzen auf die Tabelle ausgetauscht. 
-Der Server wird ebenfalls durch einen \textbf{TestClient} ersetzt, welcher in dem FastAPI Framework integriert ist.\\
+Der Server wird ebenfalls durch einen \textbf{TestClient} ersetzt, welcher in dem FastAPI Framework integriert ist.
 
 !!! TODO: Beschreibung der Test selbst !!!
 
