@@ -1,3 +1,4 @@
+<!--
 <tempSensorCard
 [Temperature]="Temperature"
 [Humidity]="Humidity"
@@ -5,13 +6,16 @@
 ></tempSensorCard>
 
 <TemperatureGauge [data]="gaugeRandom" unit ="°C"></TemperatureGauge>
+-->
 
 <!-- <LineChart [data]="ChartDataObj"></LineChart> -->
 <!-- Button to set data to the chart-->
-<button (click)="setChartData()">Set Chart Data</button>
 
 <!--
+<button (click)="setChartData()">Set Chart Data</button>
+-->
 <TemperatureGauge [data]="TempDataObj"></TemperatureGauge>
+
 
 <div class="row">
     <div class="col-xxxl-3 col-md-6" *ngFor="let statusCard of statusCards">
@@ -21,4 +25,4 @@
       </div>
 </div>
 
-<Gantt></Gantt> -->
+<Gantt></Gantt> 
