@@ -22,6 +22,7 @@ export class LineChartComponent implements OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.options.series = changes.data.currentValue;
+    this.data = changes.data.currentValue;
     this.refreshOptions();
   }
 
@@ -31,7 +32,6 @@ export class LineChartComponent implements OnDestroy, OnChanges {
   themeSubscription: any;
 
   ngAfterViewInit() {
-
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
 
