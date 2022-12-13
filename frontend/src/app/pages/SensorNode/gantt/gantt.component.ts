@@ -34,12 +34,7 @@ export class GanttComponent {
 
   ngAfterViewInit() {
 
-    //console.log(echartss);
-
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
-
-      console.log("config changed");
-
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
 
@@ -171,8 +166,6 @@ export class GanttComponent {
       };
 
       this.refreshOptions();
-      console.log("data", data)    
-      console.log("config", config)  
     });
 
   }

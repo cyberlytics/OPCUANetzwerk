@@ -19,6 +19,7 @@ import { TemperatureGaugeComponent } from './temperatureGauge/temperatureGauge.c
 import { SwitchComponent } from './switch/switch.component';
 import { GanttComponent } from './gantt/gantt.component';
 import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.component';
+import { BackendDataService } from '../../Services/BackendDataService';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -46,5 +47,6 @@ const components = [
     NgxEchartsModule,
   ],
   declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent ],
+  providers: [BackendDataService],
 })
 export class SensorNodeDashboardModule { }
