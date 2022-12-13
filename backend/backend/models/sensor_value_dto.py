@@ -2,7 +2,7 @@ from pydantic.dataclasses import dataclass
 import datetime
 
 @dataclass
-class SensorValueDto:
+class Sensor_value_dto:
     sensornode: str
     sensorname: str
     sensortyp: str
@@ -11,4 +11,4 @@ class SensorValueDto:
     timestamp: datetime.datetime
 
 
-SensorValueDto.__pydantic_model__.update_forward_refs()
+Sensor_value_dto.__pydantic_model__.update_forward_refs()

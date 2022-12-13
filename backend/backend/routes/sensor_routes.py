@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response,status,Request
 import datetime
 
-from backend.models.sensorValueDto import SensorValueDto
+from backend.models.sensor_value_dto import Sensor_value_dto
 from backend.database import conn
 from backend import config
 from backend.opcua_client import opcua_client
@@ -14,12 +14,12 @@ async def get_sensor_names():
     """Return an list with all available sensors"""
     return opcua_client.get_sensor_names()
 
-@router_sensors.get('/sensorvalues/current',tags=['Sensors'], response_model=list[SensorValueDto])
+@router_sensors.get('/sensorvalues/current',tags=['Sensors'], response_model=list[Sensor_value_dto])
 async def get_current_sensor_values():
     """Return current value for each sensor"""
     return opcua_client.get_sensor_values()
 
-@router_sensors.get('/sensorvalues', tags=['Sensors'], response_model=list[SensorValueDto])
+@router_sensors.get('/sensorvalues', tags=['Sensors'], response_model=list[Sensor_value_dto])
 async def get_sensor_values_with_filter(sensornode:str = None, 
         sensorname:str = None, 
         sensortyp:str=None,

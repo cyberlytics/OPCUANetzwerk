@@ -3,7 +3,7 @@ from typing import Optional
 import datetime
 
 @dataclass
-class RequestDto:
+class Request_dto:
     sensornode: Optional[str]
     sensorname: Optional[str]
     sensortyp: Optional[str]
@@ -15,4 +15,4 @@ async def convert_filter_params():
     param_dict = {}
     
 
-RequestDto.__pydantic_model__.update_forward_refs()
+Request_dto.__pydantic_model__.update_forward_refs()
