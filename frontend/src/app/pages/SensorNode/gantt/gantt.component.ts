@@ -2,7 +2,8 @@ import {ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDest
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
 import { SolarData } from '../../../@core/data/solar';
-import {echarts} from 'echarts';
+//import {echarts} from 'echarts';
+import * as echartsObj from 'echarts';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';
 
@@ -33,6 +34,7 @@ export class GanttComponent {
 
   ngAfterViewInit() {
 
+    //console.log(echartss);
 
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 
@@ -86,8 +88,8 @@ export class GanttComponent {
 
         var rectShape;
 
-        /*
-        var rectShape = echarts.graphic.clipRectByRect(
+        
+        var rectShape = echartsObj.graphic.clipRectByRect(
           {
             x: start[0],
             y: start[1] - height / 2,
@@ -101,7 +103,7 @@ export class GanttComponent {
             height: params.coordSys.height
           }
         );
-        */
+        
         return (
           rectShape && {
             type: 'rect',
@@ -168,7 +170,9 @@ export class GanttComponent {
   
       };
 
-      this.refreshOptions();      
+      this.refreshOptions();
+      console.log("data", data)    
+      console.log("config", config)  
     });
 
   }
