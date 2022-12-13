@@ -1,0 +1,120 @@
+----------
+01.11.2022
+----------
+Sensoren:
+  - CO2/Luftsensor
+  - Temperatursensor
+  - Feuchtigkeitssensor
+  - Lichtsensor
+  - "Anwesenheits"/Bewegungssensor
+  
+Aktoren:
+  - z.B.: LEDs / Pipser / Anzeigen (7-Segment/Displays,...) (TODO)
+  
+Anzahl ca. 3+
+
+
+- Sensornetzwerk mit OPCUA
+  - Hardware: Raspberry Pi (Client -> Sensor)
+	- Sensoren/Aktoren ??				-> TODO: Sensoren organisieren (MZ, SR)
+	- Wie viele ?? 						-> TODO: MZ, SR
+  
+  - Server OPCUA: 
+    - VM auf Server / RPi
+    - Mit Webserver für Frontend kombinieren
+	- Daten wegspeichern -> Datenbank 
+  
+  - Visualisierung:
+  	- Backend:
+	  - Webserver  -> Was nutzen?
+	  - NodeJS/(Python+Rest API) OPC-UA Implementierung prüfen: -> TODO: Tobi, Patrick
+	- Front-End:
+	  - WEB (html,css Frameworks Angular/React, D3JS...)
+	  - Frameworks aufschlauen: 		-> TODO: SO, JH (Graph/Visualisierungsbibliotheken, ...)
+
+  - Zentrales VPN
+  
+- Code-Verwaltung: 
+  - GITLab
+  - Issue-Board für Projektplanung
+(Nextcloud für Dokumentenablage / Kalender)
+
+TODOs
+- Anforderungsdokument -> Must Should Could
+- Aufgabenverteilung
+- Zeitplanung (Termine, Milestones, ...)
+
+
+-------------------------------------------------------------------------
+
+
+----------
+05.11.2022
+----------
+
+- Thematik: Energiesparen Sensornetzwerk
+	- Erdfeuchtigkeit Garten 			
+		-> Sommer Bewässerung einschalten (Wasserverschwendung)
+	- Luftfeuchtigkeit (z.B. Bad)
+		-> Raumbelüftung
+x	- Raumluftqualität
+		-> Nice To Have: Luftqualitätssensor
+x	- Temperatur (z.B. Heizungssteuerung)
+		-> Kombinierbar mit Anwesenheit
+x	- Anwesenheitserkennung
+		-> Bewegungssensor/Soundsensor (auch Luftqualitätssensor)
+		-> z.B: kombinierbar mit Heizungssteuerung
+	- Anzeigen auf Knoten (z.B. 7 Segment/LCD/LEDs) z.B. Luftqualität/Temp
+	- ggf. Warnung über Buzzer (Schwellwerte)
+	
+(x) -> Must Have
+	
+- Validierung, wie gut Sensoren funktionieren
+- eingesetzte Hardware für Sensorknoten: RPi (ggf. Zusatzhardware notwendig)
+- Caching auf Sensorknoten für Offline-Daten? (NTH)
+
+- Daten zentral speichern -> Server
+	- Hardware: RPi/VM
+	- Netzwerk VPN
+	- Kommunikation über OPC-UA
+		-> "Endgeräte" unabhängig
+	- Implementierung Server in Python
+	- REST-API für Frontend
+	- Datenbank: offen
+	
+- Front-End:
+	- Dashboard-Framework
+	- NDX-Admin (Angular)
+		- alternative: Bootstrap / React
+	- "Was wollen wir darstellen"
+	- Konfiguration der Sensorknoten
+	- NTH: Datenexport/Import
+	
+
+
+- Concept-Paper:
+
+- Einleitung (Ziel, Verwandte Arbeiten)
+- Konzeptioneller Aufbau 
+
+- Sensorknoten 	(einzelne Sensoren, unterschiedlicher Aufbau, Kommunikation Sensor <-> RPi, ggf Caching (offline)) 	-> Manuel, Stefan
+- Kommunikation (OPCUA (Modellierung, NTH: Security) / VPN, Verschlüsselung, Standordunabhängigkeit)			-> Manuel, Stefan
+- Server 		(Daten aufbereiten,speichern/Rest API)								-> Tobi, Patrick
+- Frontend 		(Darstellung, Konfiguration, ...)								-> Saniye, Johannes
+
+-------------------------------------------------------------------------
+
+-------
+ROADMAP
+-------
+
+TERMIN: 05.11.2022 10:00
+  - Treffen BBB
+  - Zusammentragen Informationen vom 01.11.2022
+  - Festlegung offener Punkte
+  - Festlegung Concept-Paper Aufgabenverteilung
+  
+TERMIN: 08.11.2022
+  - Concept-Paper Ausformulierung
+
+FIX-TERMIN: 15.11.2022 -> Abgabe Concept-Paper 
