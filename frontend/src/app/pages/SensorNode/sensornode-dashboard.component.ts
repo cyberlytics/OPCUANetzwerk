@@ -4,6 +4,10 @@ import { takeWhile } from 'rxjs/operators' ;
 import { SolarData } from '../../@core/data/solar';
 import { BackendDataService } from '../../Services/BackendDataService';
 import {  LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+
+
 
 interface CardSettings {
   title: string;
@@ -150,7 +154,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //End Gantt
 
 
-  constructor(private theme: NbThemeService, private backendApi: BackendDataService) {
+  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute) {
     this.theme.getJsTheme()
     .pipe(takeWhile(() => this.alive))
     .subscribe(theme => {
@@ -225,9 +229,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
   async getData(){
     
-    var resultAir = await this.backendApi.getNodeData("SensorNode_1", "BME280", "AirPressure" );
-    var resultTemp = await this.backendApi.getNodeData("SensorNode_1", "BME280", "Temperature" );
-    var resultHumidity = await this.backendApi.getNodeData("SensorNode_1", "BME280", "Humidity" );
+    var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure" );
+    var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature" );
+    var resultHumidity = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Humidity" );
 
     //create an array from the result where the elements are structured like this [[timestamp, value]]
     var mappedAir = resultAir.map(function(el) {
@@ -241,8 +245,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     var mappedHumidity = resultHumidity.map(function(el) {
       return [el.timestamp, el.value];
     });
-
-    var aircopy = this.AirPresure;
 
     //We need new instances of LineChartDataSeries because only changing the properties of it does not trigger the change detection
     //this is because the reference to the object does not change
@@ -268,10 +270,23 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
   }
 
+  private subscription: Subscription;
+  private SensorNodeId: string;
+
   async ngOnInit(): Promise<void> {
-    this.getData();
+    console.log("SensorNodeDashboardComponent ngOnInit");
+    this.subscription = this.route.paramMap.subscribe(params => { 
+      var id = params.get('id');
+      this.SensorNodeId = id;    
+      console.log("NODE ID", id);
+      
+      this.getData();
+  });
   }
 
   async ngAfterViewInit() {
+  }
+
+  test(){
   }
 }

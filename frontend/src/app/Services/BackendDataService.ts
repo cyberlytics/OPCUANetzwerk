@@ -35,5 +35,16 @@ export class BackendDataService implements OnInit {
         return response;
     }
 
-}
+    //TODO: BACKEND MUSS ALLE SESNORKNOTEN AUSGEBEN
+    //Diese Methode ist viel zu aufwendig
+    async getSensorNodes() {
+        var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues').toPromise<any>();
 
+        var data = response;
+
+        //find all unique sensornodes from data and return them
+        var sensornodes = data.map(x => x.sensornode).filter((value, index, self) => self.indexOf(value) === index);
+        console.log("NODES", sensornodes)
+        return sensornodes;
+    }
+}
