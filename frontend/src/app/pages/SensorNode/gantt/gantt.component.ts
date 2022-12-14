@@ -1,6 +1,6 @@
-import {ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
-import { takeWhile } from 'rxjs/operators' ;
+import { takeWhile } from 'rxjs/operators';
 import { SolarData } from '../../../@core/data/solar';
 //import {echarts} from 'echarts';
 import * as echartsObj from 'echarts';
@@ -13,24 +13,20 @@ import * as moment from 'moment';
   styleUrls: ['./gantt.component.scss']
 })
 export class GanttComponent {
-  
 
-
-  echartsIntance: any;
-  @ViewChild('gantt') span:ElementRef;
-
-  constructor(private theme: NbThemeService,) {}
+  constructor(private theme: NbThemeService,) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     this.options.series = changes.data.currentValue;
     this.refreshOptions();
   }
 
- // @Input() data: LineChartDataSeries[];
+  @Input() data: any;
 
   options: EChartsOption = {};
   themeSubscription: any;
-  
+  echartsIntance: any;
+
 
   ngAfterViewInit() {
 
@@ -43,82 +39,88 @@ export class GanttComponent {
       //https://echarts.apache.org/examples/en/editor.html?c=custom-profile&reset=1&edit=1
 
 
-      
+      const valveColors = [
+        "#f59527",
+        "#00e200",
+        "#2da8f3",
+      ]
 
-      var data = [];
-      var dataCount = 10;
-      var startTime = +new Date();
-      var categories = ['categoryA', 'categoryB', 'categoryC'];
-      var types = [
-        { name: 'JS Heap', color: '#7b9ce1' },
-        { name: 'Documents', color: '#bd6d6c' },
-        { name: 'Nodes', color: '#75d874' },
-        { name: 'Listeners', color: '#e0bc78' },
-        { name: 'GPU Memory', color: '#dc77dc' },
-        { name: 'GPU', color: '#72b362' }
-      ];
-      // Generate mock data
-      categories.forEach(function (category, index) {
-        var baseTime = startTime;
-        for (var i = 0; i < dataCount; i++) {
-          var typeItem = types[Math.round(Math.random() * (types.length - 1))];
-          var duration = Math.round(Math.random() * 10000);
-          data.push({
-            name: typeItem.name,
-            value: [index, baseTime, (baseTime += duration), duration],
-            itemStyle: {
-              normal: {
-                color: typeItem.color
-              }
-            }
-          });
-          baseTime += Math.round(Math.random() * 2000);
-        }
-      });
-      function renderItem(params, api) {
-        var categoryIndex = api.value(0);
-        var start = api.coord([api.value(1), categoryIndex]);
-        var end = api.coord([api.value(2), categoryIndex]);
-        var height = api.size([0, 1])[1] * 0.6;
-
-        var rectShape;
-
-        
-        var rectShape = echartsObj.graphic.clipRectByRect(
-          {
-            x: start[0],
-            y: start[1] - height / 2,
-            width: end[0] - start[0],
-            height: height
-          },
-          {
-            x: params.coordSys.x,
-            y: params.coordSys.y,
-            width: params.coordSys.width,
-            height: params.coordSys.height
-          }
+      function renderItem(params, api) {        
+        var catIndex = api.value(2);
+        var timeSpan = [api.value(0), api.value(1)];        
+        var start = api.coord([timeSpan[0], 2 - catIndex]);        
+        var end = api.coord([timeSpan[1], 2 - catIndex]);
+        var size = api.size([0, 1]);
+        var height = size[1] * 0.6;
+        var rect = echartsObj.graphic.clipRectByRect(
+          { x: start[0], y: start[1] - height / 2, width: end[0] - start[0], height: height },
+          { x: params.coordSys.x, y: params.coordSys.y, width: params.coordSys.width, height: params.coordSys.height }
         );
-        
         return (
-          rectShape && {
-            type: 'rect',
-            transition: ['shape'],
-            shape: rectShape,
-            style: api.style()
+          rect && {
+            type: "rect",
+            transition: ["shape"],
+            shape: rect,
+            style: {
+              fill: valveColors[catIndex],
+            },
           }
         );
       }
 
-
+      //Diagramm Optionen definieren
       this.options = {
-        tooltip: {
-          formatter: function (params) {
-            return params.marker + params.name + ': ' + params.value[3] + ' ms';
-          }
-        },
         title: {
-          text: 'Profile',
+          text: 'Bewegungsmelder',
           left: 'center'
+        },
+        xAxis: {
+          type: 'time',
+          min: range => range.min - (200 * 24 * 60 * 60 * 1000), //Subtract 7 days
+             boundaryGap:false,
+            axisLine: {
+              lineStyle: {
+                color: echarts.axisLineColor,
+              },
+            }
+        },
+        yAxis: {
+          type: "category",
+          data: this.data.yAxis,
+          axisLine: {
+            lineStyle: {
+              color: echarts.axisLineColor,
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: echarts.splitLineColor,
+            },
+          },
+          axisLabel: {
+            textStyle: {
+              color: echarts.textColor,
+            },
+          },
+        },
+        series: [
+          {
+            type: "custom",
+            renderItem: renderItem,
+            encode: {
+              x: [0, 1],
+              y: 0,
+            },
+            data: this.data.xAxis,
+          }
+        ],
+        tooltip: {
+          show: true,
+          trigger: "item",
+          formatter: params => {
+            //hover Box
+            return `${params.data.name}<br/> ${params.data.value[0]} - ${params.data.value[1]}` //Unix timestamps should be converted to readable dates
+          }
         },
         dataZoom: [
           {
@@ -133,36 +135,6 @@ export class GanttComponent {
             filterMode: 'weakFilter'
           }
         ],
-        grid: {
-          height: 300
-        },
-        xAxis: {
-          min: startTime,
-          scale: true,
-          axisLabel: {
-            formatter: function (val) {
-              return Math.max(0, val - startTime) + ' ms';
-            }
-          }
-        },
-        yAxis: {
-          data: categories
-        },
-        series: [
-          {
-            type: 'custom',
-            renderItem: renderItem,
-            itemStyle: {
-              opacity: 0.8
-            },
-            encode: {
-              x: [1, 2],
-              y: 0
-            },
-            data: data
-          }
-        ]
-  
       };
 
       this.refreshOptions();
@@ -171,10 +143,10 @@ export class GanttComponent {
   }
 
   onChartInit(echarts) {
-    this.echartsIntance = echarts;    
+    this.echartsIntance = echarts;
   }
 
-  
+
   resizeChart() {
     if (this.echartsIntance) {
       this.echartsIntance.resize();
@@ -182,11 +154,11 @@ export class GanttComponent {
   }
 
   refreshOptions() {
-    if(this.echartsIntance) {
+    if (this.echartsIntance) {
       this.echartsIntance.setOption(this.options);
     }
   }
-  
+
   private alive = true;
   ngOnDestroy() {
     this.alive = false;
