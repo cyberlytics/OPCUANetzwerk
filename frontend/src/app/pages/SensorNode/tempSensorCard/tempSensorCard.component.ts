@@ -48,6 +48,11 @@ export class TemoSensorCardComponent implements OnDestroy, OnChanges {
     this.ChartDataObj = [this.Temperature, this.Humidity, this.AirPresure]
 
     //Gauges
+    //onyl do this when the .data is not eqal to []
+    if(this.Temperature.data.length == 0 || this.Humidity.data.length == 0 || this.AirPresure.data.length == 0){
+      return;
+    }
+
     this.GaugeTemperature = this.Temperature.data[this.Temperature.data.length-1][1]
     this.GaugeHumidity = this.Humidity.data[this.Humidity.data.length-1][1]
     this.GaugeAirPresure = this.AirPresure.data[this.AirPresure.data.length-1][1]

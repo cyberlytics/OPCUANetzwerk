@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { BackendDataService } from '../Services/BackendDataService';
 
 import { MENU_ITEMS } from './pages-menu';
 
@@ -12,7 +13,28 @@ import { MENU_ITEMS } from './pages-menu';
     </ngx-one-column-layout>
   `,
 })
-export class PagesComponent {
+export class PagesComponent implements OnInit {
+
+
+  constructor(private backendAPI: BackendDataService) {}
+
+  async ngOnInit(): Promise<void> {
+    console.log("PagesComponent");
+
+    var Nodes: string[] = await this.backendAPI.getSensorNodes();
+
+    //push a new menu item for each node
+    Nodes.forEach(element => {
+      MENU_ITEMS.push({
+        title: element,
+        link: element,
+        icon: 'home-outline',
+      });
+    });
+
+  }
+  
+
 
   menu = MENU_ITEMS;
 }
