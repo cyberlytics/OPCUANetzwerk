@@ -7,6 +7,7 @@ import {  LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {Router} from '@angular/router';
+import { TimespanService } from '../../Services/TimespanProviderService';
 
 
 
@@ -22,6 +23,11 @@ interface CardSettings {
   templateUrl: './sensornode-dashboard.component.html',
 })
 export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
+
+  selectedTimespan: {
+    from: Date,
+    to: Date
+  };
 
   Series1: LineChartDataSeries = {
     name: "Series1",
@@ -155,7 +161,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //End Gantt
 
 
-  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute, private router: Router) {
+  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute, private router: Router, private timespan: TimespanService) {
     this.theme.getJsTheme()
     .pipe(takeWhile(() => this.alive))
     .subscribe(theme => {
@@ -288,9 +294,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       //if the nodeId does not match one of the valid nodes, redirect to 404
       var found = validNodes.some(function (el) {
         return el == id;
-      });
-
-      
+      }); 
       if(!found){
         this.router.navigate(['/pages/not-found']);
       }
@@ -298,11 +302,22 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
       this.getData();
   });
+
+  this.timespan.currentData.subscribe(message => this.selectedTimespan = message);
   }
 
   async ngAfterViewInit() {
   }
 
   test(){
+    console.log(this.selectedTimespan)
+  }
+
+  fromChange(){
+    console.log("AAAs")
+  }
+
+  test2(){
+    console.log("test2")
   }
 }

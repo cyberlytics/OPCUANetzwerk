@@ -6,6 +6,7 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
+
 @Component({
   selector: 'ngx-header',
   styleUrls: ['./header.component.scss'],
@@ -16,6 +17,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
   userPictureOnly: boolean = false;
   user: any;
+  fromPicker: any;
 
   themes = [
     {
@@ -69,6 +71,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(themeName => this.currentTheme = themeName);
+      console.log(this.fromPicker)
   }
 
   ngOnDestroy() {
@@ -90,5 +93,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
   navigateHome() {
     this.menuService.navigateHome();
     return false;
+  }
+
+  fromChange(event) {
+    console.log("SOMETHING HAPPEND");
+    console.log(event);
   }
 }
