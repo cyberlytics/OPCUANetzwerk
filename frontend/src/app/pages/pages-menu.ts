@@ -5,5 +5,10 @@ export const MENU_ITEMS: NbMenuItem[] = [
     title: 'IoT Dashboard',
     icon: 'home-outline',
     link: '/pages/iot-dashboard',
-  }
+  },
+  {
+    title: '404',
+    icon: 'home-outline',
+    link: 'not-found',
+  },
 ];
