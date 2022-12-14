@@ -17,6 +17,7 @@ import {
   NbDialogModule,
   NbMenuModule,
   NbSidebarModule,
+  NbTimepickerModule,
   NbToastrModule,
   NbWindowModule,
 } from '@nebular/theme';
@@ -31,6 +32,7 @@ import {
     NbSidebarModule.forRoot(),
     NbMenuModule.forRoot(),
     NbDatepickerModule.forRoot(),
+    NbTimepickerModule.forRoot(),
     NbDialogModule.forRoot(),
     NbWindowModule.forRoot(),
     NbToastrModule.forRoot(),

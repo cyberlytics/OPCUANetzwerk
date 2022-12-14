@@ -9,6 +9,8 @@ import {
   NbSelectModule,
   NbListModule,
   NbIconModule,
+  NbTimepickerModule,
+  NbDatepickerModule,
 } from '@nebular/theme';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ThemeModule } from '../../@theme/theme.module';
@@ -20,6 +22,7 @@ import { SwitchComponent } from './switch/switch.component';
 import { GanttComponent } from './gantt/gantt.component';
 import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.component';
 import { BackendDataService } from '../../Services/BackendDataService';
+import { TimespanService } from '../../Services/TimespanProviderService';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -44,9 +47,9 @@ const components = [
     NbListModule,
     NbIconModule,
     NbButtonModule,
-    NgxEchartsModule,
+    NgxEchartsModule
   ],
   declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent ],
-  providers: [BackendDataService],
+  providers: [BackendDataService, TimespanService],
 })
 export class SensorNodeDashboardModule { }

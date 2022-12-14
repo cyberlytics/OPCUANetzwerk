@@ -8,6 +8,14 @@
   <nb-select [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
     <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
   </nb-select>
+
+  <!--TODO: FIX STYLEING-->
+  <input nbInput placeholder="From" [nbDatepicker]="dateTimePickerFrom" (dateTimeChange)='fromChange($event)'>
+  <nb-date-timepicker withSeconds #dateTimePickerFrom (dateTimeChange)='fromChange($event)'></nb-date-timepicker>
+
+  <input nbInput placeholder="To" [nbDatepicker]="dateTimePickerTo">
+  <nb-date-timepicker withSeconds #dateTimePickerTo></nb-date-timepicker>
+  
 </div>
 
 <div class="header-container">
