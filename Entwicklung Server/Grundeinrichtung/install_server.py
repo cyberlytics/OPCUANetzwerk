@@ -7,13 +7,15 @@
 #   - Funktion zum Anlegen von Dateien überarbeitet
 # V1.0.2    14.12.2022
 #   - DNS Update für VPN ergänzt
+# V1.0.3    14.12.2022
+#   - NTP Update für VPN ergänzt
 ### --------------------------------------------------------------------------
 
 __author__      = "Manuel Zimmermann"
 __copyright__   = "Copyright 2022, Team Gruen WST Kurs 2022"
 __credits__     = []
 #__license__     = ""
-__version__     = "1.0.2"
+__version__     = "1.0.3"
 __maintainer__  = "Manuel Zimmermann"
 __email__       = "m.zimmermann1@oth-aw.de"
 __status__      = "Developement"
@@ -340,6 +342,17 @@ def install_vpn():
     cmd("systemctl enable openvpn@client.service")                                                    # Autostart-Service aktivieren
     cmd("systemctl daemon-reload")
     cmd("service openvpn@client start")
+
+    ### NTP einrichten
+    log("Konfiguriere NTP")
+    apt_install("ntp")
+    ntp_path = Path("/etc/ntp.conf")
+    replace_in_file(ntp_path, re.compile(r'(^#?server .*?$)', re.M), r"")
+    append_in_file(ntp_path, "\nserver 192.168.60.1")
+    cmd("systemctl stop systemd-timesyncd")
+    cmd("systemctl disable systemd-timesyncd")
+    cmd("/etc/init.d/ntp stop")
+    cmd("/etc/init.d/ntp start")
 
     log("VPN Einrichtung abgeschlossen")
     
