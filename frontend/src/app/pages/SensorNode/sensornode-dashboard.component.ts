@@ -6,6 +6,7 @@ import { BackendDataService } from '../../Services/BackendDataService';
 import {  LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import {Router} from '@angular/router';
 
 
 
@@ -154,7 +155,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //End Gantt
 
 
-  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute) {
+  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute, private router: Router) {
     this.theme.getJsTheme()
     .pipe(takeWhile(() => this.alive))
     .subscribe(theme => {
@@ -275,11 +276,26 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
   async ngOnInit(): Promise<void> {
     console.log("SensorNodeDashboardComponent ngOnInit");
-    this.subscription = this.route.paramMap.subscribe(params => { 
+    this.subscription = this.route.paramMap.subscribe(async params => { 
       var id = params.get('id');
       this.SensorNodeId = id;    
       console.log("NODE ID", id);
       
+
+      //Check if the Nodeid mathces one in the database, redirect to 404 if not
+      var validNodes = await this.backendApi.getSensorNodes();
+
+      //if the nodeId does not match one of the valid nodes, redirect to 404
+      var found = validNodes.some(function (el) {
+        return el == id;
+      });
+
+      
+      if(!found){
+        this.router.navigate(['/pages/not-found']);
+      }
+
+
       this.getData();
   });
   }

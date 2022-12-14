@@ -11,6 +11,10 @@ const routes: Routes = [{
   component: PagesComponent,
   children: [
     {
+      path: 'not-found',
+      component: NotFoundComponent,
+    }, 
+    {
       path: 'iot-dashboard',
       component: DashboardComponent,
     },
@@ -18,7 +22,7 @@ const routes: Routes = [{
       path: ':id',
       component: SensorNodeDashboardComponent,
     },
-    
+  
   ]
 }];
 
