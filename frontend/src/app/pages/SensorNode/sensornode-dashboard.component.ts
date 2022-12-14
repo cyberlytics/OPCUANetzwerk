@@ -98,6 +98,58 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   };
   //END Switch Button
 
+
+  //Start Gantt
+  //Aufbau von value: = [v1,v2, v3] (v1 und v2 ergeben die Zeit in ms wie lange jmd anwesend ist, v3 zeigt in welche 
+  //Reihe es erfasst wird)
+
+
+
+
+  
+
+
+  ganttData = {
+    "xAxis": 
+    [
+      {
+        "name": "Valve 1",
+        "value": [
+          1655647200000,
+          1657980000000,
+          0
+        ]
+      },
+      {
+        "name": "Valve 3",
+        "value": [
+          1657980000000,
+          1659448800000,
+          2
+        ]
+      },
+      {
+        "name": "Valve 1",
+        "value": [
+          1659448800000,
+          1660526144467,
+          0
+        ]
+      },
+      {
+        "name": "Valve 2",
+        "value": [
+          1655647200000,
+          1660526144467,
+          1
+        ]
+      }
+    ],
+    "yAxis": ["Value 3", "Value 2", "Value 1"],
+  }
+  //End Gantt
+
+
   constructor(private theme: NbThemeService, private backendApi: BackendDataService) {
     this.theme.getJsTheme()
     .pipe(takeWhile(() => this.alive))
