@@ -44,7 +44,6 @@ export class BackendDataService implements OnInit {
 
         //find all unique sensornodes from data and return them
         var sensornodes = data.map(x => x.sensornode).filter((value, index, self) => self.indexOf(value) === index);
-        console.log("NODES", sensornodes)
         return sensornodes;
     }
 

@@ -50,7 +50,7 @@ export class LineChartComponent implements OnDestroy, OnChanges {
           {
              type: 'time',
              boundaryGap:false,
-            axisLine: {
+             axisLine: {
               lineStyle: {
                 color: echarts.axisLineColor,
               },

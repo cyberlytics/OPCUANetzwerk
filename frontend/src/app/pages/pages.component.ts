@@ -19,8 +19,6 @@ export class PagesComponent implements OnInit {
   constructor(private backendAPI: BackendDataService) {}
 
   async ngOnInit(): Promise<void> {
-    console.log("PagesComponent");
-
     var Nodes: string[] = await this.backendAPI.getSensorNodes();
 
     //push a new menu item for each node

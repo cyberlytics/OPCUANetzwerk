@@ -261,6 +261,23 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       return [el.timestamp, el.value];
     });
 
+    //get the timestamp of each datapoint and convert it into a date object, the convert the date into an iso string
+    //this is needed because the chart component does not support the date format from the backend
+    mappedAir.forEach(function(el) {
+      var date = new Date(el[0]);
+      el[0] = date.toISOString();
+    });
+
+    mappedTemp.forEach(function(el) {
+      var date = new Date(el[0]);
+      el[0] = date.toISOString();
+    });
+
+    mappedHumidity.forEach(function(el) {
+      var date = new Date(el[0]);
+      el[0] = date.toISOString();
+    });
+
     //We need new instances of LineChartDataSeries because only changing the properties of it does not trigger the change detection
     //this is because the reference to the object does not change
 
@@ -291,9 +308,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   async ngOnInit(): Promise<void> {
     this.subscription = this.route.paramMap.subscribe(async params => { 
       var id = params.get('id');
-      this.SensorNodeId = id;    
-      console.log("NODE ID", id);
-      
+      this.SensorNodeId = id;       
 
       //Check if the Nodeid mathces one in the database, redirect to 404 if not
       var validNodes = await this.backendApi.getSensorNodes();
@@ -312,7 +327,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
   this.timespan.currentData.subscribe(data => {
     this.selectedTimespan = data;
-    console.log("timespan changed", data);
     this.getData();
   });
   }
@@ -329,7 +343,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   }
 
   test(){
-    console.log(this.selectedTimespan)
   }
 
   fromChange(){  }
