@@ -71,12 +71,12 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   statusCards: string;
 
   lightCard: CardSettings = {
-    title: 'Licht',
+    title: 'Light',
     iconClass: 'nb-lightbulb',
     type: 'primary',
   };
   rollerShadesCard: CardSettings = {
-    title: 'Heizung',
+    title: 'Heating',
     iconClass: 'nb-flame-circled',
     type: 'warning',
   };
