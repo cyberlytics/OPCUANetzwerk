@@ -17,6 +17,7 @@ PORT = 8000
 LOG_LEVEL='info'
 
 #OPC-UA configs
-SENSOR_NETWORK_URL = 'opc.tcp://127.0.0.1:4841'
+#SENSOR_NETWORK_URL = 'opc.tcp://127.0.0.1:4841' -> Dev server
+SENSOR_NETWORK_URL = 'opc.tcp://server.sn.local:4841'
 
 CORS_ORIGINS = ['*']

@@ -17,7 +17,7 @@ async def get_sensor_names():
 @router_sensors.get('/sensorvalues/current',tags=['Sensors'], response_model=list[Sensor_value_dto])
 async def get_current_sensor_values():
     """Return current value for each sensor"""
-    return opcua_client.get_sensor_values()
+    return opcua_client.get_current_sensor_values()
 
 @router_sensors.get('/sensorvalues', tags=['Sensors'], response_model=list[Sensor_value_dto])
 async def get_sensor_values_with_filter(sensornode:str = None, 
