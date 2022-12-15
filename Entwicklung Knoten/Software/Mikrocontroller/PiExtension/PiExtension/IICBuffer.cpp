@@ -9,7 +9,7 @@ void IICBuffer::clear()
 
 uint8_t IICBuffer::size()
 {
-	return _wPtr;
+	return _wPtr - _rPtr;
 }
 
 ERROR_t IICBuffer::write(const void* buf, uint8_t size)

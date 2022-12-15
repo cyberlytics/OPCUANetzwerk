@@ -14,37 +14,36 @@
 #include <Arduino.h>
 #include "SLTask.h"
 #include "IICSlave.h"
+#include "IIICCallable.h"
+#include "ADCPin.h"
 
 #include "ATTINY_x4_Register.h"
 
-#define IIC_ADDRESS 100
+#define IIC_ADDRESS		100
+#define N_GPIOS			4
 
-enum CMD : uint8_t {
-	Heartbeat =   1,
-};
-
+ERROR_t iic_heartbeat(IICRequest* req, IICResponse* rsp);
 ERROR_t iic_received(IICRequest* req, IICResponse* rsp);
-ERROR_t cmd_heartbeat(IICRequest* req, IICResponse* rsp);
+int main();
 
 
+IICSlave iic(IIC_ADDRESS, iic_received);
+ADCPin gpio0(HW::port_a, 3); //GPIO0_5V
+ADCPin gpio1(HW::port_a, 2); //GPIO1_5V
+ADCPin gpio2(HW::port_a, 1); //GPIO2_5V
+ADCPin gpio3(HW::port_a, 0); //GPIO3_5V
 
-ERROR_t iic_received(IICRequest* req, IICResponse* rsp) {
-	ERROR_t e;
-	uint8_t cmd;
 
-	if((e = req->read(cmd)) != ERROR_t::GENERAL_OK) return e;
+IIICCallable* gpios[N_GPIOS]{ &gpio0, &gpio1, &gpio2, &gpio3 };
 
-	switch (cmd) {
-		case CMD::Heartbeat:	return cmd_heartbeat(req, rsp);
-		default:				return ERROR_t::UNKNOWN_CMD;
-	}
-}
 
-ERROR_t cmd_heartbeat(IICRequest* req, IICResponse* rsp) {
-	for (int i = 0; i < req->size(); i++) {
+//Schreibt alle empfangenen Bytes wieder zurück
+ERROR_t iic_heartbeat(IICRequest* req, IICResponse* rsp) {
+	uint8_t len = req->size();
+	for (uint8_t i = 0; i < len; i++) {
 		ERROR_t e;
 		byte b;
-
+		
 		if ((e = req->read(b))  != ERROR_t::GENERAL_OK) return e;
 		if ((e = rsp->write(b)) != ERROR_t::GENERAL_OK) return e;
 	}
@@ -52,12 +51,24 @@ ERROR_t cmd_heartbeat(IICRequest* req, IICResponse* rsp) {
 	return ERROR_t::GENERAL_OK;
 }
 
+ERROR_t iic_received(IICRequest* req, IICResponse* rsp) {
+	ERROR_t e;
+
+	//Erstes Byte entspricht cmd
+	uint8_t cmd;
+	if ((e = req->read(cmd)) != ERROR_t::GENERAL_OK) return e;
+	if (cmd == Function::HEARTBEAT) return iic_heartbeat(req, rsp); //Heartbeat? -> Eingabepuffer 1:1 wieder zurückschreiben
+
+	///Ab hier entspricht 2tes Byte der GPIO-Pinnummer
+	uint8_t gpioNr;
+	if ((e = req->read(gpioNr)) != ERROR_t::GENERAL_OK) return e;
+	if (gpioNr >= N_GPIOS) return ERROR_t::GPIO_NOT_EXISTING;
+	return gpios[gpioNr]->call((Function)cmd, req, rsp); //GPIO ansprechen
+}
 
 int main() {
 	HW::port_b->ddr  |=  (1 << 2);
 	HW::port_b->port &= ~(1 << 2);
-
-	IICSlave iic(IIC_ADDRESS, iic_received);
 
 	for (;;) {
 		SLTask::proceedTasks();

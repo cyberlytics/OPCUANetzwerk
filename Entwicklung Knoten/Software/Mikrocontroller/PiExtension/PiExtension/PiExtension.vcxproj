@@ -108,17 +108,23 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ADCPin.h" />
     <ClInclude Include="ATTINY_x4_Register.h" />
     <ClInclude Include="Error.h" />
+    <ClInclude Include="IIICCallable.h" />
     <ClInclude Include="IICBuffer.h" />
     <ClInclude Include="IICSlave.h" />
+    <ClInclude Include="IOPin.h" />
     <ClInclude Include="NonAssignable.h" />
     <ClInclude Include="SLTask.h" />
     <ClInclude Include="__vm\.PiExtension.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ADCPin.cpp" />
     <ClCompile Include="IICBuffer.cpp" />
     <ClCompile Include="IICSlave.cpp" />
+    <ClCompile Include="IIICCallable.cpp" />
+    <ClCompile Include="IOPin.cpp" />
     <ClCompile Include="SLTask.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -7,7 +7,7 @@
  *		TODO
  *
  * @author		: Manuel Zimmermann <m.zimmermann1@oth-aw.de>
- * @date		: 2022-12-06 07:53:43
+ * @date		: 2022-12-14 17:25:52
  * @version		: 1.0
  */
 
@@ -17,7 +17,7 @@
 #include "IICBuffer.h"
 
 #define IIC_RECV_BUFFER_SIZE	16
-#define IIC_SEND_BUFFER_SIZE	8
+#define IIC_SEND_BUFFER_SIZE	 8 //TODO ZUM TESTEN KLEINER ALS RECV BUFFER -> Wieder auf 16 zurückstellen!!!
 
 typedef ERROR_t(*IICCallback)(IICRequest* request, IICResponse* response);
 
