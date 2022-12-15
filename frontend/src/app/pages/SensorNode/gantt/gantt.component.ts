@@ -71,7 +71,7 @@ export class GanttComponent {
       //Diagramm Optionen definieren
       this.options = {
         title: {
-          text: 'Bewegungsmelder',
+          text: 'motion detector',
           left: 'center'
         },
         xAxis: {
