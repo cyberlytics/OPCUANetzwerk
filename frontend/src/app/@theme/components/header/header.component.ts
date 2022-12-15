@@ -74,7 +74,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(themeName => this.currentTheme = themeName);
-      console.log(this.fromPicker)
   }
 
   ngOnDestroy() {
@@ -98,18 +97,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  fromChange(event) {
-    console.log("SOMETHING HAPPEND");
-    console.log(event);
-  }
-
   FromDate: string;
   ToDate: string;
 
   ok() {
-    console.log("OK");
-    console.log(this.FromDate);
-    console.log(this.ToDate);
     //convert time string to date
     var FromDate_date = new Date(this.FromDate);
     var ToDate_date = new Date(this.ToDate);
