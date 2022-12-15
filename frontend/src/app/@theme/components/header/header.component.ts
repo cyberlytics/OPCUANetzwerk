@@ -5,6 +5,8 @@ import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { type } from 'os';
+import { TimespanService } from '../../../Services/TimespanProviderService';
 
 
 @Component({
@@ -47,7 +49,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
               private themeService: NbThemeService,
               private userService: UserData,
               private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService) {
+              private breakpointService: NbMediaBreakpointsService,
+              private timespanservice: TimespanService) {
   }
 
   ngOnInit() {
@@ -98,5 +101,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
   fromChange(event) {
     console.log("SOMETHING HAPPEND");
     console.log(event);
+  }
+
+  FromDate: string;
+  ToDate: string;
+
+  ok() {
+    console.log("OK");
+    console.log(this.FromDate);
+    console.log(this.ToDate);
+    //convert time string to date
+    var FromDate_date = new Date(this.FromDate);
+    var ToDate_date = new Date(this.ToDate);
+
+    this.timespanservice.updateData(FromDate_date, ToDate_date);
   }
 }

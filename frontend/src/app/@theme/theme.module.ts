@@ -13,6 +13,7 @@ import {
   NbIconModule,
   NbThemeModule,
   NbTimepickerModule,
+  NbInputModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -54,7 +55,8 @@ const NB_MODULES = [
   NbButtonModule,
   NbSelectModule,
   NbIconModule,
-  NbEvaIconsModule
+  NbEvaIconsModule,
+  NbInputModule
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -74,7 +76,7 @@ const PIPES = [
 ];
 
 @NgModule({
-  imports: [CommonModule, ...NB_MODULES,   NbDatepickerModule.forRoot(), NbTimepickerModule.forRoot()],
+  imports: [CommonModule, ...NB_MODULES,   NbDatepickerModule.forRoot(), NbTimepickerModule.forRoot(), FormsModule],
   exports: [CommonModule, ...PIPES, ...COMPONENTS],
   declarations: [...COMPONENTS, ...PIPES],
 })
