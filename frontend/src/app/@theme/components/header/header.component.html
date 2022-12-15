@@ -10,11 +10,14 @@
   </nb-select>
 
   <!--TODO: FIX STYLEING-->
-  <input nbInput placeholder="From" [nbDatepicker]="dateTimePickerFrom" (dateTimeChange)='fromChange($event)'>
-  <nb-date-timepicker withSeconds #dateTimePickerFrom (dateTimeChange)='fromChange($event)'></nb-date-timepicker>
+  <input nbInput placeholder="From" [nbDatepicker]="dateTimePickerFrom" [(ngModel)]="FromDate">
+  <nb-date-timepicker withSeconds #dateTimePickerFrom></nb-date-timepicker>
 
-  <input nbInput placeholder="To" [nbDatepicker]="dateTimePickerTo">
+  <input nbInput placeholder="To" [nbDatepicker]="dateTimePickerTo" [(ngModel)]="ToDate">
   <nb-date-timepicker withSeconds #dateTimePickerTo></nb-date-timepicker>
+
+  <!--Ok Button-->
+  <button nbButton status="primary" (click)="ok()">Ok</button>
   
 </div>
 

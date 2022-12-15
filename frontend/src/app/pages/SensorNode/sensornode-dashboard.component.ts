@@ -236,9 +236,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
   async getData(){
     
-    var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure" );
-    var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature" );
-    var resultHumidity = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Humidity" );
+    var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure",this.selectedTimespan.from,this.selectedTimespan.to);
+    var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature",this.selectedTimespan.from,this.selectedTimespan.to );
+    var resultHumidity = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Humidity",this.selectedTimespan.from,this.selectedTimespan.to );
 
     //create an array from the result where the elements are structured like this [[timestamp, value]]
     var mappedAir = resultAir.map(function(el) {
@@ -303,7 +303,11 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       this.getData();
   });
 
-  this.timespan.currentData.subscribe(message => this.selectedTimespan = message);
+  this.timespan.currentData.subscribe(data => {
+    this.selectedTimespan = data;
+    console.log("timespan changed", data);
+    this.getData();
+  });
   }
 
   async ngAfterViewInit() {

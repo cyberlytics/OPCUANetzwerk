@@ -25,11 +25,13 @@ export class BackendDataService implements OnInit {
             params = params.append('sensortyp', sensortyp);
         }
         if (startTimestamp) {
-            params = params.append('startTimestamp', startTimestamp.toISOString());
+            params = params.append('startTimestamp', this.toLocalISOString(startTimestamp));
         }
         if (endTimestamp) {
-            params = params.append('endTimestamp', endTimestamp.toISOString());
+            params = params.append('endTimestamp', this.toLocalISOString(endTimestamp));
         }
+
+        console.log("PARAMS", params)
 
         var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues', { params: params }).toPromise<any>();
         return response;
@@ -46,5 +48,12 @@ export class BackendDataService implements OnInit {
         var sensornodes = data.map(x => x.sensornode).filter((value, index, self) => self.indexOf(value) === index);
         console.log("NODES", sensornodes)
         return sensornodes;
+    }
+
+    //function to convert a date to the local time in iso format
+    toLocalISOString(date: Date) {
+        var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+        var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, -1);
+        return localISOTime;
     }
 }
