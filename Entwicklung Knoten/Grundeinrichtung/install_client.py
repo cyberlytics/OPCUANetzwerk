@@ -1,22 +1,25 @@
 #!/usr/bin/python
 
 ### ---                              VERSIONS                              ---
-# V1.0.0    29.11.2022             
+# V1.0.0    29.11.2022
 #   - Installation für VPN Client implementiert
 # V1.0.1    02.12.2022
 #   - Funktion zum Flashen des Mikrocontrollers ergänzt
 #   - Funktion zum Anlegen von Dateien überarbeitet
 # V1.0.2    14.12.2022
 #   - DNS Update für VPN ergänzt
-# V1.0.3
+# V1.0.3    14.12.2022
 #   - NTP Update für VPN ergänzt
+# V1.0.4    15.12.2022
+#   - Bug behoben, der den IIC Bus aufgehangen hat, wenn eine neue Firmware 
+#     auf den Mikrocontroller gespielt wurde
 ### --------------------------------------------------------------------------
 
 __author__      = "Manuel Zimmermann"
 __copyright__   = "Copyright 2022, Team Gruen WST Kurs 2022"
 __credits__     = []
 #__license__     = ""
-__version__     = "1.0.3"
+__version__     = "1.0.4"
 __maintainer__  = "Manuel Zimmermann"
 __email__       = "m.zimmermann1@oth-aw.de"
 __status__      = "Developement"
@@ -391,8 +394,9 @@ def flash_microcontroller(hex_file):
         
         append_in_file(avr_conf_file, AVR_CONF)
         
+    cmd("raspi-config nonint do_i2c 1")
     cmd(f"avrdude -p attiny84 -C '{avr_conf_file}' -c pi_extension -v -U '{hex_file}'")
-        
+    cmd("raspi-config nonint do_i2c 0")
         
         
         
