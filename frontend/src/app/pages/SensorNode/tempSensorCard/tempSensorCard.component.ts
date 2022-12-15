@@ -66,4 +66,6 @@ export class TemoSensorCardComponent implements OnDestroy, OnChanges {
   ngOnDestroy() {
     this.alive = false;
   }
+
+  //sort the data of the charts by timestamp
 }
