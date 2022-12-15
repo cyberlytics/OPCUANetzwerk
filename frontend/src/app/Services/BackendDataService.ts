@@ -31,8 +31,6 @@ export class BackendDataService implements OnInit {
             params = params.append('endTimestamp', this.toLocalISOString(endTimestamp));
         }
 
-        console.log("PARAMS", params)
-
         var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues', { params: params }).toPromise<any>();
         return response;
     }

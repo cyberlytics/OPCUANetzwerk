@@ -27,7 +27,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   selectedTimespan: {
     from: Date,
     to: Date
-  };
+  }
 
   Series1: LineChartDataSeries = {
     name: "Series1",
@@ -235,6 +235,14 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   }
 
   async getData(){
+
+    //check if both from and to date have values
+    if(this.selectedTimespan == null){
+      return;
+    }
+    if(this.selectedTimespan.from == null || this.selectedTimespan.to == null || this.isCorrectDate(this.selectedTimespan.from) == false || this.isCorrectDate(this.selectedTimespan.to) == false){
+      return;
+    }
     
     var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure",this.selectedTimespan.from,this.selectedTimespan.to);
     var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature",this.selectedTimespan.from,this.selectedTimespan.to );
@@ -281,7 +289,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   private SensorNodeId: string;
 
   async ngOnInit(): Promise<void> {
-    console.log("SensorNodeDashboardComponent ngOnInit");
     this.subscription = this.route.paramMap.subscribe(async params => { 
       var id = params.get('id');
       this.SensorNodeId = id;    
@@ -310,6 +317,14 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   });
   }
 
+  isCorrectDate(date) {
+    if (date instanceof Date) {
+        var text = Date.prototype.toString.call(date);
+        return text !== 'Invalid Date';
+    }
+    return false;
+}
+
   async ngAfterViewInit() {
   }
 
@@ -317,11 +332,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     console.log(this.selectedTimespan)
   }
 
-  fromChange(){
-    console.log("AAAs")
-  }
+  fromChange(){  }
 
-  test2(){
-    console.log("test2")
-  }
+  test2(){  }
+
+
 }
