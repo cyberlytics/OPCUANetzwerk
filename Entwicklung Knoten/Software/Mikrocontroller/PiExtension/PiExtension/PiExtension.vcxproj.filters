@@ -39,6 +39,15 @@
     <ClInclude Include="IICBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IOPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IIICCallable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ADCPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IICSlave.cpp">
@@ -48,6 +57,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IICBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IOPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IIICCallable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ADCPin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -395,7 +395,7 @@ namespace HW {
 	} GPIOR_t;
 
 	/// General Purpose I/O Register
-	volatile GPIOR_t* const gpr = (GPIOR_t*)0x33;
+	GPIOR_t* const gpr = (GPIOR_t*)0x33;
 	#pragma endregion
 
 	#pragma region I/O Ports
