@@ -9,7 +9,7 @@ from backend import app
 
 
 @app.on_event("startup")
-@repeat_every(seconds=120)
+@repeat_every(seconds=config.COLLECT_TIMEWINDOW_SECONDS)
 def collect_and_insert_data():
     sensor_values = opcua_client.get_sensor_values()
     db_sensors.insert_many(sensor_values)
