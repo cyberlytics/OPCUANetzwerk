@@ -115,7 +115,34 @@ class OPCUAClient:
             #create actuatorObject
             act = actuator.create_actuator(actuatorNode = actuator_node, sensornode_name= sensornode_name)
             #insert into dict
-            actuatorDict[act.get_actuator_name()] = act
+            if act:
+                actuatorDict[act.get_actuator_name()] = act
         return actuatorDict
+    
+    def get_controllable_actuators(self,filter_act=None):
+        """iterate through actuators and get the controllable parts
+
+        Args:
+            filter_act (str, optional): Filter for specific actuator. Defaults to None.
+
+        Returns:
+            list of actuator_list_dtos
+        """
+        act_list = []
+        for act_name in self.actuators:
+            #check if filter exists
+            if filter_act is not None and act_name != filter_act: 
+                continue
+            act_list.extend(self.actuators[act_name].get_changable_acts())
+        return act_list
+
+    def set_actuator_value(self,actuator_node, actuator_act, new_value):
+        """pass the command to change the value of an actuator to the actual actuator"""
+        try:
+            self.actuators[actuator_node].set_changable_act(actuator_act, new_value)
+            return True
+        except:
+            return False
+        
 
 opcua_client = OPCUAClient(config.SENSOR_NETWORK_URL)
