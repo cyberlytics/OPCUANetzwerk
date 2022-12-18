@@ -9,7 +9,7 @@ from backend.opcua_client import opcua_client
 router_sensors = APIRouter()
 db_sensors = conn[config.DB_NAME].sensors
 
-@router_sensors.get('/sensornames',tags=['Sensors'])
+@router_sensors.get('/sensornames',tags=['Sensors'],response_model=list[str])
 async def get_sensor_names():
     """Return an list with all available sensors"""
     return opcua_client.get_sensor_names()
