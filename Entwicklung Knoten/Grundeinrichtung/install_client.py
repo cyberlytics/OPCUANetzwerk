@@ -1,22 +1,29 @@
 #!/usr/bin/python
 
 ### ---                              VERSIONS                              ---
-# V1.0.0    29.11.2022             
+# V1.0.0    29.11.2022
 #   - Installation für VPN Client implementiert
 # V1.0.1    02.12.2022
 #   - Funktion zum Flashen des Mikrocontrollers ergänzt
 #   - Funktion zum Anlegen von Dateien überarbeitet
 # V1.0.2    14.12.2022
 #   - DNS Update für VPN ergänzt
-# V1.0.3
+# V1.0.3    14.12.2022
 #   - NTP Update für VPN ergänzt
+# V1.0.4    15.12.2022
+#   - Bug behoben, der den IIC Bus aufgehangen hat, wenn eine neue Firmware 
+#     auf den Mikrocontroller gespielt wurde
+# V1.0.5    15.12.2022
+#   - Funktion zum Konfigurieren der Grundfunktionen angelegt
+# V1.0.6    19.12.2022
+#   - Fix: Fuses angepasst, sodass Mikrocontroller wie geplant mit 8MHz läuft
 ### --------------------------------------------------------------------------
 
 __author__      = "Manuel Zimmermann"
 __copyright__   = "Copyright 2022, Team Gruen WST Kurs 2022"
 __credits__     = []
 #__license__     = ""
-__version__     = "1.0.3"
+__version__     = "1.0.6"
 __maintainer__  = "Manuel Zimmermann"
 __email__       = "m.zimmermann1@oth-aw.de"
 __status__      = "Developement"
@@ -391,10 +398,25 @@ def flash_microcontroller(hex_file):
         
         append_in_file(avr_conf_file, AVR_CONF)
         
-    cmd(f"avrdude -p attiny84 -C '{avr_conf_file}' -c pi_extension -v -U '{hex_file}'")
+    cmd("raspi-config nonint do_i2c 1")
+    cmd(f"avrdude -p attiny84 -C '{avr_conf_file}' -c pi_extension -v -U lfuse:w:0xe2:m -U '{hex_file}'")
+    cmd("raspi-config nonint do_i2c 0")
+
+    log("Flashen des Mikrocontrollers abgeschlossen")
+
         
         
-        
+
+def base_configuration():
+    log("Einrichten der Grundkonfiguration gestartet")
+
+    assert_is_admin() # Installation und Konfiguration benötigt Admin-Rechte
+
+    # I2C Baudrate etwas herabsetzen -> Kam ggf. zu Package Drops durch Stoerungen
+    replace_in_file(Path("/boot/config.txt"), re.compile(r'^#?dtparam=i2c_arm=on.*?$', re.M), r"dtparam=i2c_arm=on,i2c_arm_baudrate=75000") # Autostart aktivieren
+
+    log("Grundkonfiguration abgeschlossen")
+
         
 
 ### END INSTALLATION FUNCTIONS ###
@@ -408,6 +430,8 @@ if __name__ == "__main__":
     
     parser.add_argument("-a", "--all",   action='store_true', help="Alle Pakete installieren")
     parser.add_argument("-v", "--vpn",   action='store_true', help="Installiert und Konfiguriert den VPN-Zugang")
+    parser.add_argument("-b", "--base",  action='store_true', help="Fuehrt die Grundkonfiguration des Raspberry Pi's durch")
+
     parser.add_argument("-f", "--flash", nargs=1,             help="Flasht eine neue Software auf den Mikrocontroller")
 
     args = vars(parser.parse_args())
@@ -421,7 +445,8 @@ if __name__ == "__main__":
         if args["flash"]: flash_microcontroller(args["flash"][0])
             
         # Installer
-        if args["all"] or args["vpn"]: install_vpn()
+        if args["all"] or args["vpn"]:  install_vpn()
+        if args["all"] or args["base"]: base_configuration()
     
     except Exception as ex: log(ex, True)
     
