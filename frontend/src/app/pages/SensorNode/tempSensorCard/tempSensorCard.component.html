@@ -18,9 +18,9 @@
             <nb-card-body>
                 <!--1 row wth 3 colomns centered-->
                 <div class='parent grid-parent' style="width: 100%;">
-                        <TemperatureGauge class="grid-child" [data]="GaugeTemperature" unit="°C" title="Temperature"></TemperatureGauge>
-                        <TemperatureGauge class="grid-child center" [data]="GaugeHumidity" unit="%" title="Humidity"></TemperatureGauge>
-                        <TemperatureGauge class="grid-child" [data]="GaugeAirPresure" unit="Bar" title="Air Presure"></TemperatureGauge>
+                        <TemperatureGauge class="grid-child" [data]="GaugeTemperature" unit="°C" title="Temperature" [min]="0" [max]="45"></TemperatureGauge>
+                        <TemperatureGauge class="grid-child center" [data]="GaugeHumidity" unit="%" title="Humidity" [min]="0" [max]="90"></TemperatureGauge>
+                        <TemperatureGauge class="grid-child" [data]="GaugeAirPresure" unit="hPa" title="Air Presure" [min]=0 [max]="2100"></TemperatureGauge>
                 </div>                     
             </nb-card-body>
 
