@@ -13,23 +13,24 @@
 
 #include <Arduino.h>
 #include "Error.h"
-#include "SLTask.h"
 #include "IICBuffer.h"
 
 #define IIC_RECV_BUFFER_SIZE	16
 #define IIC_SEND_BUFFER_SIZE	 8 //TODO ZUM TESTEN KLEINER ALS RECV BUFFER -> Wieder auf 16 zurückstellen!!!
 
+extern "C" void USI_START_vect(void)  __attribute__((signal));
+extern "C" void USI_OVF_vect(void)	  __attribute__((signal));
+
 typedef ERROR_t(*IICCallback)(IICRequest* request, IICResponse* response);
 
-class IICSlave : private SLTask 
+class IICSlave 
 {
 private:
 	enum IIC_Mode					{ Idle, RecvAdr, RecvData, RecvAdrRestart, SendData, SendError, SendChksm };
 
 	IICCallback						_callback			= NULL;
 
-	ERROR_t							_cfgError			= ERROR_t::GENERAL_OK;
-	const uint8_t					_adr				= 0;
+	uint8_t							_adr				= 0;
 	IIC_Mode						_mode				= IIC_Mode::Idle;
 	uint8_t                         _chksm				= 0;
 	IICRequest						_reqBuf				= IICRequest(IIC_RECV_BUFFER_SIZE);
@@ -43,11 +44,13 @@ private:
 
 	void							startDetected();
 	void							dataCompleted();
-protected:
-	virtual void					proceed() override;
 
+	friend void						USI_START_vect(void);
+	friend void						USI_OVF_vect(void);
 
 public:
-									IICSlave(uint8_t address, IICCallback callback);
+	ERROR_t							begin(uint8_t address, IICCallback callback);
 };
+
+extern IICSlave IIC;
 

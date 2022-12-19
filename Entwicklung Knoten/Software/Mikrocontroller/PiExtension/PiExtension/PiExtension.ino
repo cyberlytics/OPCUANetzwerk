@@ -26,8 +26,6 @@ ERROR_t iic_heartbeat(IICRequest* req, IICResponse* rsp);
 ERROR_t iic_received(IICRequest* req, IICResponse* rsp);
 int main();
 
-
-IICSlave iic(IIC_ADDRESS, iic_received);
 ADCPin gpio0(HW::port_a, 3); //GPIO0_5V
 ADCPin gpio1(HW::port_a, 2); //GPIO1_5V
 ADCPin gpio2(HW::port_a, 1); //GPIO2_5V
@@ -67,8 +65,13 @@ ERROR_t iic_received(IICRequest* req, IICResponse* rsp) {
 }
 
 int main() {
+	//TODO Port für Lautsprecher temporär dauer Low
 	HW::port_b->ddr  |=  (1 << 2);
 	HW::port_b->port &= ~(1 << 2);
+
+	IIC.begin(IIC_ADDRESS, iic_received);
+
+	sei();
 
 	for (;;) {
 		SLTask::proceedTasks();
