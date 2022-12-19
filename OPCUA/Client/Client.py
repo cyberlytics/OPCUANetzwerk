@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import sys
 import socket
 import json
@@ -89,6 +91,8 @@ def measurement_thread(sensors, opc):
 
 
 if __name__ == "__main__":
+    time.sleep(30)
+
     client = Client(f"opc.tcp://{SERVER_ADDRESS}:{OPCUA_PORT}")
 
     try:
