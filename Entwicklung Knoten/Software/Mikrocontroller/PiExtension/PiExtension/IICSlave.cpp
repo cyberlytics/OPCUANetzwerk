@@ -7,9 +7,10 @@
 #define SCL_MASK (1 << 4)
 #define SDA_MASK (1 << 6)
 
-#define WAIT_START() { HW::usi->usicr = 0b00101000; HW::usi->usisr = 0b11100000; }	// IIC Clock auf Hold, wenn Start Flag erkannt
-#define WAIT_DATA()  { HW::usi->usicr = 0b00111000; HW::usi->usisr = 0b01100000; }	// IIC Clock auf Hold, wenn Start Flag oder Daten erkannt
+#define WAIT_START() { HW::usi->usicr = 0b10101000; HW::usi->usisr = 0b11100000; }	// IIC Clock auf Hold, wenn Start Flag erkannt
+#define WAIT_DATA()  { HW::usi->usicr = 0b11111000; HW::usi->usisr = 0b01100000; }	// IIC Clock auf Hold, wenn Start Flag oder Daten erkannt
 
+IICSlave IIC;
 
 inline void IICSlave::reset()
 {
@@ -56,8 +57,8 @@ void IICSlave::startDetected()
 
 	uint8_t pinstate;
 	while ((pinstate = IIC_PORT->pin & (SCL_MASK | SDA_MASK)) == SCL_MASK); // Warte SCL Falling Edge oder SDA Rising
-
 	if (pinstate & SDA_MASK) { reset(); return; } //SDA nicht nach Low gewechselt? -> kein Start
+	
 	WAIT_DATA();                 // Datensampling aktivieren
 	HW::usi->usisr |= (1 << 7);  // Start Flag abgearbeitet
 
@@ -77,10 +78,10 @@ void IICSlave::startDetected()
 }
 
 void IICSlave::dataCompleted()
-{
+{	
 	uint8_t val = HW::usi->usidr; //Empfangsbyte auslesen
-	switch (_mode) {
 
+	switch (_mode) {
 		// Modus Adressempfang?
 		case IIC_Mode::RecvAdr: { 
 			uint8_t adr = val & 0xFE;			//Adresse und Read/Write splitten
@@ -163,31 +164,28 @@ void IICSlave::dataCompleted()
 			reset();					//Auf neuen (Re-)Start warten
 		}
 	}
-
 }
 
-IICSlave::IICSlave(uint8_t address, IICCallback callback) : _adr(address << 1), _callback(callback)
-{
-	if (address > 127) { _cfgError = ERROR_t::IIC_INVALID_ADDRESS; return; } // IIC Konvention -> Adresse ist nur 7 Bit groß -> 8tes Bit ist für Read/Write
+ERROR_t IICSlave::begin(uint8_t address, IICCallback callback) {	
+	HW::usi->usicr = 0; //USI aus
+	if (address > 127) return ERROR_t::IIC_INVALID_ADDRESS;  // IIC Konvention -> Adresse ist nur 7 Bit groß -> 8tes Bit ist für Read/Write
 	
-	ERROR_t e = start();											// Versuche SLTask zu starten
-	if (e != ERROR_t::GENERAL_OK) { _cfgError = e; return; }		// Background-Task ist notwendig, damit kein Deadlock auf I2C Bus entsteht
-	 
+	_adr		= address << 1;
+	_callback	= callback;
+
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 		IIC_PORT->port |= SCL_MASK | SDA_MASK;						// Pins auf High Ziehen (Pullups aktivieren)
 		IIC_PORT->ddr   = (IIC_PORT->ddr & ~SDA_MASK) | SCL_MASK;	// SDA -> Input (Pullup) und SCL -> Output (Für Clock Hold)
 		reset();
 	}
-	
-	HW::port_b->ddr  |= (1 << 0);
-	
+
+	return ERROR_t::GENERAL_OK;
 }
 
-void IICSlave::proceed()
-{
-	if      (HW::usi->usisr & (1 << 7)) startDetected();
-	else if (HW::usi->usisr & (1 << 6)) dataCompleted();
+ISR(USI_START_vect) {
+	IIC.startDetected();
+}
 
-	if (_mode != IIC_Mode::Idle) HW::port_b->port |= (1 << 0);
-	else						 HW::port_b->port &= ~(1 << 0);
+ISR(USI_OVF_vect) {
+	IIC.dataCompleted();
 }
