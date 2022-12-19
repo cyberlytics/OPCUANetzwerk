@@ -1,0 +1,30 @@
+<nb-flip-card [showToggleButton]="false" [flipped]="flipped">
+    <nb-card-front>
+        <nb-card size="large">
+            <nb-card-header>Temperature, Humidity and Air Presure History</nb-card-header>
+            <nb-card-body>
+                <div style="width: 100%; height: 500px;">
+                    <LineChart [data]="ChartDataObj"></LineChart>
+                </div>
+            </nb-card-body>
+            <nb-icon icon="chevron-right-outline" pack="eva" class="flip-icon" (click)="toggleView()"></nb-icon>
+
+        </nb-card>
+    </nb-card-front>
+    <nb-card-back>
+        <nb-card size="large">
+            <!--The 3 Gauges side by side-->
+            <nb-card-header>Temperature, Humidity and Air Presure Current</nb-card-header>
+            <nb-card-body>
+                <!--1 row wth 3 colomns centered-->
+                <div class='parent grid-parent' style="width: 100%;">
+                        <TemperatureGauge class="grid-child" [data]="GaugeTemperature" unit="°C" title="Temperature" [min]="0" [max]="45"></TemperatureGauge>
+                        <TemperatureGauge class="grid-child center" [data]="GaugeHumidity" unit="%" title="Humidity" [min]="0" [max]="90"></TemperatureGauge>
+                        <TemperatureGauge class="grid-child" [data]="GaugeAirPresure" unit="hPa" title="Air Presure" [min]=0 [max]="2100"></TemperatureGauge>
+                </div>                     
+            </nb-card-body>
+
+            <nb-icon icon="chevron-right-outline" pack="eva" class="flip-icon" (click)="toggleView()"></nb-icon>
+        </nb-card>
+    </nb-card-back>
+</nb-flip-card>
