@@ -14,10 +14,10 @@ const routes: Routes = [{
       path: 'not-found',
       component: NotFoundComponent,
     }, 
-    {
-      path: 'iot-dashboard',
-      component: DashboardComponent,
-    },
+    // {
+    //   path: 'iot-dashboard',
+    //   component: DashboardComponent,
+    // },
     {
       path: ':id',
       component: SensorNodeDashboardComponent,

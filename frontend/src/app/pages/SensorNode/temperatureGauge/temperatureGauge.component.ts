@@ -25,7 +25,10 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
     };
 
     //if data or unit changed, update the gauge
-    this.options.series[0].data[0].value = changes.data.currentValue;
+    //round trhe value to 2 decimal places
+    var rounded = changes.data.currentValue.toFixed(2);
+
+    this.options.series[0].data[0].value = rounded;
     this.refreshOptions();
   }
 
@@ -33,6 +36,9 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
   @Input() data: number;
   @Input() unit: string;
   @Input() title?: string;
+  //inputs for min and max values
+  @Input() min: number = 0;
+  @Input() max: number = 60;
 
   options: EChartsOption = {};
   themeSubscription: any;
@@ -54,8 +60,8 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
             startAngle: 200,
             endAngle: -20,
             radius: '100%',
-            min: 0,
-            max: 60,
+            min: this.min,
+            max: this.max,
             splitNumber: 12,
             grid:{
               left: '10%',
