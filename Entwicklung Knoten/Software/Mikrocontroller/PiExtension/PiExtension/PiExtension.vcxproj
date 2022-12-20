@@ -69,7 +69,7 @@
       <AdditionalIncludeDirectories>$(ProjectDir)..\PiExtension;$(ProjectDir)..\..\..\..\..\..\..\..\..\Users\Manuel\AppData\Local\arduino15\packages\attiny\hardware\avr\1.0.2\variants\tiny14;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\\lib\gcc\avr\7.3.0\include;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\\lib\gcc\avr\7.3.0\include;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include-fixed;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)__vm\.PiExtension.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
-      <PreprocessorDefinitions>__AVR_attiny84__;__AVR_ATTINY84__;__AVR_ATtiny84__;F_CPU=8000000L;ARDUINO=108019;ARDUINO_attiny;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>__AVR_attiny84__;__AVR_ATTINY84__;__AVR_ATtiny84__;_VMDEBUG=1;F_CPU=8000000L;ARDUINO=108019;ARDUINO_attiny;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc11</LanguageStandard_C>
     </ClCompile>
@@ -116,7 +116,9 @@
     <ClInclude Include="IICSlave.h" />
     <ClInclude Include="IOPin.h" />
     <ClInclude Include="NonAssignable.h" />
+    <ClInclude Include="PWM8Pin.h" />
     <ClInclude Include="SLTask.h" />
+    <ClInclude Include="SysClock.h" />
     <ClInclude Include="__vm\.PiExtension.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +127,7 @@
     <ClCompile Include="IICSlave.cpp" />
     <ClCompile Include="IIICCallable.cpp" />
     <ClCompile Include="IOPin.cpp" />
+    <ClCompile Include="PWM8Pin.cpp" />
     <ClCompile Include="SLTask.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
