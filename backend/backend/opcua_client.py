@@ -52,10 +52,10 @@ class OPCUAClient:
                     sensornode_sensors = node
                 if node.get_display_name().Text == "Actuators":
                     sensornode_actuators = node
-            #add sensors to the list
+            # add sensors to the list
             if sensornode_sensors:
                 sensorsObjects.extend(self.get_all_sensors(sensornode_sensors=sensornode_sensors, sensornode_name=sensornode.get_display_name().Text))
-            #add actuators to the dict
+            # add actuators to the dict
             if sensornode_actuators:
                 actuatorObjects.update(self.get_all_actuators(sensornode_actuators= sensornode_actuators, sensornode_name=sensornode.get_display_name().Text))
 
@@ -83,7 +83,8 @@ class OPCUAClient:
                     tempSensor = sensor.PresenceSensor(sensornode = sensornode_name,
                                             sensorname = sensorname_param,
                                             sensortyp = sensortyp_param,
-                                            timestampNode = sensorTyp.get_children()[0])
+                                            timestampNode = sensorTyp.get_children()[0],
+                                            valueNode = sensorTyp.get_children()[1])
                 else:                        
                     unitNode = sensorTyp.get_children()[0]
                     valueNode = sensorTyp.get_children()[1]
