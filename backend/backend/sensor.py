@@ -39,11 +39,12 @@ class BaseSensor:
 
 class PresenceSensor:
     """Wrapper for a presence sensor and all of his meta data"""
-    def __init__(self, sensornode:str, sensorname:str, sensortyp:str,timestampNode):
+    def __init__(self, sensornode:str, sensorname:str, sensortyp:str,timestampNode, valueNode):
         self.sensornode = sensornode
         self.sensorname = sensorname
         self.sensortyp = sensortyp
         self.timestampNode = timestampNode
+        self.valueNode = valueNode
         #timestamp is in seconds from 1970
         self.last_timestamp = None
 
@@ -61,7 +62,7 @@ class PresenceSensor:
             "sensornode": self.sensornode,
             "sensorname": self.sensorname,
             "sensortyp": self.sensortyp,
-            "value": True,
+            "value": self.valueNode.get_value(),
             "timestamp": datetime.datetime.utcfromtimestamp(self.timestampNode.get_value())
             }
 
