@@ -83,8 +83,8 @@ class OPCUAClient:
                     tempSensor = sensor.PresenceSensor(sensornode = sensornode_name,
                                             sensorname = sensorname_param,
                                             sensortyp = sensortyp_param,
-                                            timestampNode = sensorTyp.get_children()[0],
-                                            valueNode = sensorTyp.get_children()[1])
+                                            valueNode = sensorTyp.get_children()[1],
+                                            timestampNode = sensorTyp.get_children()[0])
                 else:                        
                     unitNode = sensorTyp.get_children()[0]
                     valueNode = sensorTyp.get_children()[1]
