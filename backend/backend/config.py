@@ -19,4 +19,4 @@ CORS_ORIGINS = ['*']
 SENSOR_NETWORK_URL = 'opc.tcp://server.sn.local:4841'
 
 #App settings
-COLLECT_TIMEWINDOW_SECONDS = 120 #every xxx seconds, collect all sensor values and store them in the DB
+COLLECT_TIMEWINDOW_SECONDS = 10 #every xxx seconds, collect all sensor values and store them in the DB

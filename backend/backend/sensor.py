@@ -39,17 +39,18 @@ class BaseSensor:
 
 class PresenceSensor:
     """Wrapper for a presence sensor and all of his meta data"""
-    def __init__(self, sensornode:str, sensorname:str, sensortyp:str,timestampNode):
+    def __init__(self, sensornode:str, sensorname:str, sensortyp:str, valueNode:bool,timestampNode):
         self.sensornode = sensornode
         self.sensorname = sensorname
         self.sensortyp = sensortyp
         self.timestampNode = timestampNode
+        self.valueNode = valueNode
         #timestamp is in seconds from 1970
         self.last_timestamp = None
 
     def get_sensor_value(self):
         """Return last timestamp if it wasn't already returned"""
-        last_measure = self.get_current_sensor_timestamp()
+        last_measure = self.get_current_sensor_value()
         print(last_measure)
         #if last_measure == last_timestamp means that the measure was already present
         if last_measure['timestamp'] != self.last_timestamp:
@@ -63,7 +64,7 @@ class PresenceSensor:
             "sensornode": self.sensornode,
             "sensorname": self.sensorname,
             "sensortyp": self.sensortyp,
-            "value": True,
+            "value": self.valueNode.get_value(),
             "timestamp": datetime.datetime.utcfromtimestamp(self.timestampNode.get_value())
             }
 
