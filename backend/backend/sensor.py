@@ -39,7 +39,7 @@ class BaseSensor:
 
 class PresenceSensor:
     """Wrapper for a presence sensor and all of his meta data"""
-    def __init__(self, sensornode:str, sensorname:str, sensortyp:str, valueNode:bool,timestampNode):
+    def __init__(self, sensornode:str, sensorname:str, sensortyp:str,timestampNode):
         self.sensornode = sensornode
         self.sensorname = sensorname
         self.sensortyp = sensortyp
