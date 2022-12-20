@@ -16,13 +16,15 @@
 #include "IICBuffer.h"
 #include "NonAssignable.h"
 
-enum Function : uint8_t {		//Data Package [] = optional, {} = datatype, () = default Value
-	HEARTBEAT			=   1,	
+enum Function : uint8_t {			//Data Package [] = optional, {} = datatype, () = default Value
+	HEARTBEAT				=   1,	
 
-	IOPIN_DIGITAL_IN	=  10,	// {byte}10, {byte}GPIO,  [{bool}pullup(false)] | {bool}value
-	IOPIN_DIGITAL_OUT	=  11,	// {byte}11, {byte}GPIO,   {bool}value          | 
+	IOPIN_DIGITAL_IN		=  10,	// {byte}10, {byte}GPIO,  [{bool}pullup(false)] | {bool}value
+	IOPIN_DIGITAL_OUT		=  11,	// {byte}11, {byte}GPIO,   {bool}value          | 
 	 
-	ADCPIN_SAMPLE		=  20,	// {byte}20, {byte}presc,  {byte}ref		    | {uint16_t}value
+	ADCPIN_SAMPLE			=  20,	// {byte}20, {byte}presc,  {byte}ref		    | {uint16_t}value
+
+	PWMPIN_PLAY_FREQUENCY	=  30,	// {byte}30, {float}freq, [{uint16_t}duration]	|
 };
 
 class IIICCallable : private NonAssignable {
