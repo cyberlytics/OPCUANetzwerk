@@ -44,17 +44,16 @@ class PresenceSensor:
         self.sensorname = sensorname
         self.sensortyp = sensortyp
         self.timestampNode = timestampNode
+        self.valueNode = valueNode
         #timestamp is in seconds from 1970
         self.last_timestamp = None
 
     def get_sensor_value(self):
         """Return last timestamp if it wasn't already returned"""
-        last_measure = self.get_current_sensor_timestamp()
-        print(last_measure)
+        last_measure = self.get_current_sensor_value()
         #if last_measure == last_timestamp means that the measure was already present
         if last_measure['timestamp'] != self.last_timestamp:
             self.last_timestamp = last_measure['timestamp']
-            print('here')
             return last_measure
     
     def get_current_sensor_value(self):
@@ -63,7 +62,7 @@ class PresenceSensor:
             "sensornode": self.sensornode,
             "sensorname": self.sensorname,
             "sensortyp": self.sensortyp,
-            "value": True,
+            "value": self.valueNode.get_value(),
             "timestamp": datetime.datetime.utcfromtimestamp(self.timestampNode.get_value())
             }
 
