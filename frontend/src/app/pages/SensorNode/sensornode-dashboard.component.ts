@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {Router} from '@angular/router';
 import { TimespanService } from '../../Services/TimespanProviderService';
+import { AirQualityData } from './AirQuality/AirQualityChart/air-quality-data';
 
 
 
@@ -194,6 +195,10 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 //     data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
 //   }
 
+AirQuality: AirQualityData = {
+  data: [],
+}
+
   Temperature: LineChartDataSeries = {
     name: "Temperature",
     type: "line",
@@ -281,24 +286,49 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     //We need new instances of LineChartDataSeries because only changing the properties of it does not trigger the change detection
     //this is because the reference to the object does not change
 
-    var newAir = new LineChartDataSeries();
-    newAir.name = "AirPressure";
-    newAir.type = "line";
-    newAir.data = mappedAir;
+    var newAir: LineChartDataSeries = {
+      name: "AirPressure",
+      type: "line",
+      data: mappedAir
+    };
 
-    var newTemp = new LineChartDataSeries();
-    newTemp.name = "Temperature";
-    newTemp.type = "line";
-    newTemp.data = mappedTemp;
+    var newTemp: LineChartDataSeries = {
+      name: "Temperature",
+      type: "line",
+      data: mappedTemp
+    };
 
-    var newHumidity = new LineChartDataSeries();
-    newHumidity.name = "Humidity";
-    newHumidity.type = "line";
-    newHumidity.data = mappedHumidity;
+    var newHumidity : LineChartDataSeries = {
+      name: "Humidity",
+      type: "line",
+      data: mappedHumidity
+    };
 
     this.AirPresure = newAir;
     this.Temperature = newTemp;
     this.Humidity = newHumidity;
+
+    //AirQuality Part:
+    var resultAirQuality = await this.backendApi.getNodeData(this.SensorNodeId, "MQ135", "AirQuality",this.selectedTimespan.from,this.selectedTimespan.to);
+
+    //create an array from the result where the elements are structured like this [[timestamp, value]]
+    var mappedAirQuality = resultAirQuality.map(function(el) {
+      return [el.timestamp, el.value];
+    });
+
+    //get the timestamp of each datapoint and convert it into a date object, the convert the date into an iso string
+    //this is needed because the chart component does not support the date format from the backend
+    mappedAirQuality.forEach(function(el) {
+      var date = new Date(el[0]);
+      el[0] = date.toISOString();
+    });
+
+    var newAirQuality: AirQualityData = {
+      data: mappedAirQuality
+    };
+
+    this.AirQuality = newAirQuality;
+
 
   }
 

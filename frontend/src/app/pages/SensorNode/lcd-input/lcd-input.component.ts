@@ -23,7 +23,6 @@ export class LcdInputComponent implements OnInit {
 
     //TODO: send the value to the backend
     throw new Error("Not implemented");
-    
   }
 
 }

@@ -25,6 +25,8 @@ import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.compone
 import { BackendDataService } from '../../Services/BackendDataService';
 import { TimespanService } from '../../Services/TimespanProviderService';
 import { LcdInputComponent } from './lcd-input/lcd-input.component';
+import { AirQualityChartComponent } from './AirQuality/AirQualityChart/air-quality-chart.component';
+import { AirQualityComponent } from './AirQuality/air-quality.component';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -33,6 +35,8 @@ const components = [
   SwitchComponent,
   GanttComponent,
   TemoSensorCardComponent,
+  AirQualityChartComponent,
+  AirQualityComponent
 ];
 
 @NgModule({
