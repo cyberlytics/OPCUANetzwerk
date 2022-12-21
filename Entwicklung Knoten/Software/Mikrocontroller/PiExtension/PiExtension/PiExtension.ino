@@ -12,27 +12,32 @@
  */
 
 #include <Arduino.h>
+#include "ATTINY_x4_Register.h"
 #include "SLTask.h"
 #include "IICSlave.h"
 #include "IIICCallable.h"
 #include "ADCPin.h"
+#include "PWM8Pin.h"
 
-#include "ATTINY_x4_Register.h"
 
-#define IIC_ADDRESS		100
-#define N_GPIOS			4
+
+#define OSC_CALIBRATION		128
+#define IIC_ADDRESS			100
+#define N_GPIOS				5
+
+
 
 ERROR_t iic_heartbeat(IICRequest* req, IICResponse* rsp);
 ERROR_t iic_received(IICRequest* req, IICResponse* rsp);
 int main();
 
-ADCPin gpio0(HW::port_a, 3); //GPIO0_5V
-ADCPin gpio1(HW::port_a, 2); //GPIO1_5V
-ADCPin gpio2(HW::port_a, 1); //GPIO2_5V
-ADCPin gpio3(HW::port_a, 0); //GPIO3_5V
+ADCPin	gpio0(HW::port_a, 3); //GPIO0_5V
+ADCPin	gpio1(HW::port_a, 2); //GPIO1_5V
+ADCPin	gpio2(HW::port_a, 1); //GPIO2_5V
+ADCPin	gpio3(HW::port_a, 0); //GPIO3_5V
+PWM8Pin gpio4(HW::port_b, 2); //Sound Signal
 
-
-IIICCallable* gpios[N_GPIOS]{ &gpio0, &gpio1, &gpio2, &gpio3 };
+IIICCallable* gpios[N_GPIOS]{ &gpio0, &gpio1, &gpio2, &gpio3, &gpio4 };
 
 
 //Schreibt alle empfangenen Bytes wieder zurück
@@ -65,16 +70,16 @@ ERROR_t iic_received(IICRequest* req, IICResponse* rsp) {
 }
 
 int main() {
-	//TODO Port für Lautsprecher temporär dauer Low
-	HW::port_b->ddr  |=  (1 << 2);
-	HW::port_b->port &= ~(1 << 2);
-
+	//INIT 
+	HW::sys->osccal = OSC_CALIBRATION;
 	IIC.begin(IIC_ADDRESS, iic_received);
-
+	
 	sei();
-
+	
+	//LOOP
 	for (;;) {
 		SLTask::proceedTasks();
 	}
+	
 	return 0;
 }

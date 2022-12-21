@@ -4,7 +4,7 @@
 IOPin::IOPin(HW::PORT_t* const port, uint8_t pin) : _port(port), _mask(1 << pin)
 { 
 	if		(port == HW::port_a && pin < 7) {}	//Port a und Pin richtig
-	else if (port == HW::port_b && pin > 3) {}	//Port b und Pin richtig
+	else if (port == HW::port_b && pin < 3) {}	//Port b und Pin richtig
 	else { _cfgError = ERROR_t::IOPIN_NOT_AN_IOPIN; return; }
 	
 	bool tmp; input(tmp); //Pin auf High Impedance Input konfigurieren, um Hardwareschäden durch Kurzschlüsse zu vermeiden
