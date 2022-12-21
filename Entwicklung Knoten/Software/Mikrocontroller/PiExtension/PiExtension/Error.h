@@ -16,6 +16,7 @@
 enum ERROR_t : uint8_t {
 	GENERAL_OK						=   0,
 	UNKNOWN_ERROR					=   1,
+	NOT_IMPLEMENTED					=   2,
 
 	TASK_NO_MORE_RESSOURCES			=  10,	// Task konnte nicht gestartet werden, da bereits alle Ressourcen verbraucht sind
 	TASK_ALREADY_RUNNING			=  11,	// Task kann nicht gestartet werden, da dieser bereits läuft
@@ -34,4 +35,8 @@ enum ERROR_t : uint8_t {
 	GPIO_NOT_EXISTING				=  50,	// Das angegebene GPIO-Pin existiert nicht
 	GPIO_FUNCTION_UNKNOWN			=  51,	// Die angegebene GPIO-Funktion kann auf diesem Pin nicht ausgeführt werden
 	GPIO_CALL_INVALID				=  52,	// Der I2C Frame hat zu viele Parameter enthalten, um einen Aufruf auf dem spezifizierten GPIO-Pin zu starten
+
+	PWMPIN_NOT_ANPWMPIN				=  60,	// Der angegebene Pin kann nicht als PWM-Pin verwendet werden
+	PWMPIN_USED_BY_OTHER_INSTANCE	=  61,	// Der angegebene PWM-Pin wird derzeit von einer anderen Instanz verwendet
+	PWMPIN_FREQUENCY_OUT_OF_RANGE	=  62,	// Die spezifizierte Frequenz ist ungültig
 };

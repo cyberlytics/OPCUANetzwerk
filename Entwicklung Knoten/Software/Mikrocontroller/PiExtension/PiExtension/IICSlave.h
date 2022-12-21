@@ -15,9 +15,6 @@
 #include "Error.h"
 #include "IICBuffer.h"
 
-#define IIC_RECV_BUFFER_SIZE	16
-#define IIC_SEND_BUFFER_SIZE	 8 //TODO ZUM TESTEN KLEINER ALS RECV BUFFER -> Wieder auf 16 zurückstellen!!!
-
 extern "C" void USI_START_vect(void)  __attribute__((signal));
 extern "C" void USI_OVF_vect(void)	  __attribute__((signal));
 
@@ -33,8 +30,8 @@ private:
 	uint8_t							_adr				= 0;
 	IIC_Mode						_mode				= IIC_Mode::Idle;
 	uint8_t                         _chksm				= 0;
-	IICRequest						_reqBuf				= IICRequest(IIC_RECV_BUFFER_SIZE);
-	IICResponse						_rspBuf				= IICResponse(IIC_SEND_BUFFER_SIZE);
+	IICRequest						_reqBuf;
+	IICResponse						_rspBuf;
 	volatile ERROR_t				_lastError			= ERROR_t::GENERAL_OK;
 
 	inline void						reset();

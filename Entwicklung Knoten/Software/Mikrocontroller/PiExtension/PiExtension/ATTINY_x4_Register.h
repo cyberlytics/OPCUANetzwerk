@@ -219,10 +219,10 @@ namespace HW {
 		///		<para>Bits: [7-0: OCRB (r/w)]</para>
 		/// </summary>
 		public:		volatile uint8_t ocrb;
-	} TIMER0_t;
+	} TIMER8_t;
 
 	/// 8-bit Timer/Counter 0
-	TIMER0_t* const timer0 = (TIMER0_t*)0x50;
+	TIMER8_t* const timer0 = (TIMER8_t*)0x50;
 	#pragma endregion
 
 	#pragma region 16-bit Timer/Counter 1
@@ -292,10 +292,10 @@ namespace HW {
 		/// <param name="COMB1-0:">Compare Output Mode for Channel B</param>
 		/// <param name="WGM1-0:">Waveform Generation Mode</param>
 		public:		volatile uint8_t tccra;
-	} TIMER1_t;
+	} TIMER16_t;
 
 	/// 16-bit Timer/Counter 1
-	TIMER1_t* const timer1 = (TIMER1_t*)0x2B;
+	TIMER16_t* const timer1 = (TIMER16_t*)0x2B;
 	#pragma endregion
 
 	#pragma region Universal Serial Interface
