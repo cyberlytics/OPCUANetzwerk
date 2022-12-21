@@ -11,6 +11,7 @@ import {
   NbIconModule,
   NbTimepickerModule,
   NbDatepickerModule,
+  NbInputModule,
 } from '@nebular/theme';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ThemeModule } from '../../@theme/theme.module';
@@ -23,6 +24,7 @@ import { GanttComponent } from './gantt/gantt.component';
 import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.component';
 import { BackendDataService } from '../../Services/BackendDataService';
 import { TimespanService } from '../../Services/TimespanProviderService';
+import { LcdInputComponent } from './lcd-input/lcd-input.component';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -47,9 +49,10 @@ const components = [
     NbListModule,
     NbIconModule,
     NbButtonModule,
-    NgxEchartsModule
+    NgxEchartsModule,
+    NbInputModule
   ],
-  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent ],
+  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent, LcdInputComponent ],
   providers: [BackendDataService, TimespanService],
 })
 export class SensorNodeDashboardModule { }
