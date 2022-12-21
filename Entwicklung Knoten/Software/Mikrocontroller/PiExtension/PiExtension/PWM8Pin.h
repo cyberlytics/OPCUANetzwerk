@@ -15,6 +15,7 @@
 #include "ATTINY_x4_Register.h"
 #include "IOPin.h"
 #include "SLTask.h"
+#include "SysClock.h"
 
 #if !defined(__AVR_ATtiny24__) && !defined(__AVR_ATtiny44__) && !defined(__AVR_ATtiny84__)
 #error MIKROCONTROLLER NICHT UNTERSTÜTZT!
@@ -32,7 +33,7 @@ private:
 
 	HW::TIMER8_t*					_tReg;
 	TimerChannel					_channel;
-
+	UsTimeout						_offTimeout;
 
 protected:
 	// Geerbt über SLTask
@@ -41,7 +42,7 @@ protected:
 public:
 									PWM8Pin(HW::PORT_t* const port, uint8_t pin);
 
-	ERROR_t							playFrequency(float frequency, uint16_t duration = 0);
+	ERROR_t							playFrequency(float frequency, uint32_t duration_us = 0);
 
 	// Geerbt über IIICCallable
 	virtual ERROR_t					call(Function func, IICRequest* req, IICResponse* rsp) override;

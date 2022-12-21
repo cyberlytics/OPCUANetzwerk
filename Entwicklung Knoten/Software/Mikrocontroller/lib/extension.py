@@ -4,6 +4,7 @@ import time, smbus2, struct
 import RPi.GPIO as GPIO
 from enum import Enum
 
+DEBUG = False
 
 class UCException(Exception):
     GENERAL_OK						=   0
@@ -81,8 +82,8 @@ class UCException(Exception):
         if error != cls.GENERAL_OK: raise cls(error)
 
 class RefVoltage(Enum):
-    V5   = 0b00
-    V1_1 = 0b10
+    V5   = 0b00 << 6
+    V1_1 = 0b10 << 6
 
 class Prescaler(Enum): # Bei 8MHz CPU Takt:
     P2   = 0b001 #   3.25uS
@@ -148,7 +149,7 @@ class Microcontroller:
 
     ### Konfiguriert einen Pin als Output und setzt dessen Wert auf High / Low
     def output(self, pin:int, value:bool): 
-        self.__call(__class__.__IOPIN_DIGITAL_OUT, "", "<BB", pin, value)
+        self.__call(__class__.__IOPIN_DIGITAL_OUT, "", "<B?", pin, value)
 
 
     ### Startet eine ADC-Konversation mit eingestellten Prescaler/Referenzspannung und gibt dessen Wert zureuck
@@ -157,9 +158,9 @@ class Microcontroller:
     
 
     ### Spielt ein Rechtecksignal mit spezifizierter Frequenz auf einem definierten Pin ab (und beendet das Signal nach ggf. nach einer definierten Zeit) ###
-    def playFrequency(self, pin:int, frequency:float, duration:int=None):
-        if duration is None: self.__call(__class__.__PWMPIN_PLAY_FREQUENCY, "", "<Bf",  pin, frequency)
-        else:                self.__call(__class__.__PWMPIN_PLAY_FREQUENCY, "", "<BfH", pin, frequency, duration)
+    def playFrequency(self, pin:int, frequency:float, duration_us:int=None):
+        if duration_us is None: self.__call(__class__.__PWMPIN_PLAY_FREQUENCY, "", "<Bf",  pin, frequency)
+        else:                   self.__call(__class__.__PWMPIN_PLAY_FREQUENCY, "", "<BfI", pin, frequency, duration_us)
 
 
     ### Fuehrt einen Aufruf mit Sende/Rueckgabe Parametern durch
@@ -191,6 +192,8 @@ class Microcontroller:
 
         self.__bus.i2c_rdwr(write, read)
         rsp      = bytearray(b for b in read)
+
+        if DEBUG: print(f">>> UC MESSAGE: send [{len(req)}] ->{[int(b) for b in req]}<- receive [{len(rsp)}] ->{[int(b) for b in rsp]}<- <<<")
 
         # Antwortnachricht: [len] [data0...dataX] [err] [chksm]
 
