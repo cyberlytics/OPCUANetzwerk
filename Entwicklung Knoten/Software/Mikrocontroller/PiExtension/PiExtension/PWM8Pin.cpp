@@ -26,7 +26,7 @@ PWM8Pin::PWM8Pin(HW::PORT_t* const port, uint8_t pin) : IOPin(port, pin), SLTask
 	}
 }
 
-ERROR_t	PWM8Pin::playFrequency(float frequency, uint16_t duration) {
+ERROR_t	PWM8Pin::playFrequency(float frequency, uint32_t duration_us) {
 	if (_cfgError != ERROR_t::GENERAL_OK) return _cfgError;	// Klasse nicht richtig konfiguriert?
 
 	//Register ermitteln
@@ -50,8 +50,6 @@ ERROR_t	PWM8Pin::playFrequency(float frequency, uint16_t duration) {
 		}
 	}
 
-	//TODO Time Abschaltung
-
 	//Frequenz außerhalb darstellbarer Frequenz oder über festgelegter Maximalfrequenz?
 	if (frequency < 0 || frequency > 4e6f || frequency < MIN_FREQUENCY || frequency > MAX_FREQUENCY) return ERROR_t::PWMPIN_FREQUENCY_OUT_OF_RANGE;
 
@@ -64,20 +62,22 @@ ERROR_t	PWM8Pin::playFrequency(float frequency, uint16_t duration) {
 	else if (frequency >=    15.26f) { prescRegVal = 0b101; presc = 1024; }		// Prescaler 1024 -> FMin =    15.26Hz, FMax =  3906.25 Hz
 	else return ERROR_t::PWMPIN_FREQUENCY_OUT_OF_RANGE;
 
+	ERROR_t e;
+	if ((e = output(false)) != ERROR_t::GENERAL_OK) return e; //Pin als Output setzen
+
 	//OCR berechnen
 	uint8_t ocrval = (F_CPU >> 1) / (frequency * presc) - 0.5;
+
+	if (duration_us > 0)	_offTimeout.startTimeout(duration_us);
+	else					_offTimeout.stopTimeout();
 
 	//Timer bereits mit gleichem Prescaler und gleichem PWM-Wert konfiguriert? -> Nothing todo
 	if ((_tReg->tccrb & 0b111) == prescRegVal && *ocr == ocrval) return ERROR_t::GENERAL_OK;
 
-	ERROR_t e; 
-	if ((e = output(false)) != ERROR_t::GENERAL_OK) return e; //Pin als Output setzen
-
-
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
 		_tReg->tccrb = 0;				//Timer temporär anhalten, um Race-Condition zu vermeiden
 		*ocr = ocrval;					//Neuen OCR Wert setzen
-		if (_tReg->tcnt >= ocrval) {	//OCR Wert Änderung hat dafür gesort, dass es zu einem Timer overflow gekommen ist? -> Manuell Forcen
+		if (_tReg->tcnt > ocrval) {		//OCR Wert Änderung hat dafür gesort, dass es zu einem Timer overflow gekommen ist? -> Manuell Forcen
 			_tReg->tcnt   = 0;
 			_tReg->tccra |= foc;
 		}
@@ -92,6 +92,9 @@ ERROR_t	PWM8Pin::playFrequency(float frequency, uint16_t duration) {
 
 void PWM8Pin::proceed()
 {
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		if (_offTimeout.expired()) playFrequency(0);
+	}
 }
 
 
@@ -101,8 +104,8 @@ ERROR_t PWM8Pin::call(Function func, IICRequest* req, IICResponse* rsp)
 
 	switch (func) {
 		case Function::PWMPIN_PLAY_FREQUENCY: {
-			float freq;	//PWM Frequenz ermitteln
-			uint16_t dur = 0; //Ausführungsdauer ermitteln
+			float freq;			//PWM Frequenz ermitteln
+			uint32_t dur = 0;	//Ausführungsdauer ermitteln
 
 			if ((e = req->read(freq))					!= ERROR_t::GENERAL_OK)	return e;
 			if (req->size() > 0 && (e = req->read(dur)) != ERROR_t::GENERAL_OK) return e;
