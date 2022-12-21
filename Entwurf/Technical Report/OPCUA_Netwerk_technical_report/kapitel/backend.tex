@@ -43,27 +43,44 @@ Dabei werden die Klassen mit dem Decorator \textbf{@dataclass} verziert und erha
 
 \begin{lstlisting}[language=python,caption={Sensor Dataclass},captionpos=b,showstringspaces=false, basicstyle=\small,label={lst:dataclass}]
 @dataclass
-class SensorValueDto():
+class Sensor_value_dto():
     sensornode: str
     sensorname: str
     sensortyp: str
-    unit: str
-    value: float
-    timestamp: datetime
+    value: Union[float,bool]
+    timestamp: datetime.datetime
+    unit: str = ""
+\end{lstlisting}
+
+\begin{lstlisting}[language=python,caption={Actuator Dataclass},captionpos=b,showstringspaces=false, basicstyle=\small,label={lst:dataclass}]
+@dataclass
+class actuator_list_dto:
+    actuator_node : str
+    actuator_act  : str
+    actuator_value: Union[str,float,bool,None]
+    actuator_dtype: str
 \end{lstlisting}
 
 \subsection{Backend}
-Mittels dem Python Framework \textbf{FastAPI} werden diverse Endpoints bereitgestellt, die das Erstellen und Ausgeben der Datenobjekte ermöglicht.
+Mittels dem Python Framework \textbf{FastAPI} werden diverse Endpoints bereitgestellt, die das Erstellen und Ausgeben der Datenobjekte ermöglichen.
 
 Die Sensoren können über folgende Routen ausgegeben werden:
 \begin{itemize}
-\item \textbf{GET /sensornames/}: Gibt eine List aller zur verfügung stehenden Sensoren zurück.
+\item \textbf{GET /sensornames}: Gibt eine List aller zur verfügung stehenden Sensoren zurück.
 \item \textbf{GET /sensorvalues/current}: Gibt den aktuellen Wert jedes Sensors zurück.
 \item \textbf{GET /sensorvalues}: Gibt eine List von Sensoren zurück, welche sich nach ihren Attributen filtern lassen.
 \end{itemize}
 
+Die Aktoren können über folgende Routen ausgelesen und gesteuert werden:
+\begin{itemize}
+\item \textbf{GET /actuatornames}: Gibt eine List aller zur verfügung stehenden Aktorenbezeichnungen zurück.
+\item \textbf{GET /actuators}: Gibt eine Liste von JSON-Objekten zurück mit entsprechenden Informationen einzelner Aktoren.
+\item \textbf{GET /actuators/filter}: Gibt ebenso eine Liste von JSON-Objekten zurück, welche per Aktorbezeichnung gefiltert wurde.
+\item \textbf{PUT /actuators}: Ermöglicht per Übergabe von Aktorenknoten und Bezeichnung den Wert des Aktors zu ändern.
+\end{itemize}
+
 Die Endpunkte nutzen dabei ein automatisiertes Umwandeln zu entsprechenden Dataclasses.
-Dies sorgt dafür, dass Pflichtfelder übergeben werden und nicht benötigte Elemente verworfen werden.\\
+Dies sorgt dafür, dass Pflichtfelder übergeben werden und nicht benötigte Elemente verworfen werden.
 Über einen PyMongo Client werden diese Dataclasses also entweder von Route zur Datenbank weitergeleitet, oder aus der Datenbank zur Route.
 Die Verbindung erfolgt dabei über eine \textbf{MONGO\_URI}, welche Hostnamen und Port beinhaltet. Dieser String sieht wie folgt aus: \textit{mongodb://localhost:27017/}. \\
 Als tatsächlicher Webserver wird \textbf{uvicorn} genutzt, welcher im \textbf{\_\_main\_\_.py} gestartet wird. Dies ermöglicht es, das Backend mittels des Befehlt \textit{python -m backend} zu starten.
