@@ -16,6 +16,8 @@ class OPCUAClient:
     def __del__(self):
         self.client.disconnect()
 
+    def get_sensor_nodes(self):
+        return list(set([s.sensornode for s in self.sensors]))
     
     def get_sensor_names(self):
         return [s.get_sensor_name() for s in self.sensors]
