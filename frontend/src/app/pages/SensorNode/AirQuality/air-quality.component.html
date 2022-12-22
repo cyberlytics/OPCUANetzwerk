@@ -4,26 +4,20 @@
       Electricity Consumption
     </nb-card-header>
 
-    <nb-tabset fullWidth>
-      <nb-tab *ngFor="let year of listData" [tabTitle]="year.title" [active]="year.active">
-        <nb-list>
-          <nb-list-item *ngFor="let month of year.months">
-            <span class="month">{{ month.month }}</span>
-            <span>
-              <nb-icon
-                [class.down]="month.down"
-                [class.up]="!month.down"
-                [icon]="month.down ? 'arrow-down' : 'arrow-up'" pack="eva">
-              </nb-icon>
-              {{ month.delta }}
-            </span>
-            <span class="results">
-              {{ month.kWatts }} <span class="caption">kWh</span> / {{ month.cost }} <span class="caption">USD</span>
-            </span>
-          </nb-list-item>
-        </nb-list>
-      </nb-tab>
-    </nb-tabset>
+    <nb-list>
+      <nb-list-item *ngFor="let day of tmp2">
+        <span class="month">{{ day.Date }}</span>
+        <span style="margin-left: 3rem;">
+          <nb-icon [class.down]="day.down" [class.up]="!day.down" [icon]="day.down ? 'arrow-down' : 'arrow-up'"
+            pack="eva">
+          </nb-icon> 
+          {{ day.delta }}
+        </span>
+        <span class="results">
+          {{ day.ppm }} <span class="caption">ppm</span>
+        </span>
+      </nb-list-item>
+    </nb-list>
   </nb-card>
 
   <nb-card size="large" class="chart-card">

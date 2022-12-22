@@ -210,7 +210,6 @@ export class AirQualityChartComponent implements AfterViewInit, OnDestroy {
     }
   }
   
-
   onChartInit(echarts) {
     this.echartsIntance = echarts;
   }
