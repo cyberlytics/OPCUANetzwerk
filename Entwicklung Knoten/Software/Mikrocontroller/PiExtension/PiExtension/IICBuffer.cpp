@@ -15,7 +15,7 @@ uint8_t IICBuffer::size()
 ERROR_t IICBuffer::write(const void* buf, uint8_t size)
 {
 	uint8_t wPtr = _wPtr;
-	if (size > (_size - wPtr)) return ERROR_t::IIC_BUFFER_OVERFLOW;
+	if (size > (BUFFER_SIZE - wPtr)) return ERROR_t::IIC_BUFFER_OVERFLOW;
 
 	memcpy(_buffer + wPtr, buf, size);
 	_wPtr = wPtr + size;
@@ -26,7 +26,7 @@ ERROR_t IICBuffer::write(const void* buf, uint8_t size)
 ERROR_t IICBuffer::writeByte(uint8_t byte)
 {
 	uint8_t wPtr = _wPtr;
-	if ((_size - wPtr) == 0) return ERROR_t::IIC_BUFFER_OVERFLOW;
+	if ((BUFFER_SIZE - wPtr) == 0) return ERROR_t::IIC_BUFFER_OVERFLOW;
 
 	_buffer[wPtr++] = byte;
 	_wPtr = wPtr;
