@@ -8,10 +8,11 @@ from pydantic import BaseModel
 from backend import config
 from backend import database
 from backend.opcua_client import opcua_client
-from backend.routes import sensor_routes
+from backend.routes import sensor_routes, actuator_routes
 
 app = FastAPI()
 app.include_router(sensor_routes.router_sensors)
+app.include_router(actuator_routes.router_actuators)
 
 app.add_middleware(
     CORSMiddleware,
