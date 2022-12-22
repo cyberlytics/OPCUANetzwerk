@@ -48,16 +48,6 @@
     }
   }
 
-  nb-tabset {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  nb-tab {
-    padding: 0;
-  }
-
   nb-list-item {
     display: flex;
     align-items: baseline;
@@ -67,7 +57,7 @@
     }
   }
 
-  .month {
+  .day {
     width: 2rem;
   }
 

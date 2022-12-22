@@ -1,12 +1,12 @@
 <nb-card class="cards-container">
   <nb-card size="large" class="table-card">
     <nb-card-header>
-      Electricity Consumption
+      Air Quality
     </nb-card-header>
 
     <nb-list>
-      <nb-list-item *ngFor="let day of tmp2">
-        <span class="month">{{ day.Date }}</span>
+      <nb-list-item *ngFor="let day of listData">
+        <span class="day">{{ day.day }}</span>
         <span style="margin-left: 3rem;">
           <nb-icon [class.down]="day.down" [class.up]="!day.down" [icon]="day.down ? 'arrow-down' : 'arrow-up'"
             pack="eva">
@@ -14,28 +14,13 @@
           {{ day.delta }}
         </span>
         <span class="results">
-          {{ day.ppm }} <span class="caption">ppm</span>
+          {{ day.average}} <span class="caption">ppm</span>
         </span>
       </nb-list-item>
     </nb-list>
   </nb-card>
 
   <nb-card size="large" class="chart-card">
-    <nb-card-header>
-      <span class="stats">
-        <span class="caption">Consumed</span>
-        <span>816 <span class="caption">kWh</span></span>
-      </span>
-      <span class="stats">
-        <span class="caption">Spent</span>
-        <span>291 <span class="caption">USD</span></span>
-      </span>
-
-      <nb-select [(selected)]="type" class="type-select">
-        <nb-option *ngFor="let t of types" [value]="t">{{ t }}</nb-option>
-      </nb-select>
-    </nb-card-header>
-
     <air-quality-chart [data]="chartData"></air-quality-chart>
   </nb-card>
 </nb-card>
