@@ -397,3 +397,5 @@ FodyWeavers.xsd
 # Eagle PCB Layout
 *.s#*
 *.b#*
+
+venv

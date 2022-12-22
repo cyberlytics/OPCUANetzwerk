@@ -5,13 +5,17 @@
 #   - Installation für VPN Client implementiert
 # V1.0.1    02.12.2022
 #   - Funktion zum Anlegen von Dateien überarbeitet
+# V1.0.2    14.12.2022
+#   - DNS Update für VPN ergänzt
+# V1.0.3    14.12.2022
+#   - NTP Update für VPN ergänzt
 ### --------------------------------------------------------------------------
 
 __author__      = "Manuel Zimmermann"
 __copyright__   = "Copyright 2022, Team Gruen WST Kurs 2022"
 __credits__     = []
 #__license__     = ""
-__version__     = "1.0.1"
+__version__     = "1.0.3"
 __maintainer__  = "Manuel Zimmermann"
 __email__       = "m.zimmermann1@oth-aw.de"
 __status__      = "Developement"
@@ -29,6 +33,13 @@ from datetime import datetime
 
 OVPN_CONFIG = """
 remote 8a770854cc89.sn.mynetname.net 443   # VPN Server-Verbindung
+
+script-security 2
+setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+up /usr/bin/update-systemd-resolved
+up-restart
+down /usr/bin/update-systemd-resolved
+down-pre
 
 proto tcp-client                           # TCP Protokoll
 dev tun                                    # Layer 3 OSI Netzwerk
@@ -254,7 +265,7 @@ def create_file(file, txt, override=False, perm=None, user=None):
 # Öffnet eine Datei und führt darin einen REGEX-SUB aus, um den Inhalt nach einer gewissen Form anzupassen
 def replace_in_file(file, rgx, replacement=""):
     with file.open("r") as fh: txt = fh.read()
-    txt = rgx.sub(r"\g<1>", txt)
+    txt = rgx.sub(replacement, txt)
     with file.open("w") as fh: fh.write(txt)
 
 # Fügt einen Text am Ende der Datei an
@@ -287,6 +298,22 @@ def install_vpn():
         
     assert_is_admin() # Installation und Konfiguration benötigt Admin-Rechte (Dateien werden als Root angelegt und Permissions gesetzt)
 
+    # systemd-resolved updater installieren
+    log("Installiere Update-Resolver")
+    cmd("git clone https://github.com/jonathanio/update-systemd-resolved.git")
+    cmd("(cd update-systemd-resolved && make)")
+    cmd("rm -r update-systemd-resolved")
+    cmd("systemctl enable systemd-resolved.service") # Service autostart
+
+    # resolvectl nutzen. Alte resolv.conf als Fallback (wenn VPN nicht connected)
+    replace_in_file(Path("/etc/nsswitch.conf"), re.compile(r'(^#?hosts:.*?$)', re.M), r"hosts:          files resolve dns myhostname")
+    cmd("ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf") # Neuen Dienst als DNS nutzen
+    
+    replace_in_file(Path("/etc/systemd/resolved.conf"), re.compile(r'(^#?Domains=.*?$)', re.M), r"Domains=sn.local")
+    replace_in_file(Path("/etc/systemd/resolved.conf"), re.compile(r'(^#?DNSStubListener=.*?$)', re.M), r"DNSStubListener=no")
+
+    log("Update-Resolver installiert")
+
     ### OpenVPN installieren ###
     log("Prüfe OpenVPN Installation")
     openvpn_path = Path("/etc/openvpn")
@@ -315,6 +342,17 @@ def install_vpn():
     cmd("systemctl enable openvpn@client.service")                                                    # Autostart-Service aktivieren
     cmd("systemctl daemon-reload")
     cmd("service openvpn@client start")
+
+    ### NTP einrichten
+    log("Konfiguriere NTP")
+    apt_install("ntp")
+    ntp_path = Path("/etc/ntp.conf")
+    replace_in_file(ntp_path, re.compile(r'(^#?server .*?$)', re.M), r"")
+    append_in_file(ntp_path, "\nserver 192.168.60.1")
+    cmd("systemctl stop systemd-timesyncd")
+    cmd("systemctl disable systemd-timesyncd")
+    cmd("/etc/init.d/ntp stop")
+    cmd("/etc/init.d/ntp start")
 
     log("VPN Einrichtung abgeschlossen")
     
