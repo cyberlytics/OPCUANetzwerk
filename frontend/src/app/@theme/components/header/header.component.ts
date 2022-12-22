@@ -4,7 +4,7 @@ import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeServ
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { interval, Subject, Subscription } from 'rxjs';
 import { type } from 'os';
 import { TimespanService } from '../../../Services/TimespanProviderService';
 
@@ -20,6 +20,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userPictureOnly: boolean = false;
   user: any;
   fromPicker: any;
+  checked: boolean = false;
+
+  subscription: Subscription;
+  intervalId: number;
+
+  toggle(event: any) {
+    console.log(event);
+  }
 
   themes = [
     {
@@ -76,6 +84,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
       .subscribe(themeName => this.currentTheme = themeName);
 
     this.setDefaultTimespan();
+
+    const source = interval(5000);
+    this.subscription = source.subscribe(val => this.updateLiveDates());
+  }
+
+  updateLiveDates(){
+    if(!this.checked){
+      return;
+    }
+
+    //set the to date to the current date
+    this.ToDate = new Date();
+    this.timespanservice.updateData(this.FromDate, this.ToDate);
   }
 
   ngOnDestroy() {
