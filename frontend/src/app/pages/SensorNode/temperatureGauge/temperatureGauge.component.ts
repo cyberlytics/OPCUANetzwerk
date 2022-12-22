@@ -117,7 +117,6 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
               {
                 value: this.data,
                 color: colors.primary,
-                name: this.title
               }
             ]
           }
