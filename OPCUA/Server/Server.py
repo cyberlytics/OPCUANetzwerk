@@ -1,8 +1,11 @@
+#!/usr/bin/python
+
 from opcua import Server, instantiate, ua, Client
 import time
 from threading import Thread
 import socket
 import json
+from pathlib import Path
 
 # CONSTANTS ---------------------------------
 SERVER_ADDRESS         = 'server.sn.local'
@@ -128,7 +131,7 @@ if __name__ == "__main__":
     
     # Set Endpoint, import information model and start server
     server.set_endpoint(f"opc.tcp://{SERVER_ADDRESS}:{OPCUA_PORT}")
-    server.import_xml(INFORMATION_MODEL)
+    server.import_xml(Path(__file__).parent.joinpath(INFORMATION_MODEL))
     server.start()
 
     # Start thread to handle new clients
