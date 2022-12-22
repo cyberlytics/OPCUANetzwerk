@@ -11,7 +11,16 @@ export class BackendDataService implements OnInit {
 
     ngOnInit(): void {}
 
-    //function to get data from backend the host is defined in the folder static in the file AppSettings.ts
+   /**
+   * function to get data from backend the host is defined in the folder static in the file AppSettings.ts
+   * 
+   * @param {string}  sensornode - Name des Sensorknoten
+   * @param {string} sensorname - Sensorname 
+   * @param {string} sensortyp - Sensortyp (AirPressure , ...)
+   * @param {Date} startTimestamp - Startdatum nachdem die Daten gefiltert werden
+   * @param {Date} endTimestamp - Enddatum nachdem die Daten gefiltert werden
+   * 
+   */
     async getNodeData(sensornode?: string, sensorname?: string, sensortyp?: string, startTimestamp?: Date, endTimestamp?: Date) {
         let params = new HttpParams();
         //only append the params if they are not null
@@ -47,7 +56,12 @@ export class BackendDataService implements OnInit {
         return sensornodes;
     }
 
-    //function to convert a date to the local time in iso format
+    /**
+   * function to convert a date to the local time in iso format
+   * 
+   * @param {Date} date - Das zu formatierende Datum
+   * 
+   */
     toLocalISOString(date: Date) {
         var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
         var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, -1);

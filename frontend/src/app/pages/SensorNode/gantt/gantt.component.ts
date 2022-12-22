@@ -71,12 +71,12 @@ export class GanttComponent {
       //Diagramm Optionen definieren
       this.options = {
         title: {
-          text: 'motion detector',
           left: 'center'
         },
         xAxis: {
           type: 'time',
-          min: range => range.min - (200 * 24 * 60 * 60 * 1000), //Subtract 7 days
+          min: range => range.min - (35 * 24 * 60 * 60 * 1000), //Subtract 7 days
+          max: range => range.max + (7 * 24 * 60 * 60 * 1000), //Subtract 7 days
              boundaryGap:false,
             axisLine: {
               lineStyle: {

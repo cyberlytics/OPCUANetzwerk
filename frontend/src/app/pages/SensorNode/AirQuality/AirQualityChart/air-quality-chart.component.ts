@@ -44,9 +44,14 @@ export class AirQualityChartComponent implements AfterViewInit, OnDestroy {
     this.data = changes.data.currentValue;
 
     //set the data in the options for every series in the options
-    for (let i = 0; i < this.option.series.length; i++) {
-      this.option.series[i].data = this.data.data;
+    if(this.option.series == undefined)
+      return;
+    else{
+      for (let i = 0; i < this.option.series.length; i++) {
+        this.option.series[i].data = this.data.data;
+      }
     }
+    
     this.refreshOptions();
   }
 
@@ -96,7 +101,7 @@ export class AirQualityChartComponent implements AfterViewInit, OnDestroy {
           },
           xAxis: {
             type: 'time',
-            boundaryGap: false,
+            boundaryGap: true,
             offset: 25,
             axisTick: {
               show: false,

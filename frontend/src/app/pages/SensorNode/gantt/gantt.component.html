@@ -1,6 +1,13 @@
-<div echarts 
-#gantt
-[options]="options" 
-[merge]="options"
-class="echart"
-(chartInit)="onChartInit($event)"></div>
+<nb-card>
+    <nb-card-header>Motion Detection</nb-card-header>
+    <nb-card-body>
+        <div echarts 
+        #gantt
+        [options]="options" 
+        [merge]="options"
+        class="echart"
+        (chartInit)="onChartInit($event)"></div>
+    </nb-card-body>
+</nb-card>
+
+
