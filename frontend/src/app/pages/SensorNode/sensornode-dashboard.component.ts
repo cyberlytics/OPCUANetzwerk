@@ -319,7 +319,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   }
 
   private subscription: Subscription;
-  private SensorNodeId: string;
+  SensorNodeId: string;
 
   async ngOnInit(): Promise<void> {
     this.subscription = this.route.paramMap.subscribe(async params => {

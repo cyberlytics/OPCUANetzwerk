@@ -40,14 +40,14 @@ export class BackendDataService implements OnInit {
             params = params.append('endTimestamp', this.toLocalISOString(endTimestamp));
         }
 
-        var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues', { params: params }).toPromise<any>();
+        var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensorvalues', { params: params }).toPromise<any>();
         return response;
     }
 
     //TODO: BACKEND MUSS ALLE SESNORKNOTEN AUSGEBEN
     //Diese Methode ist viel zu aufwendig
     async getSensorNodes() {
-        var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues').toPromise<any>();
+        var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensorvalues').toPromise<any>();
 
         var data = response;
 
@@ -66,5 +66,18 @@ export class BackendDataService implements OnInit {
         var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
         var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, -1);
         return localISOTime;
+    }
+
+    //function to send a put request to an actuator
+    async sendPutRequest(sensornode: string, actuatorname: string, actuator_act: string, value: string) {
+
+        var payload = {
+            "actuator_node": sensornode + "-" + actuatorname,
+            "actuator_act": actuator_act,
+            "new_value": value
+        }
+
+        var response = await this.http.put(AppSettings.API_ENDPOINT_PI + '/actuators/', payload).toPromise<any>();
+        return response;
     }
 }
