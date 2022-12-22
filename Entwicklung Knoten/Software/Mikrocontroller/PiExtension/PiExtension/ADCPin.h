@@ -30,7 +30,7 @@ private:
 public:
 									ADCPin(HW::PORT_t* const port, uint8_t pin);
 
-	ERROR_t							sample(Prescaler presc, RefVoltage ref, uint16_t& val);
+	ERROR_t							sample(Prescaler presc, RefVoltage ref, uint16_t& val, bool pullup=false);
 
 	// Geerbt über IIICCallable
 	virtual ERROR_t					call(Function func, IICRequest* req, IICResponse* rsp) override;
