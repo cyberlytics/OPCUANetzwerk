@@ -68,8 +68,11 @@ class BME280Sensor():
         try:
             if self.__calibration_params != None:
                 data = bme280.sample(bus, self.__i2caddress, self.__calibration_params)
+            else:
+                return
         except:
             print("Reading of values not successful")
+            return
 
         # Parse data into correct objects
         self.temperature = data.temperature

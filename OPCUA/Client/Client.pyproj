@@ -22,13 +22,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="actors\actor_base.py" />
-    <Compile Include="actors\button.py" />
-    <Compile Include="actors\buttons.py" />
+    <Compile Include="helpers\globals.py" />
+    <Compile Include="sensors\button.py" />
+    <Compile Include="sensors\buttons.py" />
     <Compile Include="actors\lcd_display.py" />
     <Compile Include="actors\led.py" />
     <Compile Include="actors\led_stripe.py" />
     <Compile Include="actors\piezo.py" />
+    <Compile Include="gasetest.py" />
     <Compile Include="helpers\event_handler.py" />
+    <Compile Include="helpers\menu.py" />
     <Compile Include="helpers\opcua_helper.py" />
     <Compile Include="helpers\opcua_subscription_handler.py" />
     <Compile Include="libs\extension.py" />
@@ -41,6 +44,7 @@
     <Compile Include="sensors\mq135.py" />
     <Compile Include="sensors\sensor_base.py" />
     <Compile Include="helpers\systeminformation.py" />
+    <Compile Include="TestSkript.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="actors\" />
