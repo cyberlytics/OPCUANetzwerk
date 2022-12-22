@@ -153,8 +153,9 @@ class Microcontroller:
 
 
     ### Startet eine ADC-Konversation mit eingestellten Prescaler/Referenzspannung und gibt dessen Wert zureuck
-    def sample(self, pin:int, presc:Prescaler, ref:RefVoltage) -> int:
-        return self.__call(__class__.__ADCPIN_SAMPLE, "<H", "<BBB", pin, presc.value, ref.value)
+    def sample(self, pin:int, presc:Prescaler, ref:RefVoltage, pullup:bool=None) -> int:
+        if pullup is None: return self.__call(__class__.__ADCPIN_SAMPLE, "<H", "<BBB",  pin, presc.value, ref.value)
+        else:              return self.__call(__class__.__ADCPIN_SAMPLE, "<H", "<BBBB", pin, presc.value, ref.value, pullup)
     
 
     ### Spielt ein Rechtecksignal mit spezifizierter Frequenz auf einem definierten Pin ab (und beendet das Signal nach ggf. nach einer definierten Zeit) ###
