@@ -42,15 +42,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   currentTheme = 'default';
 
-  userMenu = [ { title: 'Profile' }, { title: 'Log out' } ];
+  userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
 
   constructor(private sidebarService: NbSidebarService,
-              private menuService: NbMenuService,
-              private themeService: NbThemeService,
-              private userService: UserData,
-              private layoutService: LayoutService,
-              private breakpointService: NbMediaBreakpointsService,
-              private timespanservice: TimespanService) {
+    private menuService: NbMenuService,
+    private themeService: NbThemeService,
+    private userService: UserData,
+    private layoutService: LayoutService,
+    private breakpointService: NbMediaBreakpointsService,
+    private timespanservice: TimespanService) {
   }
 
   ngOnInit() {
@@ -74,6 +74,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe(themeName => this.currentTheme = themeName);
+
+    this.setDefaultTimespan();
   }
 
   ngOnDestroy() {
@@ -106,5 +108,24 @@ export class HeaderComponent implements OnInit, OnDestroy {
     var ToDate_date = new Date(this.ToDate);
 
     this.timespanservice.updateData(FromDate_date, ToDate_date);
+  }
+
+  //Sets the fromDate to the firstd day of the current month and the toDate to the last day of the current month
+  setDefaultTimespan() {
+    var today = new Date();
+    var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+    var lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    this.FromDate = this.toLocalISOString(firstDay).split('T')[0];
+    this.ToDate = this.toLocalISOString(lastDay).split('T')[0] + ' 23:59:59';
+
+    this.timespanservice.updateData(firstDay, lastDay);
+  }
+
+  //Converts a date to a local ISO string
+  toLocalISOString(date: Date) {
+    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+    var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, -1);
+    return localISOTime;
   }
 }
