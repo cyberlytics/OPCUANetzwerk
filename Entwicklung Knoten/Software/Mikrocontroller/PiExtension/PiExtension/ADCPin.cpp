@@ -46,4 +46,6 @@ ERROR_t ADCPin::call(Function func, IICRequest* req, IICResponse* rsp)
 		// Funktion in dieser Klasse nicht definiert
 		default: return IOPin::call(func, req, rsp); // Sonst Funktionsaufruf an untergeordnete Klasse weiterreichen
 	}
+
+	return ERROR_t::GENERAL_OK;
 }

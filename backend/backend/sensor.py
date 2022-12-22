@@ -23,8 +23,6 @@ class BaseSensor:
                 "value": value,
                 "timestamp": datetime.datetime.now()#.isoformat()
                 }
-            else:
-                print("Value for sensor: ", self.get_sensor_name() + "was null - This seems suspicious!")
         except: 
             print("Could not get Value for sensor: ", self.get_sensor_name())
     
