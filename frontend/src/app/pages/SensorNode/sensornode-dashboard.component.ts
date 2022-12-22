@@ -361,6 +361,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //The final data represents average airquality levels for each day and the delta to the day before
   calculateAirQualityTableData(data: AirQualityData): AirQualityTableData[] {
 
+    if(!data || !data.data || data.data.length == 0){
+      return [];
+    }
 
     //sort the data by date the date is in string so we need to convert it to a date object before
     data.data.sort(function (a, b) {

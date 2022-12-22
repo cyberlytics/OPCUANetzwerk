@@ -99,33 +99,28 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return false;
   }
 
-  FromDate: string;
-  ToDate: string;
+  FromDate: Date;
+  ToDate: Date;
 
   ok() {
     //convert time string to date
-    var FromDate_date = new Date(this.FromDate);
-    var ToDate_date = new Date(this.ToDate);
+    var FromDate_date = this.FromDate;
+    var ToDate_date = this.ToDate;
 
     this.timespanservice.updateData(FromDate_date, ToDate_date);
   }
 
-  //Sets the fromDate to the firstd day of the current month and the toDate to the last day of the current month
+  //Sets the from date to the beginning of the current week, sets the to date to the current date
   setDefaultTimespan() {
+    this.ToDate = new Date();
+
     var today = new Date();
-    var firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-    var lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    var day = today.getDay();
+    var diff = today.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    var monday = new Date(today.setDate(diff));
+    monday.setHours(0, 0, 0, 0);
+    this.FromDate = monday;
 
-    this.FromDate = this.toLocalISOString(firstDay).split('T')[0];
-    this.ToDate = this.toLocalISOString(lastDay).split('T')[0] + ' 23:59:59';
-
-    this.timespanservice.updateData(firstDay, lastDay);
-  }
-
-  //Converts a date to a local ISO string
-  toLocalISOString(date: Date) {
-    var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
-    var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, -1);
-    return localISOTime;
+    this.timespanservice.updateData(this.FromDate, this.ToDate);
   }
 }
