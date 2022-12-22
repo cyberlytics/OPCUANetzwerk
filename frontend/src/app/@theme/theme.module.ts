@@ -14,6 +14,7 @@ import {
   NbThemeModule,
   NbTimepickerModule,
   NbInputModule,
+  NbToggleModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -56,7 +57,8 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
-  NbInputModule
+  NbInputModule,
+  NbToggleModule
 ];
 const COMPONENTS = [
   HeaderComponent,
