@@ -214,7 +214,7 @@ class TestMicrocontroller:
         time.sleep(2)
 
 
-        # Test Laufenden Endlos Ton �berschreiben
+        # Test Laufenden Endlos Ton ueberschreiben
         print("Jetzt sollte ein Ton mit 440Hz fuer 2 Sekunden hoerbar sein")
         self.__uc.playFrequency(pin, 440)
         time.sleep(2)
@@ -224,22 +224,22 @@ class TestMicrocontroller:
         print("Jetzt sollte der Ton erloschen sein")
         time.sleep(2)
 
-        # Test Laufenden Begrenzten Ton �berschreiben
+        # Test Laufenden Begrenzten Ton ueberschreiben
         print("Jetzt sollte ein Ton mit 440Hz fuer 2 Sekunden hoerbar sein")
         self.__uc.playFrequency(pin, 440, 3_000_000)
         time.sleep(2)
         print("Jetzt sollte ein Ton mit 880Hz fuer 4 Sekunden hoerbar sein")
-        self.__uc.playFrequency(pin, 880) #TODO: Scheint nicht zu funktionieren
+        self.__uc.playFrequency(pin, 880)
         time.sleep(4)
         print("Jetzt sollte der Ton erloschen sein")
         self.__uc.playFrequency(pin, 0)
         time.sleep(2)
 
-        # Teste gleichen Ton delay �berschreiben
+        # Teste gleichen Ton delay ueberschreiben
         print("Jetzt sollte ein Ton mit 440Hz fuer 4 Sekunden hoerbar sein")
         self.__uc.playFrequency(pin, 440, 3_000_000)
         time.sleep(2)
-        self.__uc.playFrequency(pin, 440, 2_000_000) #TODO: Scheint nicht zu funktionieren
+        self.__uc.playFrequency(pin, 440, 2_000_000)
         time.sleep(2)
         print("Jetzt sollte der Ton erloschen sein")
         time.sleep(2)
