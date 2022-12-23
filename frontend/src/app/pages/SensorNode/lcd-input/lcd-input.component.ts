@@ -30,6 +30,13 @@ export class LcdInputComponent implements OnInit {
   input_data2: string = "";
 
   ngOnInit(): void {
+    this.backendAPI.getActorValue(this.SensorNode, "1602A", "TextLine1").then((value) => {
+      this.input_data1 = value;
+    });
+
+    this.backendAPI.getActorValue(this.SensorNode, "1602A", "TextLine2").then((value) => {
+      this.input_data2 = value;
+    });
   }
 
   async onSubmit(value: any) {
