@@ -81,6 +81,13 @@ class LcdDisplay(ActorBase):
 
         self.__screens.append({'Name' : name, 'Text' : text})
 
+    def get_screen(self, name):
+        screen = [screen['Name'] for screen in self.__screens if screen['Name'] == name]
+        if len(screen) <= 0:
+            print(f"Screen {name} does not exist")
+        else: 
+            return screen
+
     def remove_screen(self, name):
         if len([screen['Name'] for screen in self.__screens if screen['Name'] == name]) <= 0:
             print(f'Screen {name} does not exist')
@@ -139,3 +146,6 @@ class LcdDisplay(ActorBase):
     def ScreenCount(self):
         return len(self.__screens)
     # ---------------------------------------------------------------------------
+
+    def __del__(self):
+        self.show_screen_index(0)

@@ -15,6 +15,14 @@ globals.lcd.show_screen_name('opcua')
 
 menu = Menu()
 
+globals.piezo.play_tone(440)
+time.sleep(2)
+globals.piezo.play_tone(0)
+time.sleep(2)
+globals.piezo.play_tone(880)
+time.sleep(2)
+globals.piezo.play_tone(0)
+
 #buttons = Buttons()
 #buttons.Button1.start_measurement()
 #buttons.Button4.start_measurement()

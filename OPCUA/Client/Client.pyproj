@@ -22,6 +22,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="actors\actor_base.py" />
+    <Compile Include="helpers\connection_helper.py" />
     <Compile Include="helpers\globals.py" />
     <Compile Include="sensors\button.py" />
     <Compile Include="sensors\buttons.py" />

@@ -7,9 +7,10 @@ import bme280
 import time
 
 class BME280Sensor():
-    def __init__(self, I2CAddress):
+    def __init__(self, I2CAddress, bus):
         self.__i2caddress = I2CAddress
         self.__calibration_params = None
+        self.__bus = bus
 
         self.__temperature_sensor = BME280Temperature()
         self.__humidity_sensor = BME280Humidity()
@@ -57,21 +58,18 @@ class BME280Sensor():
         if time.time() - self.__lastread_timestamp < 60:
             return
 
-        # Initialize Bus
-        bus = smbus2.SMBus(1)
-
         # If no calibration params are present, then read them
         if self.__calibration_params == None:
-            self.__read_calibration_params(self.__i2caddress, bus)
+            self.__read_calibration_params(self.__i2caddress, self.__bus)
 
         # Try to read data
         try:
             if self.__calibration_params != None:
-                data = bme280.sample(bus, self.__i2caddress, self.__calibration_params)
+                data = bme280.sample(self.__bus, self.__i2caddress, self.__calibration_params)
             else:
                 return
-        except:
-            print("Reading of values not successful")
+        except Exception as ex:
+            print(f"Reading of values not successful: {ex}")
             return
 
         # Parse data into correct objects
