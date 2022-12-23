@@ -1,11 +1,11 @@
-<nb-card>
+<nb-card size="large">
     <nb-card-header>Motion Detection</nb-card-header>
     <nb-card-body>
-        <div echarts 
+        <div echarts
         #gantt
         [options]="options" 
         [merge]="options"
-        class="echart"
+        class="echart gantt"
         (chartInit)="onChartInit($event)"></div>
     </nb-card-body>
 </nb-card>

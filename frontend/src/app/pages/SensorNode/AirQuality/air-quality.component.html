@@ -1,7 +1,7 @@
 <nb-card class="cards-container">
   <nb-card size="large" class="table-card">
     <nb-card-header>
-      Air Quality
+      Air Quality Averages
     </nb-card-header>
 
     <nb-list>
@@ -21,6 +21,9 @@
   </nb-card>
 
   <nb-card size="large" class="chart-card">
+    <nb-card-header style="padding: 16px 24px 16px 24px;">
+      Air Quality History
+    </nb-card-header>
     <air-quality-chart [data]="chartData"></air-quality-chart>
   </nb-card>
 </nb-card>

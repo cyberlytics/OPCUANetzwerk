@@ -1,13 +1,14 @@
 import { Injectable, OnInit } from "@angular/core";
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { AppSettings } from "../statics/AppSettings";
+import { NbGlobalPhysicalPosition, NbToastrService } from "@nebular/theme";
 
 
 @Injectable()
 export class BackendDataService implements OnInit {
 
     //new http client
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient,private toastrService: NbToastrService) { }
 
     ngOnInit(): void {}
 
@@ -40,17 +41,41 @@ export class BackendDataService implements OnInit {
             params = params.append('endTimestamp', this.toLocalISOString(endTimestamp));
         }
 
-        var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensorvalues', { params: params }).toPromise<any>();
+        try{
+            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensorvalues', { params: params }).toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return [];
+            }
+        }
         return response;
     }
 
     async getSensorNodes() {
-        var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensornodes').toPromise<any>();
+        try{
+            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensornodes').toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return [];
+            }
+        }
         return response;
     }
 
     async getActorValue(sensornode: string, actuatorname: string, actuator_act: string) {
-        var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/actuators/').toPromise<any>();
+        try{
+            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/actuators/').toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return [];
+            }
+        }
 
         for (const actuator of response) {
             if(actuator.actuator_node == sensornode + "-" + actuatorname && actuator.actuator_act == actuator_act) {
@@ -81,7 +106,28 @@ export class BackendDataService implements OnInit {
             "new_value": value
         }
 
-        var response = await this.http.put(AppSettings.API_ENDPOINT_PI + '/actuators/', payload).toPromise<any>();
+        try{
+            var response = await this.http.put(AppSettings.API_ENDPOINT_PI + '/actuators/', payload).toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return -1;
+            }
+        }
         return response;
     }
+
+    showError(message: string, title: string){
+        const config = {
+          status: "danger",
+          destroyByClick: true,
+          duration: 10000,//10s in ms 
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          preventDuplicates: true,
+        };
+    
+        this.toastrService.show(message, title, config);
+      }
 }
