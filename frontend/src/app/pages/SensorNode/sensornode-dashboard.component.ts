@@ -8,8 +8,10 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { TimespanService } from '../../Services/TimespanProviderService';
+import { DashboardFunctionalityService } from '../../Services/DashboardFunctionalityService.service';
 import { AirQualityData } from './AirQuality/AirQualityChart/air-quality-data';
 import { AirQualityTableData } from './AirQuality/air-quality-list-data';
+import { convertUpdateArguments } from '@angular/compiler/src/compiler_util/expression_converter';
 
 
 
@@ -117,53 +119,15 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //Reihe es erfasst wird)
 
 
-
-
-
-
-
-  ganttData = {
-    "xAxis":
-      [
-        {
-          "name": "Valve 1",
-          "value": [
-            1655647200000,
-            1657980000000,
-            0
-          ]
-        },
-        {
-          "name": "Valve 3",
-          "value": [
-            1657980000000,
-            1659448800000,
-            2
-          ]
-        },
-        {
-          "name": "Valve 1",
-          "value": [
-            1659448800000,
-            1660526144467,
-            0
-          ]
-        },
-        {
-          "name": "Valve 2",
-          "value": [
-            1655647200000,
-            1660526144467,
-            1
-          ]
-        }
-      ],
-    "yAxis": ["Value 3", "Value 2", "Value 1"],
-  }
   //End Gantt
 
 
-  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute, private router: Router, private timespan: TimespanService) {
+  constructor(private theme: NbThemeService, 
+              private backendApi: BackendDataService, 
+              private route: ActivatedRoute, 
+              private router: Router, 
+              private timespan: TimespanService,
+              private dashboard: DashboardFunctionalityService) {
     this.theme.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {
@@ -198,6 +162,11 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     data: []
   }
 
+  ganttData = {
+    "xAxis": [],
+    "yAxis": ["Presence"],
+  }
+
 
   gaugeRandom: number = 10;
 
@@ -229,92 +198,97 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       return;
     }
 
+    //Get Sensornode Data
     var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure", this.selectedTimespan.from, this.selectedTimespan.to);
     var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature", this.selectedTimespan.from, this.selectedTimespan.to);
     var resultHumidity = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Humidity", this.selectedTimespan.from, this.selectedTimespan.to);
+    let resultPresence = await this.backendApi.getNodeData(this.SensorNodeId, "HRSR501", "Presence", this.selectedTimespan.from, this.selectedTimespan.to);
+    var resultAirQuality = await this.backendApi.getNodeData(this.SensorNodeId, "MQ135", "AirQuality", this.selectedTimespan.from, this.selectedTimespan.to);
 
-    //create an array from the result where the elements are structured like this [[timestamp, value]]
-    var mappedAir = resultAir.map(function (el) {
-      return [el.timestamp, el.value];
-    });
 
-    var mappedTemp = resultTemp.map(function (el) {
-      return [el.timestamp, el.value];
-    });
+    //Structure Array: [[timestamp, value]]
+    let mappedAir = this.dashboard.mapResult(resultAir);
+    let mappedTemp = this.dashboard.mapResult(resultTemp);
+    let mappedHumidity = this.dashboard.mapResult(resultHumidity);
+    let mappedPresence = this.dashboard.mapResult(resultPresence);
+    let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
 
-    var mappedHumidity = resultHumidity.map(function (el) {
-      return [el.timestamp, el.value];
-    });
 
-    //get the timestamp of each datapoint and convert it into a date object, the convert the date into an iso string
-    //this is needed because the chart component does not support the date format from the backend
-    mappedAir.forEach(function (el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
+    //Start: In Bearbeitung 
+    let ganttArr = []
+    let tempArr = []
+    let present = false;
+    let absent = false;
 
-    mappedTemp.forEach(function (el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
+    for (let i = 0; i < mappedPresence.length; i++) {
+      for (let j = 0; j < mappedPresence[i].length; j++) {
+        if (mappedPresence[i][1] == 0) {
+          tempArr.push(mappedPresence[i][0]);
+          absent = true;
+          if (absent == true && present == true) {
+            present = false;
+            absent = false;
+            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 1])
+            tempArr = []
+            tempArr.push(mappedPresence[i][0]);
+          }
+        }
+        else if (mappedPresence[i][1] == 1) {
+          tempArr.push(mappedPresence[i][0]);
+          present = true;
+          if (absent == true && present == true) {
+            present = false;
+            absent = false;
+            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 0])
+            tempArr = []
+            tempArr.push(mappedPresence[i][0]);
+          }
+        }
+        else {
+          console.log("No Value! What happened?");
+        }
+      }
+    }
+    //End: In Bearbeitung 
 
-    mappedHumidity.forEach(function (el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
 
-    //We need new instances of LineChartDataSeries because only changing the properties of it does not trigger the change detection
-    //this is because the reference to the object does not change
 
-    var newAir: LineChartDataSeries = {
-      name: "AirPressure",
-      type: "line",
-      data: mappedAir
-    };
+    //Convert Date to ISO String
+    mappedAir = this.dashboard.convertMappedDate(mappedAir)
+    mappedHumidity = this.dashboard.convertMappedDate(mappedHumidity)
+    mappedHumidity = this.dashboard.convertMappedDate(mappedHumidity)
+    ganttArr = this.dashboard.convertMappedDate(ganttArr)
+    mappedAirQuality = this.dashboard.convertMappedDate(mappedAirQuality)
 
-    var newTemp: LineChartDataSeries = {
-      name: "Temperature",
-      type: "line",
-      data: mappedTemp
-    };
 
-    var newHumidity: LineChartDataSeries = {
-      name: "Humidity",
-      type: "line",
-      data: mappedHumidity
-    };
+    //New instances of LineChartDataSeries 
+    let newAir: LineChartDataSeries = this.dashboard.lineChartData("AirPressure", mappedAir);
+    let newTemp: LineChartDataSeries = this.dashboard.lineChartData("Temperature", mappedTemp);
+    let newHumidity: LineChartDataSeries = this.dashboard.lineChartData("Humidity", mappedHumidity);
 
     this.AirPresure = newAir;
     this.Temperature = newTemp;
     this.Humidity = newHumidity;
 
-    //AirQuality Part:
-    var resultAirQuality = await this.backendApi.getNodeData(this.SensorNodeId, "MQ135", "AirQuality", this.selectedTimespan.from, this.selectedTimespan.to);
 
+    let newPresence = this.dashboard.gantData(ganttArr);
+    this.ganttData = newPresence;
+
+
+    //AirQuality Part:
     //log all the timestamps in an array
     var timestamps = resultAirQuality.map(function (el) {
       return el.timestamp;
     });
 
-    //create an array from the result where the elements are structured like this [[timestamp, value]]
-    var mappedAirQuality = resultAirQuality.map(function (el) {
-      return [el.timestamp, el.value];
-    });
-
-    //get the timestamp of each datapoint and convert it into a date object, the convert the date into an iso string
-    //this is needed because the chart component does not support the date format from the backend
-    mappedAirQuality.forEach(function (el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
-
+    //New instance of AirQualityData
     var newAirQuality: AirQualityData = {
       data: mappedAirQuality
     };
 
     this.AirQuality = newAirQuality;
 
-    var newAirQualityTable = this.calculateAirQualityTableData(this.AirQuality);
+    var newAirQualityTable = this.dashboard.calculateAirQualityTableData(this.AirQuality);
     this.AirQualityList = newAirQualityTable;
   }
 
@@ -354,72 +328,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     }
     return false;
   }
-
-  //A function that calculates averages for the air quality for each day. 
-  //It also calculates the delata to the day before.
-  //It takes data in the form of the Interface AirQualityData and outputs an array in the form of the Interface AirQualityTableData
-  //The final data represents average airquality levels for each day and the delta to the day before
-  calculateAirQualityTableData(data: AirQualityData): AirQualityTableData[] {
-
-    if(!data || !data.data || data.data.length == 0){
-      return [];
-    }
-
-    //sort the data by date the date is in string so we need to convert it to a date object before
-    data.data.sort(function (a, b) {
-      var dateA = new Date(a[0]);
-      var dateB = new Date(b[0]);
-      return dateA.getTime() - dateB.getTime();
-    });
-
-    //now we need to group the data by day
-    var dayGroup = [];
-    data.data.forEach(function (el) {
-      var date = new Date(el[0]);
-      var day = date.getDate();
-      var month = date.getMonth()+1;
-      var year = date.getFullYear();
-
-      var dayString = day + "." + month + "." + year;
-
-      if (!dayGroup[dayString]) {
-        dayGroup[dayString] = [];
-      }
-      dayGroup[dayString].push(el[1]);
-    });
-
-    //now we need to calculate the average for each day
-    var result2 = [];
-    for (var key in dayGroup) {
-      var sum = 0;
-      var count = 0;
-      dayGroup[key].forEach(function (el) {
-        sum += el;
-        count++;
-      });
-
-      result2.push({
-        day: key,
-        average: sum / count
-      });
-    }
-
-    //on the first element on the array we set the delta to 0
-    result2[0].delta = 0;
-
-    //now we need to calculate the delta to the day before
-    for (var i = 1; i < result2.length; i++) {
-      var delta = result2[i].average - result2[i - 1].average;
-      result2[i].delta = delta;
-      //if the delta is positive, we add set the down attribute to false, if it is negative we set it to true
-      result2[i].down = delta < 0;
-    }
-
-    return result2;
-  }
-    
-  
-
 
   async ngAfterViewInit() {
   }

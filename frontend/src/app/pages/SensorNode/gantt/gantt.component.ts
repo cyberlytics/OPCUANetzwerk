@@ -12,12 +12,17 @@ import * as moment from 'moment';
   templateUrl: './gantt.component.html',
   styleUrls: ['./gantt.component.scss']
 })
-export class GanttComponent {
+export class GanttComponent implements OnDestroy, OnChanges{
 
   constructor(private theme: NbThemeService,) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.options.series = changes.data.currentValue;
+    if(changes.data.firstChange){
+      return
+    }
+    this.options.yAxis.data = changes.data.currentValue.yAxis
+    this.options.series[0].data = changes.data.currentValue.xAxis
+    this.data = changes.data.currentValue;    
     this.refreshOptions();
   }
 
@@ -33,11 +38,6 @@ export class GanttComponent {
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
-
-      //Gantt Beispiele
-      //https://stackoverflow.com/questions/73300725/apache-echarts-schedule-style-chart-layout
-      //https://echarts.apache.org/examples/en/editor.html?c=custom-profile&reset=1&edit=1
-
 
       const valveColors = [
         "#f59527",
@@ -75,8 +75,8 @@ export class GanttComponent {
         },
         xAxis: {
           type: 'time',
-          min: range => range.min - (35 * 24 * 60 * 60 * 1000), //Subtract 7 days
-          max: range => range.max + (7 * 24 * 60 * 60 * 1000), //Subtract 7 days
+          min: range => range.min - (1 * 24 * 60 * 60 * 1000), //Subtract 7 days
+          max: range => range.max + (1 * 24 * 60 * 60 * 1000), //Subtract 7 days
              boundaryGap:false,
             axisLine: {
               lineStyle: {
