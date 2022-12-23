@@ -20,7 +20,7 @@
                 <div class='parent grid-parent' style="width: 100%;">
                         <TemperatureGauge class="grid-child" [data]="GaugeTemperature" unit="°C" title="Temperature" [min]="0" [max]="45"></TemperatureGauge>
                         <TemperatureGauge class="grid-child center" [data]="GaugeHumidity" unit="%" title="Humidity" [min]="0" [max]="90"></TemperatureGauge>
-                        <TemperatureGauge class="grid-child" [data]="GaugeAirPresure" unit="hPa" title="Air Presure" [min]=0 [max]="2100"></TemperatureGauge>
+                        <TemperatureGauge class="grid-child" [data]="GaugeAirPresure" unit="Bar" title="Air Presure" [min]=0.9 [max]="1.2"></TemperatureGauge>
                 </div>                     
             </nb-card-body>
 
