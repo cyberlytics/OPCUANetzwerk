@@ -217,6 +217,14 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     let mappedPresence = this.dashboard.mapResult(resultPresence);
     let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
 
+    mappedPresence = this.cleanMotianData(mappedPresence);
+
+    // console.log("CLEANED", mappedPresence);
+
+    var finalGantt = this.generateMotionDataset(mappedPresence);
+
+    // console.log("GANTT", finalGantt);
+
 
     //Start: In Bearbeitung 
     let ganttArr = []
@@ -276,6 +284,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
 
     let newPresence = this.dashboard.gantData(ganttArr);
+    //APPLY NEW FIX newPresence.xAxis = finalGantt;
     this.ganttData = newPresence;
 
 
@@ -295,6 +304,55 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     var newAirQualityTable = this.dashboard.calculateAirQualityTableData(this.AirQuality);
     this.AirQualityList = newAirQualityTable;
   }
+
+  //cleans the motian data
+  //Motion data should always be 1 and 0 alternating
+  //this function removes excess 1s and 0s
+  //motion data is structured like this: [[timestamp, value]]
+  cleanMotianData(data: any) {
+    var cleanedData = [];
+    var lastValue = null;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i][1] != lastValue) {
+        cleanedData.push(data[i]);
+        lastValue = data[i][1];
+      }
+    }
+    return cleanedData; 
+  }
+
+  //This function takes the mappedPresence array and generates a dataset for the gantt chart
+  //the dataset should look like this [{name: "Presence", value: [start, end, 0/1]}]
+  //the start and end values are the timestamps between which the value is 0 or 1
+  //example: if "2022-12-22T12:39:21.251Z" is 1 and "2022-12-22T13:39:21.251Z" is 0, the dataset should look like this: [{name: "Presence", value: ["2022-12-22T12:39:21.251Z", "2022-12-22T13:39:21.251Z", 1]}]
+  //example2: if "2022-12-22T12:39:21.251Z" is 0 and "2022-12-22T13:39:21.251Z" is 1, the dataset should look like this: [{name: "Presence", value: ["2022-12-22T12:39:21.251Z", "2022-12-22T13:39:21.251Z", 0]}]
+  generateMotionDataset(data: any) {
+    var ganttData = [];
+    for (var i = 0; i < data.length; i++) {
+
+      var ele = []
+      if (i == 0) {
+        //     START       END             VALUE
+        ele = [data[i][0], data[i + 1][0], data[i][1]];
+      }
+      else if (i == data.length - 1) {
+        //     START       END             VALUE
+        ele = [data[i - 1][0], data[i][0], data[i][1]];
+      }
+      else {
+        //     START       END             VALUE
+        ele = [data[i - 1][0], data[i][0], data[i][1]];
+      }
+
+      ganttData.push({
+        name: "Presence",
+        value: ele
+      });
+    }
+    return ganttData;
+  }
+
+
 
   private subscription: Subscription;
   SensorNodeId: string;
