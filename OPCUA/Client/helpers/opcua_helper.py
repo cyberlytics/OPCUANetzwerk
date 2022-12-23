@@ -1,12 +1,44 @@
 from opcua import Client, ua
+from threading import Thread
+import time
 
 class OpcuaHelper(object):
     def __init__(self, clientHandle, sensornode_number):
         self.__client = clientHandle
+        self.__set_connected(True)
+
+        # Get all important nodes from server
         self.__sensornode_node = self.__client.get_node(f'ns=2;s=SensorNode_{sensornode_number}')
         self.__get_sensors()
         self.__get_actors()
         self.__get_hw_os_attributes()
+
+    def opcua_server_reachable(self):
+        try:
+            self.__client.get_root_node()
+        except Exception as ex:
+            print(f"No connection to opcua Server: {ex}")
+            self.__set_connected(False)
+            return False
+
+        return True
+
+    def reconnect_to_server(self):
+        i = 0
+        while True:
+            if i < 5:
+                timeout = 60
+            else:
+                timeout = 1200
+            try:
+                self.__client.connect()
+                self.Connected = True
+                break
+            except Exception as ex:
+                print(f'Reconnect {i} to opcua Server failed: {ex}')
+                    
+            i += 1
+            time.sleep(timeout)
 
 
     def __get_sensors(self):
@@ -57,3 +89,9 @@ class OpcuaHelper(object):
                 return subnode
 
         print(f'Attribute "{attribute}" not found in Node: "{node.get_browse_name().Name}"')
+
+    @property
+    def Connected(self):
+        return self.__connected
+    def __set_connected(self, new_value):
+        self.__connected = new_value

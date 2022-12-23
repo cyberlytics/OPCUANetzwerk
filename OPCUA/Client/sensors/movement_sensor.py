@@ -15,7 +15,6 @@ class MovementSensor(SensorBase):
 
         self.__eh = EventHandler()
 
-        self.__t = Thread(target=self.__measure, args=[])
         self.__gpio_init()
 
     def __gpio_init(self):
@@ -41,6 +40,7 @@ class MovementSensor(SensorBase):
             return
 
         self.__measuring_active = True
+        self.__t = Thread(target=self.__measure, args=[])
         self.__t.start()
 
     def stop_measurement(self):
@@ -50,7 +50,7 @@ class MovementSensor(SensorBase):
 
     # --- Presence --------------------------------------------------------------
     @property
-    def presence(self):
+    def Presence(self):
         return self.__presence
 
     def __set_presence(self, value):

@@ -1,20 +1,14 @@
 from sensors.sensor_base import SensorBase
-from libs.extension import Microcontroller, RefVoltage, Prescaler
-import smbus2
 import time, math
-import helpers.globals as globals
 import queue
 import numpy as np
 
 class MQ135(object):
-    def __init__(self, gpio_pin):
+    def __init__(self, gpio_pin, uc):
         super().__init__()
 
         # Initialize uc
-        bus = smbus2.SMBus(1)
-        rst_pin = 10
-        add = 100
-        self.__uc = Microcontroller(bus, rst_pin, add)
+        self.__uc = uc
         self.__uc.enable(True)
 
         # ADC values

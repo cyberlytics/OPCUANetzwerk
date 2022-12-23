@@ -15,24 +15,15 @@ from actors.lcd_display import LcdDisplay
 from helpers.systeminformation import SystemInformation
 from helpers.opcua_helper import OpcuaHelper
 from helpers.opcua_subscription_handler import OpcuaSubscriptionHandler
-
+import helpers.globals as globals
 
 sys.path.insert(0, "..")
 
-
 from opcua import Client, ua
 
-# CONSTANTS ---------------------------------
-SERVER_ADDRESS         = 'server.sn.local'
-OPCUA_PORT             = 4841
-# -------------------------------------------
-
-# GLOBAL VARIABLES --------------------------
-# -------------------------------------------
-
-def initial_sensornode(sensors):
+def initialize_sensornode():
     sensornode_dict = {
-        'BrowseName' : 'SensorNode_',
+        'BrowseName' : 'SensorNode_' + globals.sys_info.hostname[-1],
         'Sensors' : {
             'BME280' : False,
             'HRSR501' : True,
@@ -45,15 +36,6 @@ def initial_sensornode(sensors):
             'Piezo_1' : True
         }
     }
-
-    for sensor in sensors.values():
-        if(type(sensor) == BME280Sensor):
-            if (sensor.temperature != None and sensor.humidity != None and sensor.airpressure != None):
-                sensornode_dict["Sensors"]["BME280"] = True
-
-        if(type(sensor) == SystemInformation):
-            sensornode_dict["BrowseName"] += sensor.hostname[-1]
-
     send_sensornode_information(sensornode_dict)
 
 def send_sensornode_information(sensornode_dict):
@@ -67,104 +49,125 @@ def send_sensornode_information(sensornode_dict):
     # Close socket
     sock.close()
 
-def measurement_thread(sensors, opc):
+def measurement_thread():
+    temperature = None
+    humidity = None
+    airpressure = None
+    airquality = None
     while True:
-        for sensor in sensors:
-            if isinstance(sensor, BME280Sensor):
-                temperature = None
-                humidity = None
-                airpressure = None
-                try:
-                    temperature = sensor.temperature
-                    humidity = sensor.humidity
-                    airpressure = sensor.airpressure
-                    opc.write_value('Temperature', 'Value', temperature[0])
-                    opc.write_value('Humidity', 'Value', humidity[0])
-                    opc.write_value('AirPressure', 'Value', airpressure[0])
-                except Exception as ex:
-                    print(f'Reading of BME280 values error: {ex}')
+        # BME280
+        try:
+            temperature = globals.bme280.temperature
+            humidity = globals.bme280.humidity
+            airpressure = globals.bme280.airpressure
+        except Exception as ex:
+            print(f'Reading of BME280 values error: {ex}')
 
-            if type(sensor) == MQ135:
-                pass
+        # MQ135
+        if temperature != None and humidity != None:
+            try:
+                airquality = globals.mq135.get_corrected_ppm(temperature[0], humidity[0])
+            except Exception as ex:
+                print(f'Getting Air Quality failed: {airquality}')
+
+        print('-----------------------------------------------')
+        print(f'Temperatur:       {temperature[0]:.2f} C')
+        print(f'Luftfeuchtigkeit: {humidity[0]:.2f} %')
+        print(f'Lufdruck:         {airpressure[0]:.2f} hPa')
+        print(f'CO2-Gehalt:       {airquality:.2f} ppm')
+
+        # Set LEDS according to air value
+        if airquality < globals.AirQuality.WarningLevel:
+            globals.led_stripe.green_on()
+        if airquality > globals.AirQuality.WarningLevel and airquality < globals.AirQuality.AlarmLevel:
+            globals.led_stripe.orange_on()
+        if airquality > globals.AirQuality.AlarmLevel:
+            globals.led_stripe.red_on()
+
+        ## Write values to pcua
+        #try:
+        #    globals.opc.write_value('Temperature', 'Value', temperature[0])
+        #    globals.opc.write_value('Humidity', 'Value', humidity[0])
+        #    globals.opc.write_value('AirPressure', 'Value', airpressure[0])
+        #except Exception as ex:
+        #    print(f'Writing sensor_value to opcua_server error: {ex}')
+
 
         time.sleep(3)
 
+def status_led_thread():
+    while True:
+        print(globals.connection_helper.Status)
+        print('----------------------')
+        if globals.connection_helper.Status == globals.connection_helper.OK:
+            globals.led_stripe.BlueLED.Short_Blink(globals.connection_helper.OK)
+        if globals.connection_helper.Status == globals.connection_helper.OPCUA_SERVER_NOT_REACHABLE:
+            globals.led_stripe.BlueLED.Short_Blink(globals.connection_helper.OPCUA_SERVER_NOT_REACHABLE)
+        if globals.connection_helper.Status == globals.connection_helper.SERVER_NODE_NOT_REACHABLE:
+            globals.led_stripe.BlueLED.Short_Blink(globals.connection_helper.SERVER_NODE_NOT_REACHABLE)
+        if globals.connection_helper.Status == globals.connection_helper.VPN_GATEWAY_NOT_REACHABLE:
+            globals.led_stripe.BlueLED.Short_Blink(globals.connection_helper.VPN_GATEWAY_NOT_REACHABLE)
+        if globals.connection_helper.Status == globals.connection_helper.NO_INTERNET_CONNECTION:
+            globals.led_stripe.BlueLED.Short_Blink(globals.connection_helper.NO_INTERNET_CONNECTION)
 
-if __name__ == "__main__":
-    time.sleep(30)
+        time.sleep(2.5)
 
-    client = Client(f"opc.tcp://{SERVER_ADDRESS}:{OPCUA_PORT}")
-
-    try:
-        client.connect()   
-    except Exception as ex:
-        print(f'Opcua Client connect: {ex}')
-        exit()
-
-    # Initialize sensors
-    sensors = []
-    bme280 = BME280Sensor(0x77)
-    sensors.append(bme280)
-    movement_sensor = MovementSensor(17)
-    sensors.append(movement_sensor)
-
-    # Initialize helpers
-    systeminformation = SystemInformation()
-
-    # Initialize actors
-    actors = []
-    lcd = LcdDisplay()
-    actors.append(lcd)
-
-    # Initialize OPCUA
-    opc = OpcuaHelper(client, systeminformation.hostname[-1])
-
-    # Initial read
-    #initial_sensornode(sensors)
-    
-    # Start measurement thread
-    t = Thread(target=measurement_thread, args=[sensors, opc])
-    t.start()
-
-    # Function for updating mov
-
-    # Update of movement sensor
+def init_movement_sensor():
     def update_movement_sensor(sender, args):
         try:
-            opc.write_value('Presence', 'Value', args['new'])
-            opc.write_value('Presence', 'Timestamp', time.time())
+            globals.opc.write_value('Presence', 'Value', args['new'])
+            globals.opc.write_value('Presence', 'Timestamp', time.time())
         except Exception as ex:
             print(f'Opcua Write Value: {ex}')
-    movement_sensor.PresenceChanged.subscribe(update_movement_sensor)
-    movement_sensor.start_measurement()
+    globals.movement_sensor.PresenceChanged.subscribe(update_movement_sensor)
+    globals.movement_sensor.start_measurement()
 
-    # Do other stuff
-    lcd.set_backlight(True)
-    lcd.text = ('ABC', 'DEF')
-
-    def testfunc(sender, args):
-        print(args)
-
+def init_lcd_update():
+    def update_opcua_screen(sender, args):
         if args['new'] == None:
             return
 
+        # Get last element of node id
         line = str(args['node']).split('.')[-1]
-        text = list(lcd.text)
+
+        # Get current text for opcua screen and update the correct line
+        text = globals.lcd.get_screen('opcua')['Text']
         if line == 'TextLine1':
             text[0] = args['new'].ljust(16)
         elif line == 'TextLine2':
             text[1] = args['new'].ljust(16)
-        lcd.text = text
+        globals.lcd.change_screen_text('opcua', text)
 
-    
-    node1 = client.get_node('ns=2;s=SensorNode_2.Actuators.1602A.TextLine1')
-    node2 = client.get_node('ns=2;s=SensorNode_2.Actuators.1602A.TextLine2')
+    node1 = globals.opcua_client.get_node(f'ns=2;s=SensorNode_{globals.sys_info.hostname[-1]}.Actuators.1602A.TextLine1')
+    node2 = globals.opcua_client.get_node(f'ns=2;s=SensorNode_{globals.sys_info.hostname[-1]}.Actuators.1602A.TextLine2')
 
     handler = OpcuaSubscriptionHandler()
-    handler.DataChanged.subscribe(testfunc)
+    handler.DataChanged.subscribe(update_opcua_screen)
 
-    sub = client.create_subscription(500, handler)
+    sub = globals.opcua_client.create_subscription(500, handler)
     sub.subscribe_data_change(node1)
     sub.subscribe_data_change(node2)
 
+if __name__ == "__main__":
+    #time.sleep(30)
+
+    globals.init()
+
+    # Initialize sensornode --> call server and setup nodes
+    #initialize_sensornode()
     
+    # Start measurement thread
+    t = Thread(target=measurement_thread, args=[])
+    t.start()
+
+    # Thread for status LED
+    t2 = Thread(target=status_led_thread, args=[])
+    t2.start()
+
+    # Initialize everything for movement sensor
+    #init_movement_sensor()
+
+    # Update
+    #init_lcd_update()
+
+    # Delete Me
