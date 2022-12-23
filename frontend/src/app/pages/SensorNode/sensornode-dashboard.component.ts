@@ -205,6 +205,10 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     let resultPresence = await this.backendApi.getNodeData(this.SensorNodeId, "HRSR501", "Presence", this.selectedTimespan.from, this.selectedTimespan.to);
     var resultAirQuality = await this.backendApi.getNodeData(this.SensorNodeId, "MQ135", "AirQuality", this.selectedTimespan.from, this.selectedTimespan.to);
 
+    //convert the values from Air hpa into bar
+    for (let i = 0; i < resultAir.length; i++) {
+      resultAir[i].value = resultAir[i].value / 1000;
+    }
 
     //Structure Array: [[timestamp, value]]
     let mappedAir = this.dashboard.mapResult(resultAir);
