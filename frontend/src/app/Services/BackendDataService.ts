@@ -49,6 +49,17 @@ export class BackendDataService implements OnInit {
         return response;
     }
 
+    async getActorValue(sensornode: string, actuatorname: string, actuator_act: string) {
+        var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/actuators/').toPromise<any>();
+
+        for (const actuator of response) {
+            if(actuator.actuator_node == sensornode + "-" + actuatorname && actuator.actuator_act == actuator_act) {
+                return actuator.actuator_value;
+            }
+        }  
+        return response;
+    }
+
     /**
    * function to convert a date to the local time in iso format
    * 
