@@ -24,6 +24,7 @@ export class GanttComponent implements OnDestroy, OnChanges{
     this.options.series[0].data = changes.data.currentValue.xAxis
     this.data = changes.data.currentValue;    
     this.refreshOptions();
+    console.log(this.data)
   }
 
   @Input() data: any;
