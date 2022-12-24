@@ -7,6 +7,9 @@ import { map, takeUntil } from 'rxjs/operators';
 import { interval, Subject, Subscription } from 'rxjs';
 import { type } from 'os';
 import { TimespanService } from '../../../Services/TimespanProviderService';
+import { NbSearchService } from '@nebular/theme';
+import {Location} from '@angular/common'; 
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -52,13 +55,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
 
+  value = '';
+
   constructor(private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private themeService: NbThemeService,
     private userService: UserData,
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
-    private timespanservice: TimespanService) {
+    private timespanservice: TimespanService,
+    private searchService: NbSearchService,
+    private location: Location,
+    private router: Router) {
+      this.searchService.onSearchSubmit()
+      .subscribe((data: any) => {
+        this.value = data.term;
+        this.router.navigate(["/pages/"+this.value]);
+      })
   }
 
   ngOnInit() {
