@@ -11,6 +11,21 @@ export class DashboardFunctionalityService {
   constructor() { }
 
   /**
+   * Checks if the Date is correct
+   * 
+   * @param {any}  date - Date that needs to be checked
+   * @returns if Date is correct or not 
+   * 
+   */
+  isCorrectDate(date) {
+    if (date instanceof Date) {
+      var text = Date.prototype.toString.call(date);
+      return text !== 'Invalid Date';
+    }
+    return false;
+  }
+
+  /**
    * create an array from the result where the elements are structured like this [[timestamp, value]]
    * 
    * @param {any}  result - Received sensor data
@@ -61,6 +76,45 @@ export class DashboardFunctionalityService {
   }
 
 
+  gantArray(mappedPresence: any){
+    let ganttArr = []
+    let tempArr = []
+    let present = false;
+    let absent = false;
+
+    for (let i = 0; i < mappedPresence.length; i++) {
+      for (let j = 0; j < mappedPresence[i].length; j++) {
+        if (mappedPresence[i][1] == 0) {
+          tempArr.push(mappedPresence[i][0]);
+          absent = true;
+          if (absent == true && present == true) {
+            present = false;
+            absent = false;
+            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 1])
+            tempArr = []
+            tempArr.push(mappedPresence[i][0]);
+          }
+        }
+        else if (mappedPresence[i][1] == 1) {
+          tempArr.push(mappedPresence[i][0]);
+          present = true;
+          if (absent == true && present == true) {
+            present = false;
+            absent = false;
+            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 0])
+            tempArr = []
+            tempArr.push(mappedPresence[i][0]);
+          }
+        }
+        else {
+          console.log("No Value! What happened?");
+        }
+      }
+    }
+    return ganttArr
+  }
+
+
   /**
    * New Gantt Instance for updating properties.
    * 
@@ -85,14 +139,72 @@ export class DashboardFunctionalityService {
     return newData
   }
 
+  /**
+  * cleans the motian data
+  * Motion data should always be 1 and 0 alternating
+  * this function removes excess 1s and 0s
+  * motion data is structured like this: [[timestamp, value]]
+  * 
+  * @param {any}  data - Motion Data: [[timestamp, value]]
+  * @returns cleared motion data
+  * 
+  */
+  cleanMotianData(data: any) {
+    var cleanedData = [];
+    var lastValue = null;
+    for (var i = 0; i < data.length; i++) {
+      if (data[i][1] != lastValue) {
+        cleanedData.push(data[i]);
+        lastValue = data[i][1];
+      }
+    }
+    return cleanedData; 
+  }
+
+
+  /**
+  * This function takes the mappedPresence array and generates a dataset for the gantt chart
+  * the dataset should look like this [{name: "Presence", value: [start, end, 0/1]}]
+  * the start and end values are the timestamps between which the value is 0 or 1
+  * example: if "2022-12-22T12:39:21.251Z" is 1 and "2022-12-22T13:39:21.251Z" is 0, 
+  * the dataset should look like this: [{name: "Presence", value: ["2022-12-22T12:39:21.251Z", "2022-12-22T13:39:21.251Z", 1]}]
+  * example2: if "2022-12-22T12:39:21.251Z" is 0 and "2022-12-22T13:39:21.251Z" is 1, the dataset should look like this: [{name: "Presence", value: ["2022-12-22T12:39:21.251Z", "2022-12-22T13:39:21.251Z", 0]}]
+  * 
+  * @param {any}  data - mapped data: [[timestamp, value]]
+  * @returns dataset like this: [{name: "Presence", value: [start, end, 0/1]}]
+  * 
+  */
+  generateMotionDataset(data: any) {
+    var ganttData = [];
+    for (var i = 0; i < data.length; i++) {
+
+      var ele = []
+      if (i == 0) {
+        //     START       END             VALUE
+        ele = [data[i][0], data[i + 1][0], data[i][1]];
+      }
+      else if (i == data.length - 1) {
+        //     START       END             VALUE
+        ele = [data[i - 1][0], data[i][0], data[i][1]];
+      }
+      else {
+        //     START       END             VALUE
+        ele = [data[i - 1][0], data[i][0], data[i][1]];
+      }
+
+      ganttData.push({
+        name: "Presence",
+        value: ele
+      });
+    }
+    return ganttData;
+  }
+  
 
   AirQuality: AirQualityData = {
     data: [],
   }
-
   AirQualityList: AirQualityTableData[] = [];
-
-
 
   /**
   * A function that calculates averages for the air quality for each day. 

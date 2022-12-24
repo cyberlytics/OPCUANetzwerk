@@ -33,44 +33,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     to: Date
   }
 
-  Series1: LineChartDataSeries = {
-    name: "Series1",
-    type: "line",
-    data: [["2018-08-15T10:04:01.339Z", 5], ["2018-08-15T10:14:13.914Z", 7]]
-  }
-
-  Series2: LineChartDataSeries = {
-    name: "Series2",
-    type: "line",
-    data: [["2018-08-15T10:04:01.339Z", 10], ["2018-08-15T10:14:13.914Z", 15]]
-  }
-
-
-  Series3: LineChartDataSeries = {
-    name: "Series3",
-    type: "line",
-    data: [["2018-08-16T10:04:01.339Z", 23], ["2018-08-16T10:14:13.914Z", 2]]
-  }
-
-  Series4: LineChartDataSeries = {
-    name: "Series4",
-    type: "line",
-    data: [["2018-08-16T10:04:01.339Z", 20], ["2018-08-16T10:14:13.914Z", 10]]
-  }
-
-  ChartDataObj: LineChartDataSeries[] = [this.Series1, this.Series2];
-  ChartDataObj2: LineChartDataSeries[] = [this.Series3, this.Series4];
-
-
-  //Start Temperatur
-  random = +(Math.random() * 60).toFixed(2);
-
-  tempSeries1: number = this.random;
-
-  TempDataObj = this.tempSeries1;
-  //End Temperatur
-
-
   //START Switch Button
   statusCards: string;
 
@@ -114,14 +76,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //END Switch Button
 
 
-  //Start Gantt
-  //Aufbau von value: = [v1,v2, v3] (v1 und v2 ergeben die Zeit in ms wie lange jmd anwesend ist, v3 zeigt in welche 
-  //Reihe es erfasst wird)
-
-
-  //End Gantt
-
-
   constructor(private theme: NbThemeService, 
               private backendApi: BackendDataService, 
               private route: ActivatedRoute, 
@@ -133,13 +87,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       .subscribe(theme => {
         this.statusCards = this.statusCardsByThemes[theme.name];
       });
-
-
   }
 
 
-
-  //START FLIP CARD
   AirQuality: AirQualityData = {
     data: [],
   }
@@ -167,10 +117,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     "yAxis": ["Presence"],
   }
 
-
-  gaugeRandom: number = 10;
-
-  //END FLIP CARD
   private alive = true;
   ngOnDestroy() {
     this.alive = false;
@@ -194,7 +140,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     if (this.selectedTimespan == null) {
       return;
     }
-    if (this.selectedTimespan.from == null || this.selectedTimespan.to == null || this.isCorrectDate(this.selectedTimespan.from) == false || this.isCorrectDate(this.selectedTimespan.to) == false) {
+    if (this.selectedTimespan.from == null || this.selectedTimespan.to == null || this.dashboard.isCorrectDate(this.selectedTimespan.from) == false || this.dashboard.isCorrectDate(this.selectedTimespan.to) == false) {
       return;
     }
 
@@ -217,52 +163,16 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     let mappedPresence = this.dashboard.mapResult(resultPresence);
     let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
 
-    mappedPresence = this.cleanMotianData(mappedPresence);
+    mappedPresence = this.dashboard.cleanMotianData(mappedPresence);
 
     // console.log("CLEANED", mappedPresence);
 
-    var finalGantt = this.generateMotionDataset(mappedPresence);
+    var finalGantt = this.dashboard.generateMotionDataset(mappedPresence);
 
     // console.log("GANTT", finalGantt);
 
 
-    //Start: In Bearbeitung 
-    let ganttArr = []
-    let tempArr = []
-    let present = false;
-    let absent = false;
-
-    for (let i = 0; i < mappedPresence.length; i++) {
-      for (let j = 0; j < mappedPresence[i].length; j++) {
-        if (mappedPresence[i][1] == 0) {
-          tempArr.push(mappedPresence[i][0]);
-          absent = true;
-          if (absent == true && present == true) {
-            present = false;
-            absent = false;
-            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 1])
-            tempArr = []
-            tempArr.push(mappedPresence[i][0]);
-          }
-        }
-        else if (mappedPresence[i][1] == 1) {
-          tempArr.push(mappedPresence[i][0]);
-          present = true;
-          if (absent == true && present == true) {
-            present = false;
-            absent = false;
-            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 0])
-            tempArr = []
-            tempArr.push(mappedPresence[i][0]);
-          }
-        }
-        else {
-          console.log("No Value! What happened?");
-        }
-      }
-    }
-    //End: In Bearbeitung 
-
+    let ganttArr = this.dashboard.gantArray(mappedPresence)
 
 
     //Convert Date to ISO String
@@ -305,54 +215,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     this.AirQualityList = newAirQualityTable;
   }
 
-  //cleans the motian data
-  //Motion data should always be 1 and 0 alternating
-  //this function removes excess 1s and 0s
-  //motion data is structured like this: [[timestamp, value]]
-  cleanMotianData(data: any) {
-    var cleanedData = [];
-    var lastValue = null;
-    for (var i = 0; i < data.length; i++) {
-      if (data[i][1] != lastValue) {
-        cleanedData.push(data[i]);
-        lastValue = data[i][1];
-      }
-    }
-    return cleanedData; 
-  }
-
-  //This function takes the mappedPresence array and generates a dataset for the gantt chart
-  //the dataset should look like this [{name: "Presence", value: [start, end, 0/1]}]
-  //the start and end values are the timestamps between which the value is 0 or 1
-  //example: if "2022-12-22T12:39:21.251Z" is 1 and "2022-12-22T13:39:21.251Z" is 0, the dataset should look like this: [{name: "Presence", value: ["2022-12-22T12:39:21.251Z", "2022-12-22T13:39:21.251Z", 1]}]
-  //example2: if "2022-12-22T12:39:21.251Z" is 0 and "2022-12-22T13:39:21.251Z" is 1, the dataset should look like this: [{name: "Presence", value: ["2022-12-22T12:39:21.251Z", "2022-12-22T13:39:21.251Z", 0]}]
-  generateMotionDataset(data: any) {
-    var ganttData = [];
-    for (var i = 0; i < data.length; i++) {
-
-      var ele = []
-      if (i == 0) {
-        //     START       END             VALUE
-        ele = [data[i][0], data[i + 1][0], data[i][1]];
-      }
-      else if (i == data.length - 1) {
-        //     START       END             VALUE
-        ele = [data[i - 1][0], data[i][0], data[i][1]];
-      }
-      else {
-        //     START       END             VALUE
-        ele = [data[i - 1][0], data[i][0], data[i][1]];
-      }
-
-      ganttData.push({
-        name: "Presence",
-        value: ele
-      });
-    }
-    return ganttData;
-  }
-
-
 
   private subscription: Subscription;
   SensorNodeId: string;
@@ -372,8 +234,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       if (!found) {
         this.router.navigate(['/pages/not-found']);
       }
-
-
       this.getData();
     });
 
@@ -383,13 +243,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     });
   }
 
-  isCorrectDate(date) {
-    if (date instanceof Date) {
-      var text = Date.prototype.toString.call(date);
-      return text !== 'Invalid Date';
-    }
-    return false;
-  }
 
   async ngAfterViewInit() {
   }
