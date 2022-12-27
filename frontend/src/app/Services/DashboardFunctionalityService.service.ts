@@ -75,7 +75,13 @@ export class DashboardFunctionalityService {
     return newData
   }
 
-
+  /**
+   * Saves the start and end timestamp for one value.
+   * 
+   * @param {any}  mappedPresence - MappedPresence data
+   * @returns ganttData like this: [starttime, endtime, value]
+   * 
+   */
   gantArray(mappedPresence: any){
     let ganttArr = []
     let tempArr = []
