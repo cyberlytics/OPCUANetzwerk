@@ -1,15 +1,20 @@
+import music.shenanigans as shenanigans
+
 from sensors.buttons import Buttons
-from sensors.bme280_sensor import BME280Sensor
-from sensors.mq135 import MQ135
-from actors.lcd_display import LcdDisplay
+
 import helpers.globals as globals
 
 import time
 from threading import Thread
 
 class Menu(object):
+    
     def __init__(self):
+        """Menu(): Menu handling for LCD-Display and 4 Buttons
+        """
         self.__buttons = Buttons()
+        self.__special_function_thread = Thread(target=self.__special_function, args=[])
+        self.__special_function_thread.start()
         
         # Callbacks hinterlegen
         self.__buttons.Button1.start_measurement()
@@ -25,14 +30,34 @@ class Menu(object):
         globals.lcd.add_screen('calibrate' , (f'    {self.__current_ppm} ppm',f' x   +    -   {chr(0x00)}'))
 
     # ----------------------------------------------------------
+    # Threads --------------------------------------------------
+    # ----------------------------------------------------------
+    def __special_function(self):
+        """Thread function for playing music when button 2 are button 3 are held down
+        """
+        while True:
+            time.sleep(1)
+            if self.__buttons.Button2.Status and self.__buttons.Button3.Status:
+                start = time.time()
+            while self.__buttons.Button2.Status and self.__buttons.Button3.Status:
+                if time.time() - start > 5:
+                    globals.music.play(shenanigans.shenanigans, 180, .75)
+    # ----------------------------------------------------------
+    # ----------------------------------------------------------
+
+    # ----------------------------------------------------------
     # Events ---------------------------------------------------
     # ----------------------------------------------------------
     def __switch_screens(self, sender, args):
+        """ Switches curren shown lcd-screen to next
+        """
         # Switch to next screen
         self.__current_screen_index = (self.__current_screen_index + 1) % (globals.lcd.ScreenCount - 1)
         globals.lcd.show_screen_index(self.__current_screen_index)
 
     def __start_calibrate(self, sender, args):
+        """Starts calibration for MQ135 Sensor if called two-times
+        """
         if self.__calibrate_start:
             self.__unsubscribe_calibration_events()
             self.__calibrate_start = False
@@ -47,15 +72,22 @@ class Menu(object):
         self.__calibrate_start = True
 
     def __raise_ppm(self, sender, args):
+        """Raises current shown ppm by 10
+        """
         self.__current_ppm = self.__get_current_ppm() + 10
         globals.lcd.text = (f'    {self.__current_ppm} ppm', globals.lcd.text[1])
 
     def __lower_ppm(self, sender, args):
+        """Lowers current shown ppm by 10
+        """
         self.__current_ppm = self.__get_current_ppm() - 10
         globals.lcd.text = (f'    {self.__current_ppm} ppm', globals.lcd.text[1])
 
     def __abort_calibrate(self, sender, args):
+        """Abort calibration and set menu functionality back to screen-switching
+        """
         # Set Events for screen switching
+        self.__unsubscribe_calibration_events()
         self.__set_events_for_screenswitch()
 
         self.__calibrate_start = False
@@ -69,21 +101,24 @@ class Menu(object):
     # Helpers --------------------------------------------------
     # ----------------------------------------------------------
     def __get_current_ppm(self):
+        """Extract current ppm from current shown text
+        """
         old_text = globals.lcd.text
         
         # Get current ppm from string
         return int(old_text[0].lstrip().split(' ')[0])
 
     def __unsubscribe_calibration_events(self):
+        """Unsubscribe the events needed for calibration selection
+        """
         self.__buttons.Button1.ButtonDown.unsubscribe(self.__abort_calibrate)
         self.__buttons.Button2.ButtonDown.unsubscribe(self.__raise_ppm)
         self.__buttons.Button3.ButtonDown.unsubscribe(self.__lower_ppm)
         self.__buttons.Button4.ButtonDown.unsubscribe(self.__start_calibrate)
 
-        self.__buttons.Button2.stop_measurement()
-        self.__buttons.Button3.stop_measurement()
-
     def __set_events_for_calibration(self):
+        """Set Events for calibration selection
+        """
         # Switch Events for Button 1
         self.__buttons.Button1.ButtonDown.unsubscribe(self.__switch_screens)
         self.__buttons.Button1.ButtonDown.subscribe(self.__abort_calibrate)
@@ -95,7 +130,9 @@ class Menu(object):
         self.__buttons.Button3.ButtonDown.subscribe(self.__lower_ppm)
 
     def __set_events_for_screenswitch(self):
-        # Switch Events for Button 1
+        """Set Events for Screen-Switching
+        """
+        # Switch Events for Button 1 and Button 4
         self.__buttons.Button1.ButtonDown.subscribe(self.__switch_screens)
         self.__buttons.Button4.ButtonDown.subscribe(self.__start_calibrate)
     # ----------------------------------------------------------
@@ -106,11 +143,26 @@ class Menu(object):
     # Methods --------------------------------------------------
     # ----------------------------------------------------------
     def __start_mq135_calibration(self):
+        """Starts calibration for MQ135 sensor when called
+        -> Also shows calibration screen, while running
+
+        After finishing calibration functionality gets set back to screenswitch
+        """
+
+        # Show screen for calibration
         t = Thread(target=self.__show_calibrating_screen, args=[])
         t.start()
+
+        # Unsubscribe calibration events while running
+        self.__unsubscribe_calibration_events()
         globals.mq135.start_calibration(self.__current_ppm, globals.bme280.temperature[0], globals.bme280.humidity[0])
 
+        # Set Events back to screen switching after finishing
+        self.__set_events_for_screenswitch()
+
     def __show_calibrating_screen(self):
+        """Show screen for calibrating mq135 sensor
+        """
         time.sleep(1)
 
         globals.lcd.add_screen('calibrating1', ('MQ135 Sensor:','Calibrating.'))

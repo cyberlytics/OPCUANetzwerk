@@ -1,5 +1,6 @@
 import time
 import helpers.globals as globals
+import music.shenanigans as shenanigans
 from helpers.menu import Menu
 import RPi.GPIO as GPIO
 
@@ -8,20 +9,16 @@ GPIO.setwarnings(False)
 globals.init()
 
 globals.lcd.set_backlight(True)
-globals.lcd.add_screen('sensor1' , ('Tempe.: xx.x°C','Luftf.: xx.x%'))
+globals.lcd.add_screen('sensor1' , ('Node2: <opcua node="SensorNode_2.Sensors.BME280.Temperature.Value" decimals="4"/>°C','Luftf.: xx.x%'))
 globals.lcd.add_screen('sensor2', ('Luftd.: xx.x°C','Luftq.: xx.xppm'))
 globals.lcd.add_screen('opcua'  , ('Das ist ein','OPCUA-Screen'))
 globals.lcd.show_screen_name('opcua')
 
 menu = Menu()
 
-globals.piezo.play_tone(440)
-time.sleep(2)
-globals.piezo.play_tone(0)
-time.sleep(2)
-globals.piezo.play_tone(880)
-time.sleep(2)
-globals.piezo.play_tone(0)
+globals.piezo.start_alarm()
+time.sleep(10)
+globals.piezo.stop_alarm()
 
 #buttons = Buttons()
 #buttons.Button1.start_measurement()

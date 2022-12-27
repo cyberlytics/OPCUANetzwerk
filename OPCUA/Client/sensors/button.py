@@ -53,8 +53,8 @@ class Button(SensorBase):
 
     # --- Status ----------------------------------------------------------------
     @property
-    def status(self):
-        return GPIO.input(self.__pin)
+    def Status(self):
+        return not GPIO.input(self.__pin)
 
     def __set_status(self, value):
         self.__status = value

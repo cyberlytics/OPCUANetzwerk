@@ -1,9 +1,11 @@
+from tkinter import Menu
 from actors.piezo import Piezo
 from libs.extension import Microcontroller, RefVoltage, Prescaler
 
 from helpers.systeminformation import SystemInformation
 from helpers.opcua_helper import OpcuaHelper
 from helpers.connection_helper import ConnectionHelper
+from helpers.music_helper import MusicHelper
 
 from sensors.buttons import Buttons
 from sensors.bme280_sensor import BME280Sensor
@@ -42,17 +44,11 @@ def init():
     global movement_sensor
     movement_sensor = MovementSensor(17)
 
-    # Initialize Actors
-    global lcd
-    lcd = LcdDisplay()
-    global led_stripe
-    led_stripe = LedStripe()
-    global piezo
-    piezo = Piezo(uc)
-
     # Initialize Helpers
     global sys_info
     sys_info = SystemInformation()
+    global music
+    music = MusicHelper(uc, 4)
 
     # Initialize OPCUA
     global opcua_client
@@ -70,6 +66,14 @@ def init():
     global connection_helper
     connection_helper = ConnectionHelper()
     connection_helper.start_connection_check()
+
+    # Initialize Actors
+    global lcd
+    lcd = LcdDisplay(opcua_client)
+    global led_stripe
+    led_stripe = LedStripe()
+    global piezo
+    piezo = Piezo(uc, 4)
 
 class AirQuality():
     WarningLevel = 800

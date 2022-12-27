@@ -28,10 +28,11 @@ class MovementSensor(SensorBase):
             movement = GPIO.input(self.__pin)
 
             # Pin is high and no presence -> presence starts
-            if not self.presence and movement:
+            if not self.Presence and movement:
                 self.__set_presence(True)
                 last_movement_time = time.time()
 
+            # No movement for a minute --> Presence ends
             if self.__presence and not movement and time.time() - last_movement_time > 60:
                 self.__set_presence(False)
 

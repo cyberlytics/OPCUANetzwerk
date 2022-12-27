@@ -55,7 +55,7 @@ class BME280Sensor():
 
     def read_sensor_values(self):
         # Only read new data every minute
-        if time.time() - self.__lastread_timestamp < 60:
+        if time.time() - self.__lastread_timestamp < 5:
             return
 
         # If no calibration params are present, then read them
