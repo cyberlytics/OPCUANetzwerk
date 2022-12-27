@@ -156,6 +156,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       resultAir[i].value = resultAir[i].value / 1000;
     }
 
+    
     //Structure Array: [[timestamp, value]]
     let mappedAir = this.dashboard.mapResult(resultAir);
     let mappedTemp = this.dashboard.mapResult(resultTemp);
@@ -163,11 +164,16 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     let mappedPresence = this.dashboard.mapResult(resultPresence);
     let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
 
+
+
     mappedPresence = this.dashboard.cleanMotianData(mappedPresence);
+
+
 
     // console.log("CLEANED", mappedPresence);
 
-    var finalGantt = this.dashboard.generateMotionDataset(mappedPresence);
+
+    //var finalGantt = this.dashboard.generateMotionDataset(mappedPresence);
 
     // console.log("GANTT", finalGantt);
 
@@ -182,7 +188,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     ganttArr = this.dashboard.convertMappedDate(ganttArr)
     mappedAirQuality = this.dashboard.convertMappedDate(mappedAirQuality)
 
-
     //New instances of LineChartDataSeries 
     let newAir: LineChartDataSeries = this.dashboard.lineChartData("AirPressure", mappedAir);
     let newTemp: LineChartDataSeries = this.dashboard.lineChartData("Temperature", mappedTemp);
@@ -195,7 +200,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
     let newPresence = this.dashboard.gantData(ganttArr);
     //APPLY NEW FIX newPresence.xAxis = finalGantt;
-    this.ganttData = newPresence;
+    this.ganttData = newPresence;   
 
 
     //AirQuality Part:

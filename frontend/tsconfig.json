@@ -1,4 +1,7 @@
 {
+  "browserConsoleLogOptions": {
+    "level": "log"
+  },
   "compileOnSave": false,
   "compilerOptions": {
     "importHelpers": true,
