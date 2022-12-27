@@ -1,4 +1,5 @@
 from sensors.sensor_base import SensorBase
+from libs.extension import Prescaler, RefVoltage
 import time, math
 import queue
 import numpy as np

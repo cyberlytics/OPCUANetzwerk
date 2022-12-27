@@ -8,7 +8,7 @@ import os
 
 class ConnectionHelper(object):
     def __init__(self):
-        self.OK = 8
+        self.OK = 0
         self.OPCUA_SERVER_NOT_REACHABLE = 1
         self.SERVER_NODE_NOT_REACHABLE = 2
         self.VPN_GATEWAY_NOT_REACHABLE = 3
