@@ -2,19 +2,21 @@ import music.shenanigans as shenanigans
 
 from sensors.buttons import Buttons
 
-import helpers.globals as globals
+from helpers.event_handler import EventHandler
 
 import time
 from threading import Thread
 
 class Menu(object):
     
-    def __init__(self):
+    def __init__(self, lcd_display):
         """Menu(): Menu handling for LCD-Display and 4 Buttons
         """
         self.__buttons = Buttons()
+        self.__lcd = lcd_display
         self.__special_function_thread = Thread(target=self.__special_function, args=[])
         self.__special_function_thread.start()
+        self.__eh = EventHandler()
         
         # Callbacks hinterlegen
         self.__buttons.Button1.start_measurement()
@@ -26,8 +28,8 @@ class Menu(object):
         self.__calibrate_start = False
         self.__current_screen_index = 0
         self.__current_ppm = 500
-
-        globals.lcd.add_screen('calibrate' , (f'    {self.__current_ppm} ppm',f' x   +    -   {chr(0x00)}'))
+        self.__calibration_running = None
+        self.__calibrated = False
 
     # ----------------------------------------------------------
     # Threads --------------------------------------------------
@@ -36,12 +38,13 @@ class Menu(object):
         """Thread function for playing music when button 2 are button 3 are held down
         """
         while True:
-            time.sleep(1)
+            time.sleep(2.5)
             if self.__buttons.Button2.Status and self.__buttons.Button3.Status:
                 start = time.time()
             while self.__buttons.Button2.Status and self.__buttons.Button3.Status:
                 if time.time() - start > 5:
-                    globals.music.play(shenanigans.shenanigans, 180, .75)
+                    pass
+                    #globals.music.play(shenanigans.shenanigans, 180, .75)
     # ----------------------------------------------------------
     # ----------------------------------------------------------
 
@@ -52,22 +55,33 @@ class Menu(object):
         """ Switches curren shown lcd-screen to next
         """
         # Switch to next screen
-        self.__current_screen_index = (self.__current_screen_index + 1) % (globals.lcd.ScreenCount - 1)
-        globals.lcd.show_screen_index(self.__current_screen_index)
+        if self.__lcd.ScreenCount == 0:
+            return False
+
+        self.__current_screen_index = (self.__current_screen_index + 1) % (self.__lcd.ScreenCount)
+        self.__lcd.show_screen_index(self.__current_screen_index)
+        return True
 
     def __start_calibrate(self, sender, args):
         """Starts calibration for MQ135 Sensor if called two-times
         """
+
+        # Other behavior when called second time
         if self.__calibrate_start:
-            self.__unsubscribe_calibration_events()
-            self.__calibrate_start = False
             self.__start_mq135_calibration()
-            self.__set_events_for_screenswitch()
+            self.__lcd.remove_screen('calibrate')
+            self.__lcd.start_update()
+
+            # Reset everything, so that calibration can be accessed again
+            self.__calibrate_start = False
             return
 
+        # Behavior for first call
+        self.__lcd.add_screen('calibrate' , (f'    {self.__current_ppm} ppm',f' x   +    -   {chr(0x00)}'))
+        self.__lcd.stop_update()
         self.__set_events_for_calibration()
 
-        globals.lcd.show_screen_name('calibrate')
+        self.__lcd.show_screen_name('calibrate')
 
         self.__calibrate_start = True
 
@@ -75,23 +89,25 @@ class Menu(object):
         """Raises current shown ppm by 10
         """
         self.__current_ppm = self.__get_current_ppm() + 10
-        globals.lcd.text = (f'    {self.__current_ppm} ppm', globals.lcd.text[1])
+        self.__lcd.Text = (f'    {self.__current_ppm} ppm', self.__lcd.Text[1])
 
     def __lower_ppm(self, sender, args):
         """Lowers current shown ppm by 10
         """
         self.__current_ppm = self.__get_current_ppm() - 10
-        globals.lcd.text = (f'    {self.__current_ppm} ppm', globals.lcd.text[1])
+        self.__lcd.Text = (f'    {self.__current_ppm} ppm', self.__lcd.Text[1])
 
     def __abort_calibrate(self, sender, args):
         """Abort calibration and set menu functionality back to screen-switching
         """
+        self.__lcd.remove_screen('calibrate')
+
         # Set Events for screen switching
         self.__unsubscribe_calibration_events()
         self.__set_events_for_screenswitch()
 
         self.__calibrate_start = False
-        globals.lcd.show_screen_index(0)
+        self.__lcd.show_screen_index(0)
 
     # ----------------------------------------------------------
     # ----------------------------------------------------------
@@ -103,7 +119,7 @@ class Menu(object):
     def __get_current_ppm(self):
         """Extract current ppm from current shown text
         """
-        old_text = globals.lcd.text
+        old_text = self.__lcd.Text
         
         # Get current ppm from string
         return int(old_text[0].lstrip().split(' ')[0])
@@ -155,7 +171,10 @@ class Menu(object):
 
         # Unsubscribe calibration events while running
         self.__unsubscribe_calibration_events()
-        globals.mq135.start_calibration(self.__current_ppm, globals.bme280.temperature[0], globals.bme280.humidity[0])
+        
+        # Call event to inform Main Skript
+        self.CalibrationRunning = True
+        self.__eh(self, {'ppm' : self.__get_current_ppm()})
 
         # Set Events back to screen switching after finishing
         self.__set_events_for_screenswitch()
@@ -165,28 +184,46 @@ class Menu(object):
         """
         time.sleep(1)
 
-        globals.lcd.add_screen('calibrating1', ('MQ135 Sensor:','Calibrating.'))
-        globals.lcd.add_screen('calibrating2', ('MQ135 Sensor:','Calibrating..'))
-        globals.lcd.add_screen('calibrating3', ('MQ135 Sensor:','Calibrating...'))
+        self.__lcd.add_screen('calibrating1', ('MQ135 Sensor:','Calibrating.'))
+        self.__lcd.add_screen('calibrating2', ('MQ135 Sensor:','Calibrating..'))
+        self.__lcd.add_screen('calibrating3', ('MQ135 Sensor:','Calibrating...'))
 
-        while globals.mq135.CurrentlyCalibrating:
-            globals.lcd.show_screen_name('calibrating1')
+        while self.CalibrationRunning:
+            self.__lcd.show_screen_name('calibrating1')
             time.sleep(0.5)
-            globals.lcd.show_screen_name('calibrating2')
+            self.__lcd.show_screen_name('calibrating2')
             time.sleep(0.5)
-            globals.lcd.show_screen_name('calibrating3')
+            self.__lcd.show_screen_name('calibrating3')
             time.sleep(0.5)
 
-        if globals.mq135.Calibrated:
-            globals.lcd.add_screen('calibration_finished', ('Calibration', 'was successful'))
-        elif not globals.mq135.Calibrated:
-            globals.lcd.add_screen('calibration_finished', ('Calibration', 'has failed'))
+        if self.Calibrated:
+            self.__lcd.add_screen('calibration_finished', ('Calibration', 'was successful'))
+        elif not self.Calibrated:
+            self.__lcd.add_screen('calibration_finished', ('Calibration', 'has failed'))
         
-        globals.lcd.show_screen_name('calibration_finished')
+        self.__lcd.show_screen_name('calibration_finished')
         time.sleep(3)
-        globals.lcd.remove_screen('calibration_finished')
-        globals.lcd.remove_screen('calibrating1')
-        globals.lcd.remove_screen('calibrating2')
-        globals.lcd.remove_screen('calibrating3')
+        self.__lcd.remove_screen('calibration_finished')
+        self.__lcd.remove_screen('calibrating1')
+        self.__lcd.remove_screen('calibrating2')
+        self.__lcd.remove_screen('calibrating3')
     # ----------------------------------------------------------
     # ----------------------------------------------------------
+
+    @property
+    def CalibrationStart(self):
+        return self.__eh
+
+    @property
+    def CalibrationRunning(self):
+        return self.__calibration_running
+    @CalibrationRunning.setter
+    def CalibrationRunning(self, new_value):
+        self.__calibration_running = new_value
+
+    @property
+    def Calibrated(self):
+        return self.__calibrated
+    @Calibrated.setter
+    def Calibrated(self, new_value):
+        self.__calibrated = new_value

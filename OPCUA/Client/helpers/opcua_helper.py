@@ -55,16 +55,12 @@ class OpcuaHelper(object):
         self.__hw_os_attributes = []
         for subnode in self.__sensornode_node.get_children():
             if subnode.get_browse_name().Name == "HardwarePlatform":
+                self.__hw_os_attributes.append(subnode)
                 # If value node then add it
                 for childnode in subnode.get_children():
-                    if childnode.get_node_class() == ua.NodeClass.Variable:
-                        self.__hw_os_attributes.append(childnode)
-
-                    ## If object node, then search its children
+                    ## If object node, then add its children
                     if childnode.get_node_class() == ua.NodeClass.Object:
-                        for attribute_node in childnode.get_children():
-                            if attribute_node.get_node_class() == ua.NodeClass.Variable:
-                                self.__hw_os_attributes.append(childnode)
+                        self.__hw_os_attributes.append(childnode)
 
 
 
@@ -75,7 +71,9 @@ class OpcuaHelper(object):
 
 
     def __get_node(self, nodename):
-        for subnode in self.__sensor_nodes + self.__actor_nodes:
+        for subnode in self.__sensor_nodes + self.__actor_nodes + self.__hw_os_attributes:
+            if subnode.get_browse_name().Name == nodename:
+                return subnode
             for childnode in subnode.get_children():
                 if childnode.get_browse_name().Name == nodename:
                     return childnode
