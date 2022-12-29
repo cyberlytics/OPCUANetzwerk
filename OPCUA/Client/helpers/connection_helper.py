@@ -2,12 +2,13 @@ from enum import Enum
 
 
 from threading import Thread
-import helpers.globals as globals
 import time
 import os
 
 class ConnectionHelper(object):
-    def __init__(self):
+    def __init__(self, opcua_client):
+        self.__opc = opcua_client
+
         self.OK = 0
         self.OPCUA_SERVER_NOT_REACHABLE = 1
         self.SERVER_NODE_NOT_REACHABLE = 2
@@ -42,7 +43,7 @@ class ConnectionHelper(object):
             time.sleep(10)
 
             # OPCUA-Server reachable?
-            if globals.opc.opcua_server_reachable():
+            if self.__opc.opcua_server_reachable():
                 self.__status = self.OK
                 continue
             self.__status = self.OPCUA_SERVER_NOT_REACHABLE

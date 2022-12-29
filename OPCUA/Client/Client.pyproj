@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>2bcf5081-4568-47c8-bf9a-f9fa472bc518</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Client.py</StartupFile>
+    <StartupFile>Client.old.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -22,8 +22,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="actors\actor_base.py" />
+    <Compile Include="Client.py" />
+    <Compile Include="helpers\airquality.py" />
     <Compile Include="helpers\connection_helper.py" />
     <Compile Include="helpers\globals.py" />
+    <Compile Include="helpers\music_helper.py" />
+    <Compile Include="helpers\template_string.py" />
+    <Compile Include="music\shenanigans.py" />
     <Compile Include="sensors\button.py" />
     <Compile Include="sensors\buttons.py" />
     <Compile Include="actors\lcd_display.py" />
@@ -40,7 +45,7 @@
     <Compile Include="sensors\bme280_humidity.py" />
     <Compile Include="sensors\bme280_sensor.py" />
     <Compile Include="sensors\bme280_temperature.py" />
-    <Compile Include="Client.py" />
+    <Compile Include="Client.old.py" />
     <Compile Include="sensors\movement_sensor.py" />
     <Compile Include="sensors\mq135.py" />
     <Compile Include="sensors\sensor_base.py" />
@@ -51,6 +56,7 @@
     <Folder Include="actors\" />
     <Folder Include="helpers\" />
     <Folder Include="libs\" />
+    <Folder Include="music\" />
     <Folder Include="sensors\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />

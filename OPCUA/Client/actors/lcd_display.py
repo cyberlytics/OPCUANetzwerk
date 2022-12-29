@@ -1,9 +1,14 @@
-from tkinter import Text
+
 from actors.actor_base import ActorBase
+
+from helpers.template_string import TemplateString
+from helpers.event_handler import EventHandler
 
 from RPLCD import CharLCD
 import RPi.GPIO as GPIO
 import time
+
+from threading import Thread
 
 class LcdDisplay(ActorBase):
     def __init__(self, client=None):
@@ -24,7 +29,10 @@ class LcdDisplay(ActorBase):
 
         self.__add_custom_characters()
 
-        self.__client = client
+        self.__last_update_time = 0
+        self.__update_running = False
+
+        self.__eh = EventHandler()
 
     # ----------------------------------------------------------
     # Hardware Functionality -----------------------------------
@@ -97,6 +105,23 @@ class LcdDisplay(ActorBase):
     # ----------------------------------------------------------
     # Screen Functionality -------------------------------------
     # ----------------------------------------------------------
+    def start_update(self):
+        if self.__update_running:
+            return
+
+        self.__update_running = True
+        self.__t = Thread(target=self.__update_screen_thread, args=[])
+        self.__t.start()
+
+    def stop_update(self):
+        self.__update_running = False
+
+    def __update_screen_thread(self):
+        while self.__update_running:
+            if time.time() - self.__last_update_time > 5:
+                self.show_screen_name(self.CurrentScreen)
+                self.__last_update_time = time.time()
+            time.sleep(1)
 
     # add_screen()
     def add_screen(self, name, text=('','')):
@@ -132,11 +157,9 @@ class LcdDisplay(ActorBase):
             print(f"Screen Index {index} does not exist")
             return
 
-        text = (TemplateString.resolve_template_string(self.__screens[index]['Text'][0], self.__client),TemplateString.resolve_template_string(self.__screens[index]['Text'][1], self.__client))
-        self.Text = text
-
         # Set current screen name from index
         self.CurrentScreen = self.__screens[index]['Name']
+        self.__last_update_time = time.time()
 
     # show_screen_name()
     def show_screen_name(self, name):
@@ -145,9 +168,14 @@ class LcdDisplay(ActorBase):
             return
 
         scr = [screen for screen in self.__screens if screen['Name'] == name][0]
-        text = (TemplateString.resolve_template_string(scr['Text'][0], self.__client),TemplateString.resolve_template_string(scr['Text'][1], self.__client))
-        self.Text = text
+
+        if TemplateString.is_template_string(scr['Text'][0]) or TemplateString.is_template_string(scr['Text'][1]):
+            self.__eh(self, {'screen' : scr})
+        else:
+            text = (scr['Text'][0], scr['Text'][1])
+            self.Text = text
         self.__current_screen = scr['Name']
+        self.__last_update_time = time.time()
 
     # change_screen_text()
     def change_screen_text(self, name, text):
@@ -156,8 +184,6 @@ class LcdDisplay(ActorBase):
             return
 
         next(s for s in self.__screens if s["Name"] == name)["Text"] = text
-        if self.CurrentScreen == name:
-            self.show_screen_name(name)
 
     # ----------------------------------------------------------
     # ----------------------------------------------------------
@@ -193,61 +219,12 @@ class LcdDisplay(ActorBase):
         return len(self.__screens)
     # ---------------------------------------------------------------------------
 
+    @property
+    def ResolveString(self):
+        return self.__eh
+
     # ----------------------------------------------------------
     # ----------------------------------------------------------
 
     def __del__(self):
         self.show_screen_index(0)
-
-import re
-from lxml import etree
-from helpers.event_handler import EventHandler
-
-class TemplateString(object):
-    __eh = EventHandler()
-
-    def resolve_value_template(xml):
-        if xml.attrib['type'] == 'number':
-            decimals = 4
-            if xml.attrib['decimals'] != None:
-                decimals = xml.attrib['decimals']
-            return f'{xml.text:.{decimals}}'
-
-
-    def resolve_opcua_template(xml, client):
-        #TemplateString.__eh(None, {'node' : xml.attrib['node']})
-        node_val = client.get_node(f'ns=2;s={xml.attrib["node"]}').get_value()
-        decimals = 4
-        if xml.attrib['decimals'] != None:
-            decimals = xml.attrib['decimals']
-        return f'{node_val:.{decimals}}'
-
-    def resolve_template_string(templ, client):
-        # Check if template string is present
-        match_str = '<.*>'
-        m = re.search(match_str, templ)
-        if m == None:
-            return templ
-
-        xml = ''
-        try:
-            xml = etree.XML(m.group())
-        except Exception as ex:
-            print(f'Given template string "{templ}" was not valid: {ex}')
-            return templ
-    
-        resolved_str = ''
-
-        if xml.tag == 'value':
-            resolved_str = TemplateString.resolve_value_template(xml)
-
-        if xml.tag == 'opcua':
-            resolved_str = TemplateString.resolve_opcua_template(xml, client)
-
-        str_front = templ.split(m.group())[0]
-        str_back  = templ.split(m.group())[1]
-        return str_front + resolved_str + str_back
-
-    @property
-    def ResolveOPCUA():
-        return TemplateString.__eh

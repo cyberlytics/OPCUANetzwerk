@@ -72,7 +72,6 @@ class MQ135(object):
             time.sleep(sampling_interval)
 
         while np.std(q) > 0.1:
-            print(np.std(q))
             q.pop(0)
             try:
                 rzero =  self.__get_corrected_resistance(temperature, humidity)

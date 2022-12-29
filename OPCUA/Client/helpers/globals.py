@@ -1,5 +1,5 @@
 from tkinter import Menu
-from actors.piezo import Piezo
+
 from libs.extension import Microcontroller, RefVoltage, Prescaler
 
 from helpers.systeminformation import SystemInformation
