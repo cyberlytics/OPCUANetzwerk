@@ -107,11 +107,12 @@ class LcdDisplay(ActorBase):
     # ----------------------------------------------------------
     def start_update(self):
         if self.__update_running:
-            return
+            return False
 
         self.__update_running = True
         self.__t = Thread(target=self.__update_screen_thread, args=[])
         self.__t.start()
+        return True
 
     def stop_update(self):
         self.__update_running = False
@@ -127,15 +128,17 @@ class LcdDisplay(ActorBase):
     def add_screen(self, name, text=('','')):
         if len([screen['Name'] for screen in self.__screens if screen['Name'] == name]) > 0:
             print(f"Screen {name} is already there")
-            return
+            return False
 
         self.__screens.append({'Name' : name, 'Text' : text})
+        return True
 
     # get_screen()
     def get_screen(self, name):
         screen = [screen for screen in self.__screens if screen['Name'] == name][0]
         if len(screen) <= 0:
             print(f"Screen {name} does not exist")
+            return False
         else: 
             return screen
 
@@ -143,6 +146,7 @@ class LcdDisplay(ActorBase):
     def remove_screen(self, name):
         if len([screen['Name'] for screen in self.__screens if screen['Name'] == name]) <= 0:
             print(f'Screen {name} does not exist')
+            return False
 
         # If Screen is currently shown, then show default screen
         if self.CurrentScreen == name:
@@ -150,6 +154,7 @@ class LcdDisplay(ActorBase):
 
         # Remove screen from list
         self.__screens = [screen for screen in self.__screens if screen['Name'] != name]
+        return True
 
     # show_screen_index()
     def show_screen_index(self, index):
@@ -181,9 +186,10 @@ class LcdDisplay(ActorBase):
     def change_screen_text(self, name, text):
         if len([screen['Name'] for screen in self.__screens if screen['Name'] == name]) <= 0:
             print(f"Screen with name {name} does not exist")
-            return
+            return False
 
         next(s for s in self.__screens if s["Name"] == name)["Text"] = text
+        return True
 
     # ----------------------------------------------------------
     # ----------------------------------------------------------

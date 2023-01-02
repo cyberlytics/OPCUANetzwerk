@@ -43,11 +43,12 @@ class MovementSensor(SensorBase):
 
     def start_measurement(self):
         if self.__measuring_active:
-            return
+            return False
 
         self.__measuring_active = True
         self.__t = Thread(target=self.__measure, args=[])
         self.__t.start()
+        return True
 
     def stop_measurement(self):
         self.__measuring_active = False

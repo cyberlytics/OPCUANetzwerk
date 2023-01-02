@@ -39,10 +39,11 @@ class Piezo(ActorBase):
 
     def start_alarm(self):
         if self.__alarm_active:
-            return
+            return False
         self.__alarm_active = True
         self.__t = Thread(target=self.__alarm, args=[])
         self.__t.start()
+        return True
 
     def stop_alarm(self):
         self.__alarm_active = False
