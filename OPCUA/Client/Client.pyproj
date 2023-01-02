@@ -51,12 +51,15 @@
     <Compile Include="sensors\sensor_base.py" />
     <Compile Include="helpers\systeminformation.py" />
     <Compile Include="TestSkript.py" />
+    <Compile Include="tests\bme280_test.py" />
+    <Compile Include="tests\lcd_test.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="actors\" />
     <Folder Include="helpers\" />
     <Folder Include="libs\" />
     <Folder Include="music\" />
+    <Folder Include="tests\" />
     <Folder Include="sensors\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
