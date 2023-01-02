@@ -45,18 +45,18 @@ export class LcdInputComponent implements OnInit {
       throw new Error("No SensorNode selected");
     }
 
-    if(!this.bothInputsValid()){
-      this.showToast("danger", "Input not correct", "Input contains invalid characters or is too long");
-    }else{
+    // if(!this.bothInputsValid()){
+    //   this.showToast("danger", "Input not correct", "Input contains invalid characters or is too long");
+    // }else{
       var response1 = await this.backendAPI.sendPutRequest(this.SensorNode, "1602A","TextLine1", this.input_data1);
       var response2 = await this.backendAPI.sendPutRequest(this.SensorNode, "1602A","TextLine2", this.input_data2);
 
-      if(response1 == null && response2 == null){
-        this.showToast("success", "LCD-Text updated", "Success");
-      }else{
-        this.showToast("danger", "LCD-Text update failed", response1.status + " " + response1.statusText+ " | " + response2.status + " " + response2.statusText);
-      }
-    }
+      // if(response1 == null && response2 == null){
+      //   this.showToast("success", "LCD-Text updated", "Success");
+      // }else{
+      //   this.showToast("danger", "LCD-Text update failed", response1.status + " " + response1.statusText+ " | " + response2.status + " " + response2.statusText);
+      // }
+    //}
   }
 
   showToast(type: string, message: string, title: string){

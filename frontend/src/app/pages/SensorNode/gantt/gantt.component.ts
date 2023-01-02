@@ -41,9 +41,8 @@ export class GanttComponent implements OnDestroy, OnChanges{
       const echarts: any = config.variables.echarts;
 
       const valveColors = [
-        "#f59527",
-        "#00e200",
-        "#2da8f3",
+        colors.warning,
+        colors.primary,
       ]
 
       function renderItem(params, api) {        
@@ -76,8 +75,6 @@ export class GanttComponent implements OnDestroy, OnChanges{
         },
         xAxis: {
           type: 'time',
-          min: range => range.min - (1 * 24 * 60 * 60 * 1000), //Subtract 7 days
-          max: range => range.max + (1 * 24 * 60 * 60 * 1000), //Subtract 7 days
              boundaryGap:false,
             axisLine: {
               lineStyle: {
@@ -120,7 +117,24 @@ export class GanttComponent implements OnDestroy, OnChanges{
           trigger: "item",
           formatter: params => {
             //hover Box
-            return `${params.data.name}<br/> ${params.data.value[0]} - ${params.data.value[1]}` //Unix timestamps should be converted to readable dates
+            let day = new Date(params.data.value[0]).getDay()
+            let month = new Date(params.data.value[0]).getMonth()
+            let year = new Date(params.data.value[0]).getFullYear()
+            let start = new Date(params.data.value[0])
+            //UTC Adds 1 hour
+            start.setTime(start.getTime() + start.getTimezoneOffset() * 60 * 1000)
+            let startH = start.getHours()
+            let startM = start.getMinutes()
+            let startS = start.getSeconds()
+
+            let end = new Date(params.data.value[1])
+            //UTC Adds 1 hour
+            end.setTime(end.getTime() + end.getTimezoneOffset() * 60 * 1000)
+            let endH = end.getHours()
+            let endM = end.getMinutes()
+            let endS = end.getSeconds()
+        
+            return `${"Date: "+day+"."+month+"."+year}<br/> ${"Time: "+startH+":"+startM+":"+startS} - ${endH+":"+endM+":"+endS}` //Unix timestamps should be converted to readable dates
           }
         },
         dataZoom: [
