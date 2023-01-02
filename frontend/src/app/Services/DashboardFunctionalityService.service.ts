@@ -84,38 +84,17 @@ export class DashboardFunctionalityService {
    */
   gantArray(mappedPresence: any){
     let ganttArr = []
-    let tempArr = []
-    let present = false;
-    let absent = false;
 
-    for (let i = 0; i < mappedPresence.length; i++) {
-      for (let j = 0; j < mappedPresence[i].length; j++) {
-        if (mappedPresence[i][1] == 0) {
-          tempArr.push(mappedPresence[i][0]);
-          absent = true;
-          if (absent == true && present == true) {
-            present = false;
-            absent = false;
-            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 1])
-            tempArr = []
-            tempArr.push(mappedPresence[i][0]);
-          }
-        }
-        else if (mappedPresence[i][1] == 1) {
-          tempArr.push(mappedPresence[i][0]);
-          present = true;
-          if (absent == true && present == true) {
-            present = false;
-            absent = false;
-            ganttArr.push([tempArr[0], tempArr[tempArr.length - 1], 0])
-            tempArr = []
-            tempArr.push(mappedPresence[i][0]);
-          }
-        }
-        else {
-          console.log("No Value! What happened?");
-        }
-      }
+    for (let i = 0; i < mappedPresence.length - 1; i++) {
+      let start = new Date(mappedPresence[i][0])
+      //Add 1 hour becauseof UTC
+      start.setTime(start.getTime() - start.getTimezoneOffset() * 60 * 1000)
+
+      let end = new Date(mappedPresence[i+1][0])
+      //Add 1 hour becauseof UTC
+      end.setTime(end.getTime() - end.getTimezoneOffset() * 60 * 1000)
+
+      ganttArr.push([start.toISOString(), end.toISOString(), mappedPresence[i][1]])
     }
     return ganttArr
   }

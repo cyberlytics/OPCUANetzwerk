@@ -156,6 +156,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       resultAir[i].value = resultAir[i].value / 1000;
     }
 
+
+
+
     
     //Structure Array: [[timestamp, value]]
     let mappedAir = this.dashboard.mapResult(resultAir);
@@ -163,6 +166,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     let mappedHumidity = this.dashboard.mapResult(resultHumidity);
     let mappedPresence = this.dashboard.mapResult(resultPresence);
     let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
+
 
 
 
@@ -179,6 +183,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
 
     let ganttArr = this.dashboard.gantArray(mappedPresence)
+    
 
 
     //Convert Date to ISO String
@@ -201,6 +206,9 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     let newPresence = this.dashboard.gantData(ganttArr);
     //APPLY NEW FIX newPresence.xAxis = finalGantt;
     this.ganttData = newPresence;   
+
+    //console.log("ganttdata", newPresence);
+    
 
 
     //AirQuality Part:
