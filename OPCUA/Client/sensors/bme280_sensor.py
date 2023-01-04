@@ -50,6 +50,7 @@ class BME280Sensor():
     def __read_calibration_params(self,i2cadress, bus):
         try:
             self.__calibration_params = bme280.load_calibration_params(bus, i2cadress)
+            return True
         except:
             print("Loading of calibration params not successful")
             return False
@@ -61,7 +62,7 @@ class BME280Sensor():
 
         # If no calibration params are present, then read them
         if self.__calibration_params == None:
-            return self.__read_calibration_params(self.__i2caddress, self.__bus)
+            result = self.__read_calibration_params(self.__i2caddress, self.__bus)
 
         # Try to read data
         try:

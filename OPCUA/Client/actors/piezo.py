@@ -17,7 +17,7 @@ class Piezo(ActorBase):
         # Alarm configuration
         self.__alarm_freq = 440
         self.__alarm_on_dur = .2
-        self.__alarm_of_dur = 5
+        self.__alarm_off_dur = 5
 
     def __play_tone(self, frequency, duration=None):
         dur = duration
@@ -35,7 +35,7 @@ class Piezo(ActorBase):
             self.__play_tone(self.__alarm_freq)
             time.sleep(self.__alarm_on_dur)
             self.__play_tone(0)
-            time.sleep(self.__alarm_of_dur)
+            time.sleep(self.__alarm_off_dur)
 
     def start_alarm(self):
         if self.__alarm_active:
@@ -51,10 +51,10 @@ class Piezo(ActorBase):
     # --- Frequency -------------------------------------------------------------
     @property
     def Frequency(self):
-        return self.__frequency
+        return self.__alarm_freq
     @Frequency.setter
     def Frequency(self, new_frequency):
-        self.__frequency = new_frequency
+        self.__alarm_freq = new_frequency
     # ---------------------------------------------------------------------------
 
 

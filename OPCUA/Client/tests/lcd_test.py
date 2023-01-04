@@ -64,6 +64,8 @@ def test_backlight_blink():
         lcd.set_backlight(False)
         time.sleep(0.5)
 
+    lcd.set_backlight(True)
+
 def test_update_functionality():
     print('Teste LCD Update Funktion')
 
@@ -74,3 +76,5 @@ def test_update_functionality():
     result = lcd.start_update()
 
     assert result == False
+
+    lcd.stop_update()
