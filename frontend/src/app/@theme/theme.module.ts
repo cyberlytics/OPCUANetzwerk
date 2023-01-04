@@ -43,6 +43,7 @@ import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
 import { NbDatepickerModule } from '@nebular/theme';
 import { FormsModule } from '@angular/forms';
+import { LedDisplayComponent } from './components/led-display/led-display.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -68,6 +69,7 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
+  LedDisplayComponent,
 ];
 const PIPES = [
   CapitalizePipe,
