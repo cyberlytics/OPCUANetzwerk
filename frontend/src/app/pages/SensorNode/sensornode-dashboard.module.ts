@@ -23,7 +23,7 @@ import { SwitchComponent } from './switch/switch.component';
 import { GanttComponent } from './gantt/gantt.component';
 import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.component';
 import { BackendDataService } from '../../Services/BackendDataService';
-import { TimespanService } from '../../Services/TimespanProviderService';
+import { SharedDataService } from '../../Services/SharedDataService';
 import { LcdInputComponent } from './lcd-input/lcd-input.component';
 import { AirQualityChartComponent } from './AirQuality/AirQualityChart/air-quality-chart.component';
 import { AirQualityComponent } from './AirQuality/air-quality.component';
@@ -58,6 +58,6 @@ const components = [
     NbInputModule
   ],
   declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent, LcdInputComponent, BuzzerFrequencyComponent ],
-  providers: [BackendDataService, TimespanService],
+  providers: [BackendDataService, SharedDataService],
 })
 export class SensorNodeDashboardModule { }
