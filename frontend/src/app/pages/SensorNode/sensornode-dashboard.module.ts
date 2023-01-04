@@ -27,6 +27,7 @@ import { TimespanService } from '../../Services/TimespanProviderService';
 import { LcdInputComponent } from './lcd-input/lcd-input.component';
 import { AirQualityChartComponent } from './AirQuality/AirQualityChart/air-quality-chart.component';
 import { AirQualityComponent } from './AirQuality/air-quality.component';
+import { BuzzerFrequencyComponent } from './buzzerFrequency/buzzer-frequency/buzzer-frequency.component';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -56,7 +57,7 @@ const components = [
     NgxEchartsModule,
     NbInputModule
   ],
-  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent, LcdInputComponent ],
+  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent, LcdInputComponent, BuzzerFrequencyComponent ],
   providers: [BackendDataService, TimespanService],
 })
 export class SensorNodeDashboardModule { }

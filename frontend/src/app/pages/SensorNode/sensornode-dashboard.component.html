@@ -4,11 +4,12 @@
 <div class="row">
   <div class="col-xxxl-5 col-xxl-4 col-lg-5 col-md-6">
     <lcd-input [SensorNode]="SensorNodeId"></lcd-input>
-      <div *ngFor="let statusCard of statusCards">
+    <buzzer-frequency [SensorNode]="SensorNodeId"></buzzer-frequency>
+      <!-- <div *ngFor="let statusCard of statusCards">
         <Switch [title]="statusCard.title" [type]="statusCard.type">
           <i [ngClass]="statusCard.iconClass"></i>
         </Switch>
-      </div>
+      </div> -->
   </div>
 
   <div class="col-xxxl-7 col-xxl-8 col-lg-7 col-md-6">

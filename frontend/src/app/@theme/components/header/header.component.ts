@@ -144,7 +144,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.timespanservice.updateData(FromDate_date, ToDate_date);
   }
 
-  //Sets the from date to the beginning of the current week, sets the to date to the current date
   setDefaultTimespan() {
     this.ToDate = new Date();
 

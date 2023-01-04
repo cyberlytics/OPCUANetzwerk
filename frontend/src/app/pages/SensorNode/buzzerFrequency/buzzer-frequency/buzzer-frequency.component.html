@@ -1,0 +1,10 @@
+<nb-card>
+    <nb-card-header>Buzzer Frequency</nb-card-header>
+    <nb-card-body>
+        <div class="flex">
+            <input type="text" [(ngModel)]="input" nbInput fullWidth placeholder="Frequency (Hz)" (ngModelChange)="change($event)" class="flex-item">
+            <button nbButton class="flex-item" status ="primary" [disabled]="disabled" (click)="onSubmit()">Submit</button>
+        </div>
+
+    </nb-card-body>
+</nb-card>
