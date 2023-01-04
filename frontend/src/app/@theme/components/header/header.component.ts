@@ -24,6 +24,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   user: any;
   fromPicker: any;
   checked: boolean = false;
+  SensorNode: string;
 
   subscription: Subscription;
   intervalId: number;
@@ -100,6 +101,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     const source = interval(5000);
     this.subscription = source.subscribe(val => this.updateLiveDates());
+
+    //subscribe to the SonsorNode to get the node id
+    this.timespanservice.currentSensorNode.subscribe(node => {
+      if (node != null) {
+        this.SensorNode = node;
+      }
+    });
+
   }
 
   updateLiveDates(){
