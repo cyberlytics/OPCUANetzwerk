@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { BackendDataService } from '../../../Services/BackendDataService';
 
@@ -13,7 +13,7 @@ enum InputError {
   templateUrl: './lcd-input.component.html',
   styleUrls: ['./lcd-input.component.scss']
 })
-export class LcdInputComponent implements OnInit {
+export class LcdInputComponent implements OnInit, OnChanges{
 
   constructor(private backendAPI: BackendDataService,private toastrService: NbToastrService) { }
 
@@ -30,14 +30,36 @@ export class LcdInputComponent implements OnInit {
   input_data2: string = "";
 
   ngOnInit(): void {
-    this.backendAPI.getActorValue(this.SensorNode, "1602A", "TextLine1").then((value) => {
-      this.input_data1 = value;
-    });
+    this.getSensorNodeValues()
+  }
 
-    this.backendAPI.getActorValue(this.SensorNode, "1602A", "TextLine2").then((value) => {
-      this.input_data2 = value;
+  ngOnChanges(changes: SimpleChanges): void {
+    this.getSensorNodeValues()
+  }
+
+  getSensorNodeValue(node, actor, value) {
+    return this.backendAPI.getActorValue(node, actor, value);
+  }
+
+  getSensorNodeValues(){
+    var res1 = this.getSensorNodeValue(this.SensorNode, "1602A", "TextLine1")
+  
+    var res2 = this.getSensorNodeValue(this.SensorNode, "1602A", "TextLine2")
+
+    //wait for both requests to finish
+    Promise.all([res1, res2]).then((values) => {
+      this.input_data1 = values[0];
+      this.input_data2 = values[1];
+    }).catch((error) => {
+      this.showToast("danger", "LCD-Text update failed", error);
     });
   }
+
+
+
+
+
+  
 
   async onSubmit(value: any) {
 
