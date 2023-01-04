@@ -7,7 +7,7 @@ import { LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
-import { TimespanService } from '../../Services/TimespanProviderService';
+import { SharedDataService } from '../../Services/SharedDataService';
 import { DashboardFunctionalityService } from '../../Services/DashboardFunctionalityService.service';
 import { AirQualityData } from './AirQuality/AirQualityChart/air-quality-data';
 import { AirQualityTableData } from './AirQuality/air-quality-list-data';
@@ -80,7 +80,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
               private backendApi: BackendDataService, 
               private route: ActivatedRoute, 
               private router: Router, 
-              private timespan: TimespanService,
+              private timespan: SharedDataService,
               private dashboard: DashboardFunctionalityService) {
     this.theme.getJsTheme()
       .pipe(takeWhile(() => this.alive))
@@ -250,7 +250,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       this.getData();
     });
 
-    this.timespan.currentData.subscribe(data => {
+    this.timespan.currentTimespan.subscribe(data => {
       this.selectedTimespan = data;
       this.getData();
     });

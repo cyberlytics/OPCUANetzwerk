@@ -6,7 +6,7 @@ import { LayoutService } from '../../../@core/utils';
 import { map, takeUntil } from 'rxjs/operators';
 import { interval, Subject, Subscription } from 'rxjs';
 import { type } from 'os';
-import { TimespanService } from '../../../Services/TimespanProviderService';
+import { SharedDataService } from '../../../Services/SharedDataService';
 import { NbSearchService } from '@nebular/theme';
 import {Location} from '@angular/common'; 
 import { Router } from '@angular/router';
@@ -63,7 +63,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private userService: UserData,
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
-    private timespanservice: TimespanService,
+    private timespanservice: SharedDataService,
     private searchService: NbSearchService,
     private location: Location,
     private router: Router) {
@@ -109,7 +109,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
     //set the to date to the current date
     this.ToDate = new Date();
-    this.timespanservice.updateData(this.FromDate, this.ToDate);
+    this.timespanservice.updateTimespanData(this.FromDate, this.ToDate);
   }
 
   ngOnDestroy() {
@@ -141,7 +141,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     var FromDate_date = this.FromDate;
     var ToDate_date = this.ToDate;
 
-    this.timespanservice.updateData(FromDate_date, ToDate_date);
+    this.timespanservice.updateTimespanData(FromDate_date, ToDate_date);
   }
 
   setDefaultTimespan() {
@@ -154,6 +154,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     monday.setHours(0, 0, 0, 0);
     this.FromDate = monday;
 
-    this.timespanservice.updateData(this.FromDate, this.ToDate);
+    this.timespanservice.updateTimespanData(this.FromDate, this.ToDate);
   }
 }
