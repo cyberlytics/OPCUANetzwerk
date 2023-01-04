@@ -67,6 +67,8 @@ def handle_client(server, client_dict):
 
 if __name__ == "__main__":
 
+    time.sleep(60)
+
     # Create Server Object
     server = Server()
     

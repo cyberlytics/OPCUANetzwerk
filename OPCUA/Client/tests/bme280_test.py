@@ -14,23 +14,32 @@ def test_read_values_bme280():
     bus = smbus2.SMBus(1)
     bme280 = BME280Sensor(0x77, bus)
     print('Read values of bme280')
+    #bme280.read_sensor_values()
 
-    t = bme280.temperature[0]
-    h = bme280.humidity[0]
-    a = bme280.airpressure[0]
+    time.sleep(1)
 
-    assert t != None
-    assert h != None
-    assert a != None
+    tx= bme280.temperature
+    hx= bme280.humidity
+    ax= bme280.airpressure
+    t = tx[0]
+    h = hx[0]
+    a = ax[0]
+
+    assert tx != None
+    assert hx != None
+    assert ax != None
 
     print('Read values again after 3 seconds. Values should not change')
     time.sleep(3)
 
     # Test that values haven't changed
     
-    tn = bme280.temperature[0]
-    hn = bme280.humidity[0]
-    an = bme280.airpressure[0]
+    tx = bme280.temperature
+    hx = bme280.humidity
+    ax = bme280.airpressure
+    tn = tx[0]
+    hn = hx[0]
+    an = ax[0]
 
     assert t == tn
     assert h == hn
@@ -40,6 +49,7 @@ def test_read_new_values_bme280():
     bus = smbus2.SMBus(1)
     bme280 = BME280Sensor(0x77, bus)
     print('Read values of bme280')
+    bme280.read_sensor_values()
 
     t = bme280.temperature[2]
     h = bme280.humidity[2]

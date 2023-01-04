@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '..')
+
 from sensors.mq135 import MQ135
 from libs.extension import Microcontroller, RefVoltage, Prescaler
 import smbus2

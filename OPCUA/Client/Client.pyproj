@@ -4,7 +4,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>2bcf5081-4568-47c8-bf9a-f9fa472bc518</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Client.old.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,7 +26,6 @@
     <Compile Include="Client.py" />
     <Compile Include="helpers\airquality.py" />
     <Compile Include="helpers\connection_helper.py" />
-    <Compile Include="helpers\globals.py" />
     <Compile Include="helpers\music_helper.py" />
     <Compile Include="helpers\template_string.py" />
     <Compile Include="music\shenanigans.py" />
@@ -35,7 +35,6 @@
     <Compile Include="actors\led.py" />
     <Compile Include="actors\led_stripe.py" />
     <Compile Include="actors\piezo.py" />
-    <Compile Include="gasetest.py" />
     <Compile Include="helpers\event_handler.py" />
     <Compile Include="helpers\menu.py" />
     <Compile Include="helpers\opcua_helper.py" />
@@ -45,14 +44,15 @@
     <Compile Include="sensors\bme280_humidity.py" />
     <Compile Include="sensors\bme280_sensor.py" />
     <Compile Include="sensors\bme280_temperature.py" />
-    <Compile Include="Client.old.py" />
     <Compile Include="sensors\movement_sensor.py" />
     <Compile Include="sensors\mq135.py" />
     <Compile Include="sensors\sensor_base.py" />
     <Compile Include="helpers\systeminformation.py" />
-    <Compile Include="TestSkript.py" />
     <Compile Include="tests\bme280_test.py" />
     <Compile Include="tests\lcd_test.py" />
+    <Compile Include="tests\movement_sensor_test.py" />
+    <Compile Include="tests\mq135_test.py" />
+    <Compile Include="tests\piezo_test.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="actors\" />

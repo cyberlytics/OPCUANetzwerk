@@ -1,4 +1,5 @@
-import time
+import time, sys
+sys.path.insert(0, '..')
 
 from sensors.movement_sensor import MovementSensor
 
@@ -30,6 +31,7 @@ def test_single_movement():
     movement_sensor = MovementSensor(17)
     movement_sensor.start_measurement()
 
+    print('Test single movement')
     print('Please do a single movement now')
     time.sleep(10)
 
@@ -41,6 +43,7 @@ def test_repeated_movement():
     movement_sensor = MovementSensor(17)
     movement_sensor.start_measurement()
 
+    print('Test Repeated Movement')
     print('Please do a single movement now')
     time.sleep(10)
 
@@ -55,12 +58,15 @@ def test_movement_timeout():
     movement_sensor = MovementSensor(17)
     movement_sensor.start_measurement()
 
+    print('Test Movement Timeout')
     print('Please do a single movement now and ensure, that sensor does not trigger after that.')
     time.sleep(10)
     assert movement_sensor.Presence == True
 
     time.sleep(60)
     assert movement_sensor.Presence == False
+
+    movement_sensor.stop_measurement()
 
 
 
