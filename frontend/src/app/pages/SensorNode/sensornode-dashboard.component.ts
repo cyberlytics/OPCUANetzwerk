@@ -80,7 +80,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
               private backendApi: BackendDataService, 
               private route: ActivatedRoute, 
               private router: Router, 
-              private timespan: SharedDataService,
+              private sharedData: SharedDataService,
               private dashboard: DashboardFunctionalityService) {
     this.theme.getJsTheme()
       .pipe(takeWhile(() => this.alive))
@@ -236,6 +236,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     this.subscription = this.route.paramMap.subscribe(async params => {
       var id = params.get('id');
       this.SensorNodeId = id;
+      this.sharedData.updateSensorNode(id); 
 
       //Check if the Nodeid mathces one in the database, redirect to 404 if not
       var validNodes = await this.backendApi.getSensorNodes();
@@ -250,7 +251,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       this.getData();
     });
 
-    this.timespan.currentTimespan.subscribe(data => {
+    this.sharedData.currentTimespan.subscribe(data => {
       this.selectedTimespan = data;
       this.getData();
     });
