@@ -5,7 +5,7 @@
 \newline Die gemessenen Werte werden je nach Art des Sensors entweder zyklisch abgefragt und mittels OPC-UA an den Server übergeben oder bei Werteänderung azyklisch per OPC-UA übertragen.
 
 \subsection{OPC-UA Server}
-Die Client Anwendung wurde ebenfalls in Python mit der gleichen Bibliothek verwirklicht. Außerdem wird hier neben dem Ansteuern/Auslesen der Sensoren/Aktoren auch die Kommunikation mit dem OPC-UA Server und eine Steuerungsfunktionalität direkt am Knoten mit den vorhandenen Buttons realisiert. 
+Die Server-Anwendung importiert das Informationsmodell, legt mit diesem den Server an und startet ihn. Realisiert wurde diese mit der Python Library "python-opcua" von FreeOpcUa. Das verwendete Informationsmodell wurde mit dem Modellierungstool Siome erstellt und orientiert sich an dem Beispiel aus Abbildung 1. Da weder Siome noch die verwendete Library direkt Validierungsfunktionalitäten für das erstellte Informationsmodell unterstützen, wurde aus Zeitgründen hierauf verzichtet.
 
 \subsection{OPC-UA Clients}
 \newline Die Client Anwendung wurde ebenfalls in Python mit der gleichen Bibliothek verwirklicht. Außerdem wird hier neben dem Ansteuern/Auslesen der Sensoren/Aktoren auch die Kommunikation mit dem OPC-UA Server und eine Steuerungsfunktionalität direkt am Knoten mit den vorhandenen Buttons realisiert. 
