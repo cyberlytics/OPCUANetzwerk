@@ -29,7 +29,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   intervalId: number;
 
   toggle(event: any) {
-    console.log(event);
   }
 
   themes = [
