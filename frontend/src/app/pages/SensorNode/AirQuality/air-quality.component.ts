@@ -19,17 +19,18 @@ export class AirQualityComponent implements OnDestroy {
   private alive = true;
   
   @Input() chartData: AirQualityData;
-  @Input() listData: AirQualityTableData;
+  @Input() listData: AirQualityTableData[];
 
 
   //NgOnChanges to detect changes in input data
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.chartData) {
-      this.chartData = changes.chartData.currentValue;
+      //round the values to 2 decimal places
+      this.chartData = this.roundChartDataValues(changes.chartData.currentValue);
     }
 
     if (changes.listData) {
-      this.listData = changes.listData.currentValue;
+      this.listData = this.roundListDataValues(changes.listData.currentValue);
     }
   }
     
@@ -49,4 +50,22 @@ export class AirQualityComponent implements OnDestroy {
   ngOnDestroy() {
     this.alive = false;
   }
+
+  roundChartDataValues(chartData: AirQualityData): AirQualityData {
+    chartData.data.forEach((dataPoint) => {
+      dataPoint[1] = Math.round(dataPoint[1] * 100) / 100;
+    });
+    return chartData;
+  }
+
+  roundListDataValues(listData: AirQualityTableData[]): AirQualityTableData[] {
+    listData.forEach((dataPoint) => {
+      var avg = +dataPoint.average
+      var delta = +dataPoint.delta
+      dataPoint.average = (Math.round(avg * 100) / 100).toString();
+      dataPoint.delta = (Math.round(delta * 100) / 100).toString();
+    });
+    return listData;
+  }
+    
 }
