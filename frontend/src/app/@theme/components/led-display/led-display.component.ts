@@ -35,7 +35,6 @@ export class LedDisplayComponent implements OnInit, OnChanges{
     if (changes.SensorNode) {
       this.getLedValues();    
     }
-
   }
 
 

@@ -15,10 +15,6 @@ const routes: Routes = [{
       component: NotFoundComponent,
     }, 
     {
-      path: 'iot-dashboard',
-      component: DashboardComponent,
-    },
-    {
       path: ':id',
       component: SensorNodeDashboardComponent,
     },
