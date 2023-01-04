@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { NbGlobalPhysicalPosition, NbToastrService } from '@nebular/theme';
 import { BackendDataService } from '../../../../Services/BackendDataService';
 
@@ -7,7 +7,7 @@ import { BackendDataService } from '../../../../Services/BackendDataService';
   templateUrl: './buzzer-frequency.component.html',
   styleUrls: ['./buzzer-frequency.component.scss']
 })
-export class BuzzerFrequencyComponent implements OnInit {
+export class BuzzerFrequencyComponent implements OnInit, OnChanges {
 
   constructor(private toastrService: NbToastrService, private backendAPI: BackendDataService) { }
 
@@ -17,10 +17,19 @@ export class BuzzerFrequencyComponent implements OnInit {
   @Input() SensorNode: string;
 
   ngOnInit(): void {
+    this.getCurrentValue();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.getCurrentValue();
+  }
+
+  getCurrentValue(){
     this.backendAPI.getActorValue(this.SensorNode, "Piezo_1", "ToneFrequency").then((value) => {
       this.input = value;
     });
   }
+
 
   //a function to check if the input is a number
   isNumber(value: string): boolean {

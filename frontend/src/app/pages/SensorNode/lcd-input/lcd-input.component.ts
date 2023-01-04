@@ -54,13 +54,7 @@ export class LcdInputComponent implements OnInit, OnChanges{
       this.showToast("danger", "LCD-Text update failed", error);
     });
   }
-
-
-
-
-
   
-
   async onSubmit(value: any) {
 
     if(!this.SensorNode){
