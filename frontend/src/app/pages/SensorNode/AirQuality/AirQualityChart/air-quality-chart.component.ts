@@ -2,7 +2,6 @@ import { delay, takeWhile } from 'rxjs/operators';
 import { AfterViewInit, Component, Input, OnDestroy, SimpleChanges } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { LayoutService } from '../../../../@core/utils';
-import { ElectricityChart } from '../../../../@core/data/electricity';
 import { LineChartDataSeries } from '../../lineChartComponent/LineChartDataClass';
 import { AirQualityData } from './air-quality-data';
 import { EChartsOption } from 'echarts';

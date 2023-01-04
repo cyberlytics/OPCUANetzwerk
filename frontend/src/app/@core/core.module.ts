@@ -12,25 +12,6 @@ import {
   SeoService,
   StateService,
 } from './utils';
-import { UserData } from './data/users';
-import { ElectricityData } from './data/electricity';
-import { SmartTableData } from './data/smart-table';
-import { UserActivityData } from './data/user-activity';
-import { OrdersChartData } from './data/orders-chart';
-import { ProfitChartData } from './data/profit-chart';
-import { TrafficListData } from './data/traffic-list';
-import { EarningData } from './data/earning';
-import { OrdersProfitChartData } from './data/orders-profit-chart';
-import { TrafficBarData } from './data/traffic-bar';
-import { ProfitBarAnimationChartData } from './data/profit-bar-animation-chart';
-import { TemperatureHumidityData } from './data/temperature-humidity';
-import { SolarData } from './data/solar';
-import { TrafficChartData } from './data/traffic-chart';
-import { StatsBarData } from './data/stats-bar';
-import { CountryOrderData } from './data/country-order';
-import { StatsProgressBarData } from './data/stats-progress-bar';
-import { VisitorsAnalyticsData } from './data/visitors-analytics';
-import { SecurityCamerasData } from './data/security-cameras';
 
 const socialLinks = [
   {
