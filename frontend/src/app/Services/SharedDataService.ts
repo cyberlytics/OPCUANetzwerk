@@ -23,7 +23,6 @@ export class SharedDataService {
 
     async updateSensorNode(nodeId: string) {
         var output = nodeId;
-        console.log("SharedDataService: updateSensorNode: ", output);
         this.sourceId.next(output);
     }
 

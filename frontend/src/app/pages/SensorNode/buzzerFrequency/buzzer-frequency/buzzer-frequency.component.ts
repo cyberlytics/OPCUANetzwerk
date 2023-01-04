@@ -17,7 +17,6 @@ export class BuzzerFrequencyComponent implements OnInit {
   @Input() SensorNode: string;
 
   ngOnInit(): void {
-    console.log("BuzzerFrequencyComponent: ngOnInit: ", this.SensorNode);
     this.backendAPI.getActorValue(this.SensorNode, "Piezo_1", "ToneFrequency").then((value) => {
       this.input = value;
     });

@@ -40,7 +40,6 @@ export class LedDisplayComponent implements OnInit, OnChanges{
 
 
   ngOnInit(): void {
-    console.log("LedDisplayComponent: ngOnInit: ", this.SensorNode);
   }
 
   ngAfterViewInit(): void {
@@ -49,8 +48,6 @@ export class LedDisplayComponent implements OnInit, OnChanges{
     this.redLed = document.getElementById("redLed");
     this.yellowLed = document.getElementById("yellowLed");
     this.blueLed = document.getElementById("blueLed");
-
-    this.changeLedState(this.greenLed, true, LedColor.Green);
 
     //get the state of the leds every 10 seconds
     const source = interval(10000);
@@ -79,7 +76,6 @@ export class LedDisplayComponent implements OnInit, OnChanges{
 
   //this 
   changeLedState(led: HTMLElement, state: boolean, color: LedColor) {
-    console.log("LedDisplayComponent: changeLedState: ", this.SensorNode, led, state, color);
     if (!this.SensorNode) {
       throw new Error("No SensorNode selected");
     }
