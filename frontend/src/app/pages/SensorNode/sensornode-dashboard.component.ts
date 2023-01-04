@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
-import { SolarData } from '../../@core/data/solar';
 import { BackendDataService } from '../../Services/BackendDataService';
 import { LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
 import { Subscription } from 'rxjs';

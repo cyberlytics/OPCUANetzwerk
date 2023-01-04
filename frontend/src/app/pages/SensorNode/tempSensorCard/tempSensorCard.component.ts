@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators' ;
-import { SolarData } from '../../../@core/data/solar';
 import {echarts} from 'echarts';
 import { EChartsOption } from 'echarts';
 import * as moment from 'moment';

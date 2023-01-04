@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
-import { SolarData } from '../../../@core/data/solar';
 //import {echarts} from 'echarts';
 import * as echartsObj from 'echarts';
 import { EChartsOption } from 'echarts';
