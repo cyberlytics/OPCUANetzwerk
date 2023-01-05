@@ -15,7 +15,6 @@ class MovementSensor(SensorBase):
 
         self.__eh = EventHandler()
 
-        self.__t = Thread(target=self.__measure, args=[])
         self.__gpio_init()
 
     def __gpio_init(self):
@@ -28,20 +27,28 @@ class MovementSensor(SensorBase):
         while(self.__measuring_active):
             movement = GPIO.input(self.__pin)
 
-            # Pin is high and no presence -> presence starts
-            if not self.presence and movement:
-                self.__set_presence(True)
+            # Movement --> Reset timer
+            if movement:
                 last_movement_time = time.time()
 
+            # Pin is high and no presence -> presence starts
+            if not self.Presence and movement:
+                self.__set_presence(True)
+
+            # No movement for a minute --> Presence ends
             if self.__presence and not movement and time.time() - last_movement_time > 60:
                 self.__set_presence(False)
 
+            time.sleep(.2)
+
     def start_measurement(self):
         if self.__measuring_active:
-            return
+            return False
 
         self.__measuring_active = True
+        self.__t = Thread(target=self.__measure, args=[])
         self.__t.start()
+        return True
 
     def stop_measurement(self):
         self.__measuring_active = False
@@ -50,7 +57,7 @@ class MovementSensor(SensorBase):
 
     # --- Presence --------------------------------------------------------------
     @property
-    def presence(self):
+    def Presence(self):
         return self.__presence
 
     def __set_presence(self, value):
