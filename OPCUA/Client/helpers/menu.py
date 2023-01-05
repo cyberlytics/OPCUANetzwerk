@@ -9,11 +9,12 @@ from threading import Thread
 
 class Menu(object):
     
-    def __init__(self, lcd_display):
+    def __init__(self, lcd_display, music):
         """Menu(): Menu handling for LCD-Display and 4 Buttons
         """
         self.__buttons = Buttons()
         self.__lcd = lcd_display
+        self.__music = music
         self.__special_function_thread = Thread(target=self.__special_function, args=[])
         self.__special_function_thread.start()
         self.__eh = EventHandler()
@@ -44,7 +45,7 @@ class Menu(object):
             while self.__buttons.Button2.Status and self.__buttons.Button3.Status:
                 if time.time() - start > 5:
                     pass
-                    #globals.music.play(shenanigans.shenanigans, 180, .75)
+                    self.__music.play(shenanigans.shenanigans)
     # ----------------------------------------------------------
     # ----------------------------------------------------------
 

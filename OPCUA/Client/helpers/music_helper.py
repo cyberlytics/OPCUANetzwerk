@@ -3,9 +3,8 @@ import sys, re, time
 
 class MusicHelper(object):
 
-    def __init__(self, uc, pin):
-        self.__uc = uc
-        self.__pin = pin
+    def __init__(self, piezo):
+        self.__piezo = piezo
 
         self.__NOTES          = { "c":0, "c#":1, "db":1, "d":2, "d#":3, "eb":3, "e":4, "f":5, "f#":6, "gb":6, "g":7, "g#":8, "ab":8, "a":9, "a#":10, "b":10, "h":11 }
         self.__NOTE_LETTERS   = "|".join(re.escape(n) for n in self.__NOTES.keys())
@@ -28,7 +27,7 @@ class MusicHelper(object):
     
         return (freq, dur)
     
-    def play(self, sequence, bpm, node_length):
+    def play(self, sequence, bpm=180, node_length=.75):
         MIN_BPM =  10
         MAX_BPM = 300
 
@@ -45,7 +44,7 @@ class MusicHelper(object):
             dur_on  = dur * node_length
             dur_off = dur - dur_on
         
-            self.__uc.playFrequency(self.__pin, freq)
+            self.__piezo.playFrequency(freq)
             time.sleep(dur_on)
-            self.__uc.playFrequency(self.__pin, 0)
+            self.__piezo.playFrequency(0)
             time.sleep(dur_off)
