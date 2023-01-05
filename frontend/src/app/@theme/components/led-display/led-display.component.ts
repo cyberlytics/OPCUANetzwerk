@@ -66,8 +66,6 @@ export class LedDisplayComponent implements OnInit, OnChanges{
 
 
     Promise.all([greenValue, redValue, yellowValue, blueValue]).then((values) => {
-
-      console.log("VALUES:", values);
       this.changeLedState(this.greenLed, this.parseBoolean(values[0]), LedColor.Green);
       this.changeLedState(this.redLed, this.parseBoolean(values[1]), LedColor.Red);
       this.changeLedState(this.yellowLed, this.parseBoolean(values[2]), LedColor.Yellow);
