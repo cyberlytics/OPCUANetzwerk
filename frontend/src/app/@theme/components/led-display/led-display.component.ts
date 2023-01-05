@@ -64,12 +64,14 @@ export class LedDisplayComponent implements OnInit, OnChanges{
     var yellowValue = this.backendAPI.getActorValue(this.SensorNode, "LED_Stripe_1", "OrangeLED");
     var blueValue = this.backendAPI.getActorValue(this.SensorNode, "LED_Stripe_1", "BlueLED");
 
+
     Promise.all([greenValue, redValue, yellowValue, blueValue]).then((values) => {
 
-      this.changeLedState(this.greenLed, values[0], LedColor.Green);
-      this.changeLedState(this.redLed, values[1], LedColor.Red);
-      this.changeLedState(this.yellowLed, values[2], LedColor.Yellow);
-      this.changeLedState(this.blueLed, values[3], LedColor.Blue);
+      console.log("VALUES:", values);
+      this.changeLedState(this.greenLed, this.parseBoolean(values[0]), LedColor.Green);
+      this.changeLedState(this.redLed, this.parseBoolean(values[1]), LedColor.Red);
+      this.changeLedState(this.yellowLed, this.parseBoolean(values[2]), LedColor.Yellow);
+      this.changeLedState(this.blueLed, this.parseBoolean(values[3]), LedColor.Blue);
     });
 
   }
@@ -113,6 +115,10 @@ export class LedDisplayComponent implements OnInit, OnChanges{
       led.style.boxShadow = "none";
     }
 
+  }
+
+  parseBoolean(value: string): boolean {
+    return value == "True";
   }
 
 }
