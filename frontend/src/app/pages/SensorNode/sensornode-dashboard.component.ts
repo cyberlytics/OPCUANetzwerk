@@ -75,12 +75,12 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   //END Switch Button
 
 
-  constructor(private theme: NbThemeService, 
-              private backendApi: BackendDataService, 
-              private route: ActivatedRoute, 
-              private router: Router, 
-              private sharedData: SharedDataService,
-              private dashboard: DashboardFunctionalityService) {
+  constructor(private theme: NbThemeService,
+    private backendApi: BackendDataService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private sharedData: SharedDataService,
+    private dashboard: DashboardFunctionalityService) {
     this.theme.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {
@@ -133,6 +133,35 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     this.getData();
   }
 
+  //function to shorten already mapped data, every 10 values get summarized into one average datapoint
+  shortenMappedData(mappedData: any) {
+    // initialize empty array to store the shortened data
+    let shortened = [];
+    // initialize sum to 0
+    let sum = 0;
+    // initialize counter to 0
+    let counter = 0;
+    // loop through mappedData
+    for (let i = 0; i < mappedData.length; i++) {
+      // add the value to the sum
+      sum += mappedData[i][1];
+      // add 1 to the counter
+      counter++;
+      // if the counter is 10
+      if (counter == 10) {
+        // calculate the average of the sum
+        let average = sum / 10;
+        // add the new data point to the shortened array
+        shortened.push([mappedData[i][0], average]);
+        // reset the sum and counter
+        sum = 0;
+        counter = 0;
+      }
+    }
+    // return the shortened array
+    return shortened;
+  }
+
   async getData() {
 
     //check if both from and to date have values
@@ -158,13 +187,22 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
 
 
-    
+
     //Structure Array: [[timestamp, value]]
     let mappedAir = this.dashboard.mapResult(resultAir);
     let mappedTemp = this.dashboard.mapResult(resultTemp);
     let mappedHumidity = this.dashboard.mapResult(resultHumidity);
     let mappedPresence = this.dashboard.mapResult(resultPresence);
     let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
+
+
+    // //shorten all mapped data
+    //TODO: the slow loading times are apparently not caused by a lot of data to display, but the time ofthe request itself -> decide if shortened data is needed
+    // mappedAir = this.shortenMappedData(mappedAir);
+    // mappedTemp = this.shortenMappedData(mappedTemp);
+    // mappedHumidity = this.shortenMappedData(mappedHumidity);
+    // mappedPresence = this.shortenMappedData(mappedPresence);
+    // mappedAirQuality = this.shortenMappedData(mappedAirQuality);
 
 
 
@@ -182,7 +220,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
 
     let ganttArr = this.dashboard.gantArray(mappedPresence)
-    
+
 
 
     //Convert Date to ISO String
@@ -204,10 +242,10 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
 
     let newPresence = this.dashboard.gantData(ganttArr);
     //APPLY NEW FIX newPresence.xAxis = finalGantt;
-    this.ganttData = newPresence;   
+    this.ganttData = newPresence;
 
     //console.log("ganttdata", newPresence);
-    
+
 
 
     //AirQuality Part:
@@ -228,6 +266,8 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
   }
 
 
+
+
   private subscription: Subscription;
   SensorNodeId: string;
 
@@ -235,7 +275,7 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     this.subscription = this.route.paramMap.subscribe(async params => {
       var id = params.get('id');
       this.SensorNodeId = id;
-      this.sharedData.updateSensorNode(id); 
+      this.sharedData.updateSensorNode(id);
 
       //Check if the Nodeid mathces one in the database, redirect to 404 if not
       var validNodes = await this.backendApi.getSensorNodes();
