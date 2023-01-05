@@ -13,6 +13,7 @@ from helpers.connection_helper import ConnectionHelper
 from helpers.opcua_subscription_handler import OpcuaSubscriptionHandler
 from helpers.template_string import TemplateString
 from helpers.menu import Menu
+from helpers.music_helper import MusicHelper
 
 from sensors.bme280_sensor import BME280Sensor
 from sensors.mq135 import MQ135
@@ -98,18 +99,29 @@ def measurement_thread(args):
         vprint(f'CO2-Gehalt:       {airquality:.2f} ppm')
 
         # Set LEDS according to air value
-        if airquality < AirQuality.WarningLevel:
-            led_stripe.green_on()
-            piezo.stop_alarm()
-        if airquality > AirQuality.WarningLevel and airquality < AirQuality.AlarmLevel:
-            led_stripe.orange_on()
-            piezo.stop_alarm()
-        if airquality > AirQuality.AlarmLevel:
-            led_stripe.red_on()
-            piezo.start_alarm()
+        led_red     = False
+        led_orange  = False
+        led_green   = False
+
+        if airquality != None:
+            if airquality < AirQuality.WarningLevel:
+                led_stripe.green_on()
+                led_green = True
+                piezo.stop_alarm()
+            if airquality > AirQuality.WarningLevel and airquality < AirQuality.AlarmLevel:
+                led_stripe.orange_on()
+                led_orange = True
+                piezo.stop_alarm()
+            if airquality > AirQuality.AlarmLevel:
+                led_stripe.red_on()
+                led_red = True
+                piezo.start_alarm()
 
         ## Write values to pcua
         try:
+            opc.write_value('RedLED', 'Status', led_red)
+            opc.write_value('OrangeLED', 'Status', led_orange)
+            opc.write_value('GreenLED', 'Status', led_green)
             opc.write_value('Temperature', 'Value', temperature[0])
             opc.write_value('Humidity', 'Value', humidity[0])
             opc.write_value('AirPressure', 'Value', airpressure[0])
@@ -266,7 +278,8 @@ if __name__ == "__main__":
     opc = OpcuaHelper(opcua_client, sys_info.Hostname[-1])
 
     # Start menu
-    menu = Menu(lcd)
+    music = MusicHelper(piezo)
+    menu = Menu(lcd, music)
 
     # Dictionary for all sensors, actors and helpers
     sensors_actors_helpers = {

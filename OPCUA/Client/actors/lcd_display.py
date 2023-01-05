@@ -29,7 +29,6 @@ class LcdDisplay(ActorBase):
 
         self.__add_custom_characters()
 
-        self.__last_update_time = 0
         self.__update_running = False
 
         self.__eh = EventHandler()
@@ -119,10 +118,8 @@ class LcdDisplay(ActorBase):
 
     def __update_screen_thread(self):
         while self.__update_running:
-            if time.time() - self.__last_update_time > 5:
-                self.show_screen_name(self.CurrentScreen)
-                self.__last_update_time = time.time()
-            time.sleep(1)
+            self.show_screen_name(self.CurrentScreen)
+            time.sleep(5)
 
     # add_screen()
     def add_screen(self, name, text=('','')):

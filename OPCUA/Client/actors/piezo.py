@@ -30,6 +30,9 @@ class Piezo(ActorBase):
         else:
             self.__uc.playFrequency(self.__pin, frequency, dur)
 
+    def playFrequency(self, frequency):
+        self.__uc.playFrequency(self.__pin, frequency)
+
     def __alarm(self):
         while(self.__alarm_active):
             self.__play_tone(self.__alarm_freq)
