@@ -1,23 +1,45 @@
 #!/usr/bin/python
 
+### ---                              VERSIONS                              ---
+# V1.0.0    29.11.2022             
+#   - Installation für VPN Client implementiert
+# V1.0.1    02.12.2022
+#   - Funktion zum Anlegen von Dateien überarbeitet
+# V1.0.2    14.12.2022
+#   - DNS Update für VPN ergänzt
+# V1.0.3    14.12.2022
+#   - NTP Update für VPN ergänzt
+### --------------------------------------------------------------------------
+
 __author__      = "Manuel Zimmermann"
 __copyright__   = "Copyright 2022, Team Gruen WST Kurs 2022"
 __credits__     = []
 #__license__     = ""
-__version__     = "1.0.0"
+__version__     = "1.0.3"
 __maintainer__  = "Manuel Zimmermann"
 __email__       = "m.zimmermann1@oth-aw.de"
 __status__      = "Developement"
 
-import sys, os, re, argparse
+
+
+import sys, os, re, argparse, apt
 from pathlib import Path
 from getpass import getpass
 from datetime import datetime
+
+
 
 ### CONSTANTS / CONFIGURATION ###
 
 OVPN_CONFIG = """
 remote 8a770854cc89.sn.mynetname.net 443   # VPN Server-Verbindung
+
+script-security 2
+setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+up /usr/bin/update-systemd-resolved
+up-restart
+down /usr/bin/update-systemd-resolved
+down-pre
 
 proto tcp-client                           # TCP Protokoll
 dev tun                                    # Layer 3 OSI Netzwerk
@@ -175,7 +197,6 @@ gA==
 ### END CONSTANTS / CONFIGURATION ###
 
 
-
 ### GENERAL FUNCTIONS ###
 
 # Fancy Textausgabe auf der Konsole
@@ -232,18 +253,39 @@ def decrypt_key_if_encrypted(key_file, retries=3):
 
 # Erstellt eine Datei [file] und fügt den Inhalt [txt] ein. Existiert diese bereits und wurde keine Überschreibungsberechtigung [override] gesetzt,
 # wird ein Fehler geworfen. Zusätzlich wird die Berechtigung [perm] gesetzt
-def create_file(file, txt, override=False, perm="400"):
+def create_file(file, txt, override=False, perm=None, user=None):
     if file.is_file() and not override: raise Exception(f"Datei '{file}' existiert bereits")
     
     with file.open("w") as fh: fh.write(txt)
-    cmd(f"chmod {perm} '{file}'")
+    if perm: os.chmod(file, perm)
+    if user: os.chown(file, user, user)
+    
     return file
 
 # Öffnet eine Datei und führt darin einen REGEX-SUB aus, um den Inhalt nach einer gewissen Form anzupassen
 def replace_in_file(file, rgx, replacement=""):
     with file.open("r") as fh: txt = fh.read()
-    txt = rgx.sub(r"\g<1>", txt)
+    txt = rgx.sub(replacement, txt)
     with file.open("w") as fh: fh.write(txt)
+
+# Fügt einen Text am Ende der Datei an
+def append_in_file(file, txt):
+    with file.open("a") as fh: fh.write(txt)
+
+# Installiert neue Linux Packages
+cache = None
+def apt_install(package):
+    global cache
+    if cache is None:
+        cache = apt.cache.Cache()
+        cache.update()
+        cache.open()
+    
+    pkg = cache[package]
+    if not pkg.is_installed:
+        log(f"Installiere Paket '{package}'")
+        pkg.mark_install()
+        cache.commit()
 
 ### END GENERAL FUNCTIONS ###
 
@@ -256,36 +298,89 @@ def install_vpn():
         
     assert_is_admin() # Installation und Konfiguration benötigt Admin-Rechte (Dateien werden als Root angelegt und Permissions gesetzt)
 
+    # systemd-resolved updater installieren
+    log("Installiere Update-Resolver")
+    cmd("git clone https://github.com/jonathanio/update-systemd-resolved.git")
+    cmd("(cd update-systemd-resolved && make)")
+    cmd("rm -r update-systemd-resolved")
+    cmd("systemctl enable systemd-resolved.service") # Service autostart
+
+    # resolvectl nutzen. Alte resolv.conf als Fallback (wenn VPN nicht connected)
+    replace_in_file(Path("/etc/nsswitch.conf"), re.compile(r'(^#?hosts:.*?$)', re.M), r"hosts:          files resolve dns myhostname")
+    cmd("ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf") # Neuen Dienst als DNS nutzen
+    
+    replace_in_file(Path("/etc/systemd/resolved.conf"), re.compile(r'(^#?Domains=.*?$)', re.M), r"Domains=sn.local")
+    replace_in_file(Path("/etc/systemd/resolved.conf"), re.compile(r'(^#?DNSStubListener=.*?$)', re.M), r"DNSStubListener=no")
+
+    log("Update-Resolver installiert")
+
     ### OpenVPN installieren ###
     log("Prüfe OpenVPN Installation")
     openvpn_path = Path("/etc/openvpn")
     if not openvpn_path.is_dir(): # Paket "openvpn" noch nicht installiert? -> Installieren
         log("Installiere benötigte Pakete")
-        cmd(f"apt-get install openvpn -y")
+        apt_install("openvpn")
         if not openvpn_path.is_dir(): raise Exception(f"VPN Einrichtung fehlgeschlagen, da OpenVPN Konfigurationsordner '{openvpn_path}' fehlt. Wurde OpenVPN richtig installiert?")
     
     ### PKI installieren ###
     log("Installiere PKI")
-    ca_file     = create_file(openvpn_path.joinpath("sensornetzwerk_ca.crt"),     SERVER_CA,   True, "400") # Erstelle Server-CA File und setze Berechtigung
-    crt_file    = create_file(openvpn_path.joinpath("sensornetzwerk_client.crt"), CLIENT_CRT,  True, "400") # Erstelle Client-Cert File und setze Berechtigung
-    key_file    = create_file(openvpn_path.joinpath("sensornetzwerk_client.key"), CLIENT_KEY,  True, "400") # Erstelle Client-Key File
+    ca_file     = create_file(openvpn_path.joinpath("sensornetzwerk_ca.crt"),     SERVER_CA,   True, 0o400) # Erstelle Server-CA File und setze Berechtigung
+    crt_file    = create_file(openvpn_path.joinpath("sensornetzwerk_client.crt"), CLIENT_CRT,  True, 0o400) # Erstelle Client-Cert File und setze Berechtigung
+    key_file    = create_file(openvpn_path.joinpath("sensornetzwerk_client.key"), CLIENT_KEY,  True, 0o400) # Erstelle Client-Key File
     decrypt_key_if_encrypted(key_file)                                                                      # Keyfile noch verschlüsselt? -> entschlüsseln
 
     ### Zugangsdaten einrichten ###
     log("Richte OpenVPN Zugang ein")
     vpn_user    =   input(s("VPN Benutzername:", "white", "blue")+ " ")                       
     vpn_pass    = getpass(s("VPN Passwort    :", "white", "blue")+ " ")
-    secret_file = create_file(openvpn_path.joinpath(".secret"), f"{vpn_user}\n{vpn_pass}",     True, "400")
-    cfg_file    = create_file(openvpn_path.joinpath("client.conf"),               OVPN_CONFIG, True, "400") # VPN Konfigurations-Datei erstellen
+    secret_file = create_file(openvpn_path.joinpath(".secret"), f"{vpn_user}\n{vpn_pass}",     True, 0o400)
+    cfg_file    = create_file(openvpn_path.joinpath("client.conf"),               OVPN_CONFIG, True, 0o400) # VPN Konfigurations-Datei erstellen
 
     ### Autostart aktivieren ###
     log("Konfiguriere Autostart")
     replace_in_file(Path("/etc/default/openvpn"), re.compile(r'#?(AUTOSTART="all")', re.M), r"\g<1>") # Autostart aktivieren
-    cmd("systemctl enable openvpn@client.service")                                              # Autostart-Service aktivieren
+    cmd("systemctl enable openvpn@client.service")                                                    # Autostart-Service aktivieren
     cmd("systemctl daemon-reload")
     cmd("service openvpn@client start")
 
+    ### NTP einrichten
+    log("Konfiguriere NTP")
+    apt_install("ntp")
+    ntp_path = Path("/etc/ntp.conf")
+    replace_in_file(ntp_path, re.compile(r'(^#?server .*?$)', re.M), r"")
+    append_in_file(ntp_path, "\nserver 192.168.60.1")
+    cmd("systemctl stop systemd-timesyncd")
+    cmd("systemctl disable systemd-timesyncd")
+    cmd("/etc/init.d/ntp stop")
+    cmd("/etc/init.d/ntp start")
+
     log("VPN Einrichtung abgeschlossen")
+    
+    
+    
+def flash_microcontroller(hex_file):
+    log("Flashen des Mikrocontrollers gestartet")
+    
+    assert_is_admin() # Installation und Konfiguration benötigt Admin-Rechte
+
+    hex_file = Path(hex_file)
+    if not hex_file.is_file(): raise Exception(f"Flash-Datei '{hex_file}' nicht gefunden")
+
+    apt_install("avrdude")
+    
+    avr_conf_file = hex_file.parent.joinpath("avr.conf")
+    if not avr_conf_file.is_file():
+        log(f"Erstelle Konfigurations-Datei '{avr_conf_file}'")
+        cmd(f"cp /etc/avrdude.conf '{avr_conf_file}'")
+        avr_conf_file = Path(avr_conf_file)
+        
+        append_in_file(avr_conf_file, AVR_CONF)
+        
+    cmd(f"avrdude -p attiny84 -C '{avr_conf_file}' -c pi_extension -v -U '{hex_file}'")
+        
+        
+        
+        
 
 ### END INSTALLATION FUNCTIONS ###
 
@@ -296,8 +391,8 @@ def install_vpn():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog=Path(__file__).name, description="Installationsscript zum Einrichten des Servers")
     
-    parser.add_argument("-a", "--all", action='store_true', help="Alle Pakete installieren")
-    parser.add_argument("-v", "--vpn", action='store_true', help="Installiert und Konfiguriert den VPN-Zugang")
+    parser.add_argument("-a", "--all",   action='store_true', help="Alle Pakete installieren")
+    parser.add_argument("-v", "--vpn",   action='store_true', help="Installiert und Konfiguriert den VPN-Zugang")
 
     args = vars(parser.parse_args())
     
@@ -305,7 +400,8 @@ if __name__ == "__main__":
         if not any(args.values()):
             parser.print_help()
             raise Exception(f"Kein Argument angegeben")
-            
+
+        # Installer
         if args["all"] or args["vpn"]: install_vpn()
     
     except Exception as ex: log(ex, True)
