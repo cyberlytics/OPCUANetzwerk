@@ -14,4 +14,9 @@ def collect_and_insert_data():
     sensor_values = opcua_client.get_sensor_values()
     db_sensors.insert_many(sensor_values)
 
+@app.on_event("startup")
+@repeat_every(seconds=config.COLLECT_TIMEWINDOW_SECONDS)
+def update_act_values():
+    opcua_client.update_current_act_values()
+
 uvicorn.run('backend:app', host=config.HOST, port=config.PORT, log_level=config.LOG_LEVEL)
