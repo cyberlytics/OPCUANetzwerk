@@ -1,17 +1,27 @@
 import { Injectable, OnInit } from "@angular/core";
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { AppSettings } from "../statics/AppSettings";
+import { NbGlobalPhysicalPosition, NbToastrService } from "@nebular/theme";
 
 
 @Injectable()
 export class BackendDataService implements OnInit {
 
     //new http client
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient,private toastrService: NbToastrService) { }
 
     ngOnInit(): void {}
 
-    //function to get data from backend the host is defined in the folder static in the file AppSettings.ts
+   /**
+   * function to get data from backend the host is defined in the folder static in the file AppSettings.ts
+   * 
+   * @param {string}  sensornode - Name des Sensorknoten
+   * @param {string} sensorname - Sensorname 
+   * @param {string} sensortyp - Sensortyp (AirPressure , ...)
+   * @param {Date} startTimestamp - Startdatum nachdem die Daten gefiltert werden
+   * @param {Date} endTimestamp - Enddatum nachdem die Daten gefiltert werden
+   * 
+   */
     async getNodeData(sensornode?: string, sensorname?: string, sensortyp?: string, startTimestamp?: Date, endTimestamp?: Date) {
         let params = new HttpParams();
         //only append the params if they are not null
@@ -31,26 +41,93 @@ export class BackendDataService implements OnInit {
             params = params.append('endTimestamp', this.toLocalISOString(endTimestamp));
         }
 
-        var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues', { params: params }).toPromise<any>();
+        try{
+            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensorvalues', { params: params }).toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return [];
+            }
+        }
         return response;
     }
 
-    //TODO: BACKEND MUSS ALLE SESNORKNOTEN AUSGEBEN
-    //Diese Methode ist viel zu aufwendig
     async getSensorNodes() {
-        var response = await this.http.get(AppSettings.API_ENDPOINT + '/sensorvalues').toPromise<any>();
-
-        var data = response;
-
-        //find all unique sensornodes from data and return them
-        var sensornodes = data.map(x => x.sensornode).filter((value, index, self) => self.indexOf(value) === index);
-        return sensornodes;
+        try{
+            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensornodes').toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return [];
+            }
+        }
+        return response;
     }
 
-    //function to convert a date to the local time in iso format
+    async getActorValue(sensornode: string, actuatorname: string, actuator_act: string) {
+        try{
+            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/actuators/').toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return [];
+            }
+        }
+
+        for (const actuator of response) {
+            if(actuator.actuator_node == sensornode + "-" + actuatorname && actuator.actuator_act == actuator_act) {
+                return actuator.actuator_value;
+            }
+        }  
+        return response;
+    }
+
+    /**
+   * function to convert a date to the local time in iso format
+   * 
+   * @param {Date} date - Das zu formatierende Datum
+   * 
+   */
     toLocalISOString(date: Date) {
         var tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
         var localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, -1);
         return localISOTime;
     }
+
+    //function to send a put request to an actuator
+    async sendPutRequest(sensornode: string, actuatorname: string, actuator_act: string, value: string) {
+
+        var payload = {
+            "actuator_node": sensornode + "-" + actuatorname,
+            "actuator_act": actuator_act,
+            "new_value": value
+        }
+
+        try{
+            var response = await this.http.put(AppSettings.API_ENDPOINT_PI + '/actuators/', payload).toPromise<any>();
+        }
+        catch(error){
+            if(error instanceof HttpErrorResponse){
+                this.showError(error.message, 'HTTP Requst Failed');
+                return -1;
+            }
+        }
+        return response;
+    }
+
+    showError(message: string, title: string){
+        const config = {
+          status: "danger",
+          destroyByClick: true,
+          duration: 10000,//10s in ms 
+          hasIcon: true,
+          position: NbGlobalPhysicalPosition.TOP_RIGHT,
+          preventDuplicates: true,
+        };
+    
+        this.toastrService.show(message, title, config);
+      }
 }

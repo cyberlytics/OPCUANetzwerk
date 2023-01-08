@@ -27,7 +27,7 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
     //if data or unit changed, update the gauge
     //round trhe value to 2 decimal places
     var rounded = changes.data.currentValue.toFixed(2);
-
+    this.data = rounded;
     this.options.series[0].data[0].value = rounded;
     this.refreshOptions();
   }
@@ -117,7 +117,6 @@ export class TemperatureGaugeComponent implements OnDestroy, OnChanges {
               {
                 value: this.data,
                 color: colors.primary,
-                name: this.title
               }
             ]
           }

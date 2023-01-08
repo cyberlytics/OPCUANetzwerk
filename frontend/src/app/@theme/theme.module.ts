@@ -14,6 +14,7 @@ import {
   NbThemeModule,
   NbTimepickerModule,
   NbInputModule,
+  NbToggleModule,
 } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { NbSecurityModule } from '@nebular/security';
@@ -42,6 +43,7 @@ import { CORPORATE_THEME } from './styles/theme.corporate';
 import { DARK_THEME } from './styles/theme.dark';
 import { NbDatepickerModule } from '@nebular/theme';
 import { FormsModule } from '@angular/forms';
+import { LedDisplayComponent } from './components/led-display/led-display.component';
 
 const NB_MODULES = [
   NbLayoutModule,
@@ -56,7 +58,8 @@ const NB_MODULES = [
   NbSelectModule,
   NbIconModule,
   NbEvaIconsModule,
-  NbInputModule
+  NbInputModule,
+  NbToggleModule
 ];
 const COMPONENTS = [
   HeaderComponent,
@@ -66,6 +69,7 @@ const COMPONENTS = [
   OneColumnLayoutComponent,
   ThreeColumnsLayoutComponent,
   TwoColumnsLayoutComponent,
+  LedDisplayComponent,
 ];
 const PIPES = [
   CapitalizePipe,
