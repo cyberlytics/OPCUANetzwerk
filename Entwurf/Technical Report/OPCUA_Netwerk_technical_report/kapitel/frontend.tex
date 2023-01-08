@@ -4,11 +4,11 @@ Das Frontend wurde mithilfe des Admin-Dashboard ngx-admin auf Basis von Angular 
 
 \subsection{Architektur}
 
-In der unteren Abbildung (Fig. 1.) ist die Architektur des Frontend zu sehen. Eine Komponente besteht aus einem Template (HTML-Datei) und einem Style (SCSS-Datei). Diese werden als Metadaten im Dekorator der Komponente festgelegt und stellen die Ansicht dar. Mithilfe der Datenbindung kann das Template mit der Komponente Daten austauschen und gegebenenfalls Events ausführen. Bei Bedarf können Komponenten durch die Dependency Injection Zugriff auf eine Serviceklasse erhalten. Somit können wiederverwendbare Funktionen oder Daten aus dem Backend zur Verfügung gestellt werden. In den Modulen werden Komponenten, Module, Services usw. gruppiert und verwaltet. In Angular werden zwei Modularten unterschieden. Jedes Angular Projekt besitzt ein Root-Modul, das app.module.ts heißt. Diese ist dazu da, um die gesamte Webanwendung zu verwalten und diese wird beim Start der Anwendung als erstes geladen und initialisiert. Mit Feature-Modulen kann der Code, der sich auf eine bestimmte Funktionalität oder ein bestimmtes Feature bezieht, von anderem Code getrennt werden und bleibt somit organisiert.
+In der unteren Abbildung (Fig. 2.) ist die Architektur des Frontend zu sehen. Eine Komponente besteht aus einem Template (HTML-Datei) und einem Style (SCSS-Datei). Diese werden als Metadaten im Dekorator der Komponente festgelegt und stellen die Ansicht dar. Mithilfe der Datenbindung kann das Template mit der Komponente Daten austauschen und gegebenenfalls Events ausführen. Bei Bedarf können Komponenten durch die Dependency Injection Zugriff auf eine Serviceklasse erhalten. Somit können wiederverwendbare Funktionen oder Daten aus dem Backend zur Verfügung gestellt werden. In den Modulen werden Komponenten, Module, Services usw. gruppiert und verwaltet. In Angular werden zwei Modularten unterschieden. Jedes Angular Projekt besitzt ein Root-Modul, das app.module.ts heißt. Diese ist dazu da, um die gesamte Webanwendung zu verwalten und diese wird beim Start der Anwendung als erstes geladen und initialisiert. Mit Feature-Modulen kann der Code, der sich auf eine bestimmte Funktionalität oder ein bestimmtes Feature bezieht, von anderem Code getrennt werden und bleibt somit organisiert.
 
 \begin{figure}[thpb]
       \centering
-      \includegraphics[scale=0.55]{img/frontend_architecture.png}
+      \includegraphics[scale=0.55]{abbildungen/frontend_architecture.png}
       \caption{Angular Architektur des Projektes}
       \label{fig:frontend}
  \end{figure}
@@ -73,7 +73,7 @@ Zusätzlich zu den vorhandenen Komponenten vom ngx-admin wurden folgende weitere
 
 \subsection{Routing}
 Alle Verfügbaren seiten im Projekt repräsentieren ein Dashboard eines Sensorknotens.
-Zugänglich sind diese über die URL: /pages/{Knoten-ID}. Siehe Listing 3.
+Zugänglich sind diese über die URL: /pages/{Knoten-ID}. Siehe Listing 5.
 \begin{lstlisting}[caption={Knoten-ID Routing},captionpos=b,showstringspaces=false, basicstyle=\small,label={lst:sensor_dtype}]
     {
       path: ':id',
