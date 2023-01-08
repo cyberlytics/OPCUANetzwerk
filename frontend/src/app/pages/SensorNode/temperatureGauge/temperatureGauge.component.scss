@@ -14,3 +14,22 @@
     }
   }
 }
+
+.gauge{
+  display: flex;
+flex-direction: column;
+background-color: #ffffff;
+border: 0.0625rem solid #e4e9f2;
+border-radius: 0.25rem;
+box-shadow: none;
+color: #222b45;
+font-family: Open Sans, sans-serif;
+font-size: 0.9375rem;
+font-weight: 400;
+line-height: 1.25rem;
+margin-bottom: 1.875rem;
+}
+
+.gaugeTitle{
+  text-align: center !important;
+}

@@ -1,8 +1,24 @@
-<tempSensorCard
-[Temperature]="Temperature"
-[Humidity]="Humidity"
-[AirPresure]="AirPresure"
-></tempSensorCard>
+<tempSensorCard [Temperature]="Temperature" [Humidity]="Humidity" [AirPresure]="AirPresure"></tempSensorCard>
+
+
+<div class="row">
+  <div class="col-xxxl-5 col-xxl-4 col-lg-5 col-md-6">
+    <lcd-input [SensorNode]="SensorNodeId"></lcd-input>
+    <buzzer-frequency [SensorNode]="SensorNodeId"></buzzer-frequency>
+      <!-- <div *ngFor="let statusCard of statusCards">
+        <Switch [title]="statusCard.title" [type]="statusCard.type">
+          <i [ngClass]="statusCard.iconClass"></i>
+        </Switch>
+      </div> -->
+  </div>
+
+  <div class="col-xxxl-7 col-xxl-8 col-lg-7 col-md-6">
+    <air-quality [chartData]="AirQuality" [listData]="AirQualityList"></air-quality>
+  </div>
+</div>
+
+<Gantt [data]="ganttData"></Gantt>
+
 
 <!-- <TemperatureGauge [data]="gaugeRandom" unit ="°C"></TemperatureGauge> -->
 
@@ -26,5 +42,3 @@
         </Switch>
       </div>
 </div> -->
-
-<Gantt [data]="ganttData"></Gantt> 
