@@ -17,15 +17,16 @@
 
 class IICSlave;
 
+#define BUFFER_SIZE	16
+
 #pragma region IICBuffer
 
 class IICBuffer
 {
 private:
-	const uint8_t					_size;
 	uint8_t							_wPtr				= 0;
 	uint8_t							_rPtr				= 0;
-	uint8_t							*_buffer;
+	uint8_t							_buffer[BUFFER_SIZE];
 
 protected:
 	ERROR_t							write(const void *buf, uint8_t size);
@@ -35,8 +36,6 @@ protected:
 	uint8_t							readByte();
 
 public:
-									IICBuffer(uint8_t size) : _size(size), _buffer(new uint8_t[size]) {}
-
 	void							clear();
 	uint8_t							size();
 
@@ -48,9 +47,7 @@ public:
 #pragma region IICRequest
 
 class IICRequest : public IICBuffer {
-public:
-	IICRequest(uint8_t size) : IICBuffer(size) {}
-	
+public:	
 	template<typename Type>
 	inline ERROR_t					read(Type& var);
 	inline ERROR_t					read(void *var, uint8_t size);
@@ -73,8 +70,6 @@ inline ERROR_t IICRequest::read(void *var, uint8_t size)
 
 class IICResponse : public IICBuffer {
 public:
-	IICResponse(uint8_t size) : IICBuffer(size) {}
-
 	template<typename Type>
 	inline ERROR_t					write(Type var);
 	inline ERROR_t					write(const void *var, uint8_t size);
