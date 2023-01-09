@@ -44,7 +44,11 @@ export class LineChartComponent implements OnDestroy, OnChanges {
         tooltip: {
           trigger: 'axis'
         },
-        legend: {        },
+        legend: {
+          textStyle: {
+            color: echarts.textColor,
+          }
+        },
         xAxis: [
           {
              type: 'time',
@@ -93,9 +97,11 @@ export class LineChartComponent implements OnDestroy, OnChanges {
         series: this.data
       };
       this.refreshOptions();
+      console.log("textcolor", echarts.textColor)
+
       
     });
-
+    
   }
 
   onChartInit(echarts) {
