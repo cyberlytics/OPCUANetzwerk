@@ -56,7 +56,7 @@ export class LedDisplayComponent implements OnInit, OnChanges{
 
   getLedValues() {
     if (!this.SensorNode) {
-      throw new Error("No SensorNode selected");
+      return;
     }
 
     var greenValue = this.backendAPI.getActorValue(this.SensorNode, "LED_Stripe_1", "GreenLED");
