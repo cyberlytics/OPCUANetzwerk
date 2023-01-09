@@ -6,7 +6,6 @@ from backend.routes.sensor_routes import db_sensors
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from backend import app
-from opcua_client import OPCUAClient
 
 
 @app.on_event("startup")
