@@ -1,0 +1,29 @@
+<nb-card class="cards-container">
+  <nb-card size="large" class="table-card">
+    <nb-card-header>
+      Air Quality Averages
+    </nb-card-header>
+
+    <nb-list>
+      <nb-list-item *ngFor="let day of listData">
+        <span class="day">{{ day.day }}</span>
+        <span style="margin-left: 3rem;">
+          <nb-icon [class.down]="day.down" [class.up]="!day.down" [icon]="day.down ? 'arrow-down' : 'arrow-up'"
+            pack="eva">
+          </nb-icon> 
+          {{ day.delta }}
+        </span>
+        <span class="results">
+          {{ day.average}} <span class="caption">ppm</span>
+        </span>
+      </nb-list-item>
+    </nb-list>
+  </nb-card>
+
+  <nb-card size="large" class="chart-card">
+    <nb-card-header style="padding: 16px 24px 16px 24px;">
+      Air Quality History
+    </nb-card-header>
+    <air-quality-chart [data]="chartData"></air-quality-chart>
+  </nb-card>
+</nb-card>

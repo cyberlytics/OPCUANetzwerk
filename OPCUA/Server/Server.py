@@ -1,8 +1,11 @@
+#!/usr/bin/python
+
 from opcua import Server, instantiate, ua, Client
 import time
 from threading import Thread
 import socket
 import json
+from pathlib import Path
 
 # CONSTANTS ---------------------------------
 SERVER_ADDRESS         = 'server.sn.local'
@@ -11,65 +14,6 @@ SENSORNETWORK_NODEID   = 'ns=2;i=1036'
 SENSORNODE_TYPE_NODEID = 'ns=2;i=1009'
 INFORMATION_MODEL      = 'Informationsmodell.xml'
 # -------------------------------------------
-
-def threadFunc(serverHandle):
-    time.sleep(5)
-    sensornetwork_node = serverHandle.get_node('ns=2;i=1036')
-    
-    airpressure = 1000
-    humidity = 40
-    temperature = 5
-    airquality = 400
-    
-    while True:
-        time.sleep(10)
-        
-        airpressure = airpressure + 1.1
-        if airpressure > 1050:
-            airpressure = 1000
-        
-        humidity = humidity + 1
-        if humidity > 80:
-            humidity = 40
-        
-        temperature = temperature + 1
-        if temperature > 40:
-            temperature = 5
-        
-        airquality = airquality + 10
-        if airquality > 2200:
-            airquality = 400
-    
-        # Quick and dirty way to iterate over everything
-        for sensornode in sensornetwork_node.get_children():
-            for sensor in sensornode.get_children():
-                for sensorvalue in sensor.get_children():
-                    for sensorattribute in sensorvalue.get_children():
-                    
-                        # Set AirPressure
-                        if sensorvalue.get_browse_name() == ua.QualifiedName('AirPressure', 2) and\
-                            sensorattribute.get_browse_name() == ua.QualifiedName('Value', 2):
-                                sensorattribute.set_value(airpressure)
-                                
-                        # Set Humidity
-                        if sensorvalue.get_browse_name() == ua.QualifiedName('Humidity', 2) and\
-                            sensorattribute.get_browse_name() == ua.QualifiedName('Value', 2):
-                                sensorattribute.set_value(humidity)
-                                
-                        # Set Temperature
-                        if sensorvalue.get_browse_name() == ua.QualifiedName('Temperature', 2) and\
-                            sensorattribute.get_browse_name() == ua.QualifiedName('Value', 2):
-                                sensorattribute.set_value(temperature)
-                                
-                        # Set AirQuality
-                        if sensorvalue.get_browse_name() == ua.QualifiedName('AirQuality', 2) and\
-                            sensorattribute.get_browse_name() == ua.QualifiedName('Value', 2):
-                                sensorattribute.set_value(airquality)
-                        
-    time.sleep(30)
-    
-    serverHandle.stop()
-    exit()
         
 def sock_thread(opcua_server_handle):
 
@@ -123,12 +67,14 @@ def handle_client(server, client_dict):
 
 if __name__ == "__main__":
 
+    time.sleep(60)
+
     # Create Server Object
     server = Server()
     
     # Set Endpoint, import information model and start server
     server.set_endpoint(f"opc.tcp://{SERVER_ADDRESS}:{OPCUA_PORT}")
-    server.import_xml(INFORMATION_MODEL)
+    server.import_xml(Path(__file__).parent.joinpath(INFORMATION_MODEL))
     server.start()
 
     # Start thread to handle new clients

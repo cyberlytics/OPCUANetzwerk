@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
-import { SolarData } from '../../../@core/data/solar';
 //import {echarts} from 'echarts';
 import * as echartsObj from 'echarts';
 import { EChartsOption } from 'echarts';
@@ -12,12 +11,17 @@ import * as moment from 'moment';
   templateUrl: './gantt.component.html',
   styleUrls: ['./gantt.component.scss']
 })
-export class GanttComponent {
+export class GanttComponent implements OnDestroy, OnChanges{
 
   constructor(private theme: NbThemeService,) { }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.options.series = changes.data.currentValue;
+    if(changes.data.firstChange){
+      return
+    }
+    this.options.yAxis.data = changes.data.currentValue.yAxis
+    this.options.series[0].data = changes.data.currentValue.xAxis
+    this.data = changes.data.currentValue;    
     this.refreshOptions();
   }
 
@@ -34,15 +38,9 @@ export class GanttComponent {
       const colors: any = config.variables;
       const echarts: any = config.variables.echarts;
 
-      //Gantt Beispiele
-      //https://stackoverflow.com/questions/73300725/apache-echarts-schedule-style-chart-layout
-      //https://echarts.apache.org/examples/en/editor.html?c=custom-profile&reset=1&edit=1
-
-
       const valveColors = [
-        "#f59527",
-        "#00e200",
-        "#2da8f3",
+        colors.warning,
+        colors.primary,
       ]
 
       function renderItem(params, api) {        
@@ -71,12 +69,10 @@ export class GanttComponent {
       //Diagramm Optionen definieren
       this.options = {
         title: {
-          text: 'motion detector',
           left: 'center'
         },
         xAxis: {
           type: 'time',
-          min: range => range.min - (200 * 24 * 60 * 60 * 1000), //Subtract 7 days
              boundaryGap:false,
             axisLine: {
               lineStyle: {
@@ -119,7 +115,24 @@ export class GanttComponent {
           trigger: "item",
           formatter: params => {
             //hover Box
-            return `${params.data.name}<br/> ${params.data.value[0]} - ${params.data.value[1]}` //Unix timestamps should be converted to readable dates
+            let day = new Date(params.data.value[0]).getDay()
+            let month = new Date(params.data.value[0]).getMonth()
+            let year = new Date(params.data.value[0]).getFullYear()
+            let start = new Date(params.data.value[0])
+            //UTC Adds 1 hour
+            start.setTime(start.getTime() + start.getTimezoneOffset() * 60 * 1000)
+            let startH = start.getHours()
+            let startM = start.getMinutes()
+            let startS = start.getSeconds()
+
+            let end = new Date(params.data.value[1])
+            //UTC Adds 1 hour
+            end.setTime(end.getTime() + end.getTimezoneOffset() * 60 * 1000)
+            let endH = end.getHours()
+            let endM = end.getMinutes()
+            let endS = end.getSeconds()
+        
+            return `${"Date: "+day+"."+month+"."+year}<br/> ${"Time: "+startH+":"+startM+":"+startS} - ${endH+":"+endM+":"+endS}` //Unix timestamps should be converted to readable dates
           }
         },
         dataZoom: [

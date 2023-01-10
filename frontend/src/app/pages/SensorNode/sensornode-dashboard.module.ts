@@ -11,6 +11,7 @@ import {
   NbIconModule,
   NbTimepickerModule,
   NbDatepickerModule,
+  NbInputModule,
 } from '@nebular/theme';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { ThemeModule } from '../../@theme/theme.module';
@@ -22,7 +23,11 @@ import { SwitchComponent } from './switch/switch.component';
 import { GanttComponent } from './gantt/gantt.component';
 import { TemoSensorCardComponent } from './tempSensorCard/tempSensorCard.component';
 import { BackendDataService } from '../../Services/BackendDataService';
-import { TimespanService } from '../../Services/TimespanProviderService';
+import { SharedDataService } from '../../Services/SharedDataService';
+import { LcdInputComponent } from './lcd-input/lcd-input.component';
+import { AirQualityChartComponent } from './AirQuality/AirQualityChart/air-quality-chart.component';
+import { AirQualityComponent } from './AirQuality/air-quality.component';
+import { BuzzerFrequencyComponent } from './buzzerFrequency/buzzer-frequency/buzzer-frequency.component';
 
 const components = [
   SensorNodeDashboardComponent,
@@ -31,6 +36,8 @@ const components = [
   SwitchComponent,
   GanttComponent,
   TemoSensorCardComponent,
+  AirQualityChartComponent,
+  AirQualityComponent
 ];
 
 @NgModule({
@@ -47,9 +54,10 @@ const components = [
     NbListModule,
     NbIconModule,
     NbButtonModule,
-    NgxEchartsModule
+    NgxEchartsModule,
+    NbInputModule
   ],
-  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent ],
-  providers: [BackendDataService, TimespanService],
+  declarations: [ ...components, TemperatureGaugeComponent, SwitchComponent, GanttComponent, LcdInputComponent, BuzzerFrequencyComponent ],
+  providers: [BackendDataService, SharedDataService],
 })
 export class SensorNodeDashboardModule { }

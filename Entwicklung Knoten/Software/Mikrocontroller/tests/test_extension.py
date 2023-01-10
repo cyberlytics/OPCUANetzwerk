@@ -68,21 +68,21 @@ class TestMicrocontroller:
     #
     #    IIC_BUFFER_SIZE = 16
     #   
-    #    # Mikrocontroller-Empfangspuffer -> [cmd, data0, data1,   ...]   -> Es können also IIC_RECV_BUFFER_SIZE - 1 Bytes empfangen werden
-    #    # Mikrocontroller-Sendepuffer    -> [data0, data1, data2, ...]   -> Es können also IIC_SEND_BUFFER_SIZE     Bytes gesendet werden
+    #    # Mikrocontroller-Empfangspuffer -> [cmd, data0, data1,   ...]   -> Es koennen also IIC_RECV_BUFFER_SIZE - 1 Bytes empfangen werden
+    #    # Mikrocontroller-Sendepuffer    -> [data0, data1, data2, ...]   -> Es koennen also IIC_SEND_BUFFER_SIZE     Bytes gesendet werden
     #
     #    self.__uc.enable(True)
     #
     #    ## TESTFALL 1: Keine Daten gesendet/empfangen
     #    print("Teste Leere Datenuebertragung")
-    #    assert self.__uc.heartbeat([]) == [] # Keine Sende Daten -> Zurückgesendete Daten auch leer
+    #    assert self.__uc.heartbeat([]) == [] # Keine Sende Daten -> Zurueckgesendete Daten auch leer
     #    
-    #    ## TESTFALL 2: Empfangspuffer des Mikrocontrollers vollständig füllen
+    #    ## TESTFALL 2: Empfangspuffer des Mikrocontrollers vollstaendig fuellen
     #    print("Teste vollstaendig gefuellten Sendepuffer des Mikrocontrollers")
     #    data = [i for i in range(IIC_BUFFER_SIZE - 1)]
     #    assert self.__uc.heartbeat(data) == data
     #    
-    #    # TESTFALL 3: Empfangspuffer des Mikrocontrollers läuft über -> Mikrocontroller liefert NACK beim Überlauf
+    #    # TESTFALL 3: Empfangspuffer des Mikrocontrollers laeuft ueber -> Mikrocontroller liefert NACK beim ueberlauf
     #    print("Teste Empfangspufferueberlauf")
     #    data = [i for i in range(IIC_BUFFER_SIZE)]
     #    assert throws_exception(lambda: self.__uc.heartbeat(data) == data, OSError)
@@ -214,7 +214,7 @@ class TestMicrocontroller:
         time.sleep(2)
 
 
-        # Test Laufenden Endlos Ton überschreiben
+        # Test Laufenden Endlos Ton ueberschreiben
         print("Jetzt sollte ein Ton mit 440Hz fuer 2 Sekunden hoerbar sein")
         self.__uc.playFrequency(pin, 440)
         time.sleep(2)
@@ -224,22 +224,22 @@ class TestMicrocontroller:
         print("Jetzt sollte der Ton erloschen sein")
         time.sleep(2)
 
-        # Test Laufenden Begrenzten Ton überschreiben
+        # Test Laufenden Begrenzten Ton ueberschreiben
         print("Jetzt sollte ein Ton mit 440Hz fuer 2 Sekunden hoerbar sein")
         self.__uc.playFrequency(pin, 440, 3_000_000)
         time.sleep(2)
         print("Jetzt sollte ein Ton mit 880Hz fuer 4 Sekunden hoerbar sein")
-        self.__uc.playFrequency(pin, 880) #TODO: Scheint nicht zu funktionieren
+        self.__uc.playFrequency(pin, 880)
         time.sleep(4)
         print("Jetzt sollte der Ton erloschen sein")
         self.__uc.playFrequency(pin, 0)
         time.sleep(2)
 
-        # Teste gleichen Ton delay überschreiben
+        # Teste gleichen Ton delay ueberschreiben
         print("Jetzt sollte ein Ton mit 440Hz fuer 4 Sekunden hoerbar sein")
         self.__uc.playFrequency(pin, 440, 3_000_000)
         time.sleep(2)
-        self.__uc.playFrequency(pin, 440, 2_000_000) #TODO: Scheint nicht zu funktionieren
+        self.__uc.playFrequency(pin, 440, 2_000_000)
         time.sleep(2)
         print("Jetzt sollte der Ton erloschen sein")
         time.sleep(2)
@@ -272,7 +272,7 @@ class TestMicrocontroller:
         assert throws_exception(lambda: self.__call(cmd, "", "<B?B",  pin, False, 1),       UCException(UCException.GPIO_CALL_INVALID))             # Zu viele Parameter angegeben
 
     
-        #Teste Fehlerfälle
+        #Teste Fehlerfï¿½lle
         print("Teste Fehlerfaelle")
         assert throws_exception(lambda: self.__uc.input(invalid_pin),                       UCException(UCException.GPIO_NOT_EXISTING))
         assert throws_exception(lambda: self.__uc.output(invalid_pin, False),               UCException(UCException.GPIO_NOT_EXISTING))
@@ -304,30 +304,31 @@ class TestMicrocontroller:
     
         invalid_pin             = 6
         pairs                   = [(0,1), (2,3)]    # GPIO-Paare, welche verbunden sind (testen sich gegenseitig)
-        ANALOG_HIGH_THRESHOLD   = 1023 - 50         # Toleranz, in der der ADC-Wert für HIGH / LOW liegen muss
+        ANALOG_HIGH_THRESHOLD   = 1023 - 50         # Toleranz, in der der ADC-Wert fï¿½r HIGH / LOW liegen muss
         ANALOG_LOW_THRESHOLD    =    0 + 50
         presc                   = Prescaler.P128    # Sampling Prescaler
         ref                     = RefVoltage.V5     # Mess Referenzspannung
     
         self.__uc.enable(True)
 
-        print("Teste RPC Schnittstelle sample") # Aufbau: pin(byte) prescaler(byte) ref(byte) -> uint16_t
+        print("Teste RPC Schnittstelle sample") # Aufbau: pin(byte) prescaler(byte) ref(byte) [pullup(bool)] -> uint16_t
         pin = pairs[0][0]
         cmd = getattr(self.__uc, "_Microcontroller__ADCPIN_SAMPLE")
-        assert throws_exception(lambda: self.__call(cmd, "<H", ""),                                       UCException(UCException.IIC_BUFFER_EMPTY))            # Pin vergessen -> Mikrocontroller sollte mit IIC_BUFFER_EMPTY antworten
-        assert throws_exception(lambda: self.__call(cmd, "<H", "<B", pin),                                UCException(UCException.IIC_BUFFER_EMPTY))            # nur Pin spezifiziert -> prescaler und ref required
-        assert throws_exception(lambda: self.__call(cmd, "<H", "<BB", pin, presc.value),                  UCException(UCException.IIC_BUFFER_EMPTY))            # Pin + prescaler spezifiziert -> ref required
-        self.__call(cmd, "<H", "<BBB", pin, presc.value, ref.value)                                                                                             # Korrekter aufruf
-        assert throws_exception(lambda: self.__call(cmd, "", "<BBBB", pin, presc.value, ref.value, 0),    UCException(UCException.GPIO_CALL_INVALID))           # Zu viele Parameter angegeben
+        assert throws_exception(lambda: self.__call(cmd, "<H", ""),                                               UCException(UCException.IIC_BUFFER_EMPTY))            # Pin vergessen -> Mikrocontroller sollte mit IIC_BUFFER_EMPTY antworten
+        assert throws_exception(lambda: self.__call(cmd, "<H", "<B", pin),                                        UCException(UCException.IIC_BUFFER_EMPTY))            # nur Pin spezifiziert -> prescaler und ref required
+        assert throws_exception(lambda: self.__call(cmd, "<H", "<BB", pin, presc.value),                          UCException(UCException.IIC_BUFFER_EMPTY))            # Pin + prescaler spezifiziert -> ref required
+        self.__call(cmd, "<H", "<BBB",  pin, presc.value, ref.value)                                                                                                    # Korrekter aufruf
+        self.__call(cmd, "<H", "<BBBB", pin, presc.value, ref.value, True)                                                                                              # Korrekter Aufruf mit opt. Parameter Pullup
+        assert throws_exception(lambda: self.__call(cmd, "", "<BBBBB", pin, presc.value, ref.value, False, 0),    UCException(UCException.GPIO_CALL_INVALID))           # Zu viele Parameter angegeben
 
     
-        #Teste Fehlerfälle
+        #Teste Fehlerfï¿½lle
         print("Teste Fehlerfaelle")
         assert throws_exception(lambda: self.__uc.sample(invalid_pin, presc, ref),                        UCException(UCException.GPIO_NOT_EXISTING))
-        assert throws_exception(lambda: self.__call(cmd, "<H", "<BBB", pin, 0b1000, ref.value),           UCException(UCException.ADCPIN_INVALID_PRESCALER))    # Ungültiger Prescaler
-        assert throws_exception(lambda: self.__call(cmd, "<H", "<BBB", pin, presc.value, 0b11),           UCException(UCException.ADCPIN_INVALID_REF_VOLTAGE))  # Ungültige RefVoltage
+        assert throws_exception(lambda: self.__call(cmd, "<H", "<BBB", pin, 0b1000, ref.value),           UCException(UCException.ADCPIN_INVALID_PRESCALER))    # Ungueltiger Prescaler
+        assert throws_exception(lambda: self.__call(cmd, "<H", "<BBB", pin, presc.value, 0b11),           UCException(UCException.ADCPIN_INVALID_REF_VOLTAGE))  # Ungueltige RefVoltage
 
-        # Teste Existierenden Pin, jedoch ohne ADC Funktionalität (Pin 4 = PWMPin, kein ADCPin)
+        # Teste Existierenden Pin, jedoch ohne ADC Funktionalitï¿½t (Pin 4 = PWMPin, kein ADCPin)
         assert throws_exception(lambda: self.__uc.sample(4, presc, ref),                                  UCException(UCException.GPIO_FUNCTION_UNKNOWN))
 
 
@@ -352,6 +353,9 @@ class TestMicrocontroller:
         
                 self.__uc.input(b, True)                # B als Input, jedoch mit Pullup 
                 assert self.__uc.sample(a, presc, ref) >= ANALOG_HIGH_THRESHOLD 
+
+                self.__uc.input(b, False)               # B als Input floating
+                assert self.__uc.sample(a, presc, ref, True) >= ANALOG_HIGH_THRESHOLD # Pullup am Messpin testen
         
                 a,b = b,a                               # Pins tauschen und nochmal in umgekehrter Reihenfolge testen
 

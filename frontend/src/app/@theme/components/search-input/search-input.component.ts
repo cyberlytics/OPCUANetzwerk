@@ -6,11 +6,12 @@ import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular
   template: `
     <i class="control-icon ion ion-ios-search"
        (click)="showInput()"></i>
-    <input placeholder="Type your search request here..."
+    <input placeholder="WAS GEHT"
            #input
            [class.hidden]="!isInputShown"
            (blur)="hideInput()"
-           (input)="onInput($event)">
+           (input)="onInput($event)"
+           (keyup)="onKey($event)">
   `,
 })
 export class SearchInputComponent {
@@ -29,7 +30,15 @@ export class SearchInputComponent {
     this.isInputShown = false;
   }
 
+  values = '';
+  onKey(event: any) { // without type info
+    this.values += event.target.value + ' | ';
+  }
+
   onInput(val: string) {
+    console.log("val");
+    console.log(val);
+    
     this.search.emit(val);
   }
 }
