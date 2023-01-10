@@ -17,6 +17,6 @@ def collect_and_insert_data():
 
 @repeat_every(seconds=config.COLLECT_TIMEWINDOW_SECONDS)
 def refresh_opcua_client():
-    OPCUAClient(config.SENSOR_NETWORK_URL)
-
+    opcua_client = OPCUAClient(config.SENSOR_NETWORK_URL)
+    
 uvicorn.run('backend:app', host=config.HOST, port=config.PORT, log_level=config.LOG_LEVEL)
