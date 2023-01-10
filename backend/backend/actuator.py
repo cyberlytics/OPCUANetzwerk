@@ -48,6 +48,9 @@ class BaseActuator:
         self.acts[act] = obj
         return f'Value was set and is now: {val}'
     
+    def update_current_act_values(self):
+        for act in self.acts.values():
+            act['value'] = act['node'].get_value()
     
     def get_actuator_name(self):
         return f'{self.sensornode}-{self.sensor_descriptor}'

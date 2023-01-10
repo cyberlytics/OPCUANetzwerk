@@ -33,6 +33,10 @@ class OPCUAClient:
     def get_actuator_names(self):
         return [act for act in self.actuators]
 
+    def update_current_act_values(self):
+        for act in self.actuators:
+            act.update_current_act_values()
+
     def set_sensors_and_actuators(self):
         #Get a pointer to the "SensorNetwork"-Node starting from root-Node
         root = self.client.get_root_node()

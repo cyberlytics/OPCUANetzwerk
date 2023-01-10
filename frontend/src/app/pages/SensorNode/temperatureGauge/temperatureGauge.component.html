@@ -1,5 +1,14 @@
-<div echarts 
-id="gauge-container"
-[options]="options" 
-[merge]="options"
-(chartInit)="onChartInit($event)"></div>
+<nb-card>
+    <nb-card-header style="text-align: center !important;">{{this.title}}</nb-card-header>
+    <nb-card-footer>
+        <div echarts 
+        id="gauge-container"
+        [options]="options" 
+        [merge]="options"
+        (chartInit)="onChartInit($event)"></div>
+    </nb-card-footer>
+</nb-card>
+
+
+
+

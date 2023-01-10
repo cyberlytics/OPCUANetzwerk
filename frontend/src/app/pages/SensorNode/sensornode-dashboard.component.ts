@@ -1,13 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbThemeService } from '@nebular/theme';
-import { takeWhile } from 'rxjs/operators' ;
-import { SolarData } from '../../@core/data/solar';
+import { takeWhile } from 'rxjs/operators';
 import { BackendDataService } from '../../Services/BackendDataService';
-import {  LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
+import { LineChartDataSeries } from './lineChartComponent/LineChartDataClass';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import {Router} from '@angular/router';
-import { TimespanService } from '../../Services/TimespanProviderService';
+import { Router } from '@angular/router';
+import { SharedDataService } from '../../Services/SharedDataService';
+import { DashboardFunctionalityService } from '../../Services/DashboardFunctionalityService.service';
+import { AirQualityData } from './AirQuality/AirQualityChart/air-quality-data';
+import { AirQualityTableData } from './AirQuality/air-quality-list-data';
+import { convertUpdateArguments } from '@angular/compiler/src/compiler_util/expression_converter';
 
 
 
@@ -28,44 +31,6 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     from: Date,
     to: Date
   }
-
-  Series1: LineChartDataSeries = {
-    name: "Series1",
-    type: "line",
-    data: [["2018-08-15T10:04:01.339Z",5],["2018-08-15T10:14:13.914Z",7]]
-  }
-
-  Series2: LineChartDataSeries = {
-    name: "Series2",
-    type: "line",
-    data: [["2018-08-15T10:04:01.339Z",10],["2018-08-15T10:14:13.914Z",15]]
-  }
-
-
-  Series3: LineChartDataSeries = {
-    name: "Series3",
-    type: "line",
-    data: [["2018-08-16T10:04:01.339Z",23],["2018-08-16T10:14:13.914Z",2]]
-  }
-
-  Series4: LineChartDataSeries = {
-    name: "Series4",
-    type: "line",
-    data: [["2018-08-16T10:04:01.339Z",20],["2018-08-16T10:14:13.914Z",10]]
-  }
-
-  ChartDataObj: LineChartDataSeries[] = [this.Series1, this.Series2];
-  ChartDataObj2: LineChartDataSeries[] = [this.Series3, this.Series4];
-
-
-  //Start Temperatur
-  random = +(Math.random() * 60).toFixed(2);
-
-  tempSeries1: number = this.random;
-
-  TempDataObj = this.tempSeries1;
-  //End Temperatur
-
 
   //START Switch Button
   statusCards: string;
@@ -93,130 +58,64 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     corporate: CardSettings[];
     dark: CardSettings[];
   } = {
-    default: this.commonStatusCardsSet,
-    cosmic: this.commonStatusCardsSet,
-    corporate: [
-      {
-        ...this.lightCard,
-        type: 'warning',
-      },
-      {
-        ...this.rollerShadesCard,
-        type: 'primary',
-      }
-    ],
-    dark: this.commonStatusCardsSet,
-  };
+      default: this.commonStatusCardsSet,
+      cosmic: this.commonStatusCardsSet,
+      corporate: [
+        {
+          ...this.lightCard,
+          type: 'warning',
+        },
+        {
+          ...this.rollerShadesCard,
+          type: 'primary',
+        }
+      ],
+      dark: this.commonStatusCardsSet,
+    };
   //END Switch Button
 
 
-  //Start Gantt
-  //Aufbau von value: = [v1,v2, v3] (v1 und v2 ergeben die Zeit in ms wie lange jmd anwesend ist, v3 zeigt in welche 
-  //Reihe es erfasst wird)
-
-
-
-
-  
-
-
-  ganttData = {
-    "xAxis": 
-    [
-      {
-        "name": "Valve 1",
-        "value": [
-          1655647200000,
-          1657980000000,
-          0
-        ]
-      },
-      {
-        "name": "Valve 3",
-        "value": [
-          1657980000000,
-          1659448800000,
-          2
-        ]
-      },
-      {
-        "name": "Valve 1",
-        "value": [
-          1659448800000,
-          1660526144467,
-          0
-        ]
-      },
-      {
-        "name": "Valve 2",
-        "value": [
-          1655647200000,
-          1660526144467,
-          1
-        ]
-      }
-    ],
-    "yAxis": ["Value 3", "Value 2", "Value 1"],
-  }
-  //End Gantt
-
-
-  constructor(private theme: NbThemeService, private backendApi: BackendDataService, private route: ActivatedRoute, private router: Router, private timespan: TimespanService) {
+  constructor(private theme: NbThemeService,
+    private backendApi: BackendDataService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private sharedData: SharedDataService,
+    private dashboard: DashboardFunctionalityService) {
     this.theme.getJsTheme()
-    .pipe(takeWhile(() => this.alive))
-    .subscribe(theme => {
-      this.statusCards = this.statusCardsByThemes[theme.name]; 
-  });
-
-  
+      .pipe(takeWhile(() => this.alive))
+      .subscribe(theme => {
+        this.statusCards = this.statusCardsByThemes[theme.name];
+      });
   }
 
 
+  AirQuality: AirQualityData = {
+    data: [],
+  }
 
-  //START FLIP CARD
-
-//  Temperature: LineChartDataSeries = {
-//     name: "Temperature",
-//     type: "line",
-//     //10 Random Values for data
-//     data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
-//   }
-//   Humidity: LineChartDataSeries = {
-//     name: "Humidity",
-//     type: "line",
-//     //10 Random Values for data
-//     data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
-//   }
-//   AirPresure: LineChartDataSeries = {
-//     name: "Air Presure",
-//     type: "line",
-//     //10 Random Values for data
-//     data: [["2018-08-15T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-16T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-17T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-18T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-19T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-20T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-21T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-22T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-23T10:04:01.339Z",Math.round(Math.random()* 100* 100) / 100],["2018-08-24T10:14:13.914Z",Math.round(Math.random()* 100* 100) / 100]]
-//   }
+  AirQualityList: AirQualityTableData[] = [];
 
   Temperature: LineChartDataSeries = {
     name: "Temperature",
     type: "line",
-    //10 Random Values for data
     data: []
   }
   Humidity: LineChartDataSeries = {
     name: "Humidity",
     type: "line",
-    //10 Random Values for data
     data: []
   }
   AirPresure: LineChartDataSeries = {
     name: "Air Presure",
     type: "line",
-    //10 Random Values for data
     data: []
   }
-  
-  
-  gaugeRandom : number = 10;
 
-  //END FLIP CARD
+  ganttData = {
+    "xAxis": [],
+    "yAxis": ["Presence"],
+  }
+
   private alive = true;
   ngOnDestroy() {
     this.alive = false;
@@ -234,81 +133,149 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
     this.getData();
   }
 
-  async getData(){
+  //function to shorten already mapped data, every 10 values get summarized into one average datapoint
+  shortenMappedData(mappedData: any) {
+    // initialize empty array to store the shortened data
+    let shortened = [];
+    // initialize sum to 0
+    let sum = 0;
+    // initialize counter to 0
+    let counter = 0;
+    // loop through mappedData
+    for (let i = 0; i < mappedData.length; i++) {
+      // add the value to the sum
+      sum += mappedData[i][1];
+      // add 1 to the counter
+      counter++;
+      // if the counter is 10
+      if (counter == 10) {
+        // calculate the average of the sum
+        let average = sum / 10;
+        // add the new data point to the shortened array
+        shortened.push([mappedData[i][0], average]);
+        // reset the sum and counter
+        sum = 0;
+        counter = 0;
+      }
+    }
+    // return the shortened array
+    return shortened;
+  }
+
+  async getData() {
 
     //check if both from and to date have values
-    if(this.selectedTimespan == null){
+    if (this.selectedTimespan == null) {
       return;
     }
-    if(this.selectedTimespan.from == null || this.selectedTimespan.to == null || this.isCorrectDate(this.selectedTimespan.from) == false || this.isCorrectDate(this.selectedTimespan.to) == false){
+    if (this.selectedTimespan.from == null || this.selectedTimespan.to == null || this.dashboard.isCorrectDate(this.selectedTimespan.from) == false || this.dashboard.isCorrectDate(this.selectedTimespan.to) == false) {
       return;
     }
-    
-    var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure",this.selectedTimespan.from,this.selectedTimespan.to);
-    var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature",this.selectedTimespan.from,this.selectedTimespan.to );
-    var resultHumidity = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Humidity",this.selectedTimespan.from,this.selectedTimespan.to );
 
-    //create an array from the result where the elements are structured like this [[timestamp, value]]
-    var mappedAir = resultAir.map(function(el) {
-      return [el.timestamp, el.value];
-    });
+    //Get Sensornode Data
+    var resultAir = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "AirPressure", this.selectedTimespan.from, this.selectedTimespan.to);
+    var resultTemp = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Temperature", this.selectedTimespan.from, this.selectedTimespan.to);
+    var resultHumidity = await this.backendApi.getNodeData(this.SensorNodeId, "BME280", "Humidity", this.selectedTimespan.from, this.selectedTimespan.to);
+    let resultPresence = await this.backendApi.getNodeData(this.SensorNodeId, "HRSR501", "Presence", this.selectedTimespan.from, this.selectedTimespan.to);
+    var resultAirQuality = await this.backendApi.getNodeData(this.SensorNodeId, "MQ135", "AirQuality", this.selectedTimespan.from, this.selectedTimespan.to);
 
-    var mappedTemp = resultTemp.map(function(el) {
-      return [el.timestamp, el.value];
-    });
+    //convert the values from Air hpa into bar
+    for (let i = 0; i < resultAir.length; i++) {
+      resultAir[i].value = resultAir[i].value / 1000;
+    }
 
-    var mappedHumidity = resultHumidity.map(function(el) {
-      return [el.timestamp, el.value];
-    });
 
-    //get the timestamp of each datapoint and convert it into a date object, the convert the date into an iso string
-    //this is needed because the chart component does not support the date format from the backend
-    mappedAir.forEach(function(el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
 
-    mappedTemp.forEach(function(el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
 
-    mappedHumidity.forEach(function(el) {
-      var date = new Date(el[0]);
-      el[0] = date.toISOString();
-    });
 
-    //We need new instances of LineChartDataSeries because only changing the properties of it does not trigger the change detection
-    //this is because the reference to the object does not change
+    //Structure Array: [[timestamp, value]]
+    let mappedAir = this.dashboard.mapResult(resultAir);
+    let mappedTemp = this.dashboard.mapResult(resultTemp);
+    let mappedHumidity = this.dashboard.mapResult(resultHumidity);
+    let mappedPresence = this.dashboard.mapResult(resultPresence);
+    let mappedAirQuality = this.dashboard.mapResult(resultAirQuality);
 
-    var newAir = new LineChartDataSeries();
-    newAir.name = "AirPressure";
-    newAir.type = "line";
-    newAir.data = mappedAir;
 
-    var newTemp = new LineChartDataSeries();
-    newTemp.name = "Temperature";
-    newTemp.type = "line";
-    newTemp.data = mappedTemp;
+    // //shorten all mapped data
+    //TODO: the slow loading times are apparently not caused by a lot of data to display, but the time ofthe request itself -> decide if shortened data is needed
+    // mappedAir = this.shortenMappedData(mappedAir);
+    // mappedTemp = this.shortenMappedData(mappedTemp);
+    // mappedHumidity = this.shortenMappedData(mappedHumidity);
+    // mappedPresence = this.shortenMappedData(mappedPresence);
+    // mappedAirQuality = this.shortenMappedData(mappedAirQuality);
 
-    var newHumidity = new LineChartDataSeries();
-    newHumidity.name = "Humidity";
-    newHumidity.type = "line";
-    newHumidity.data = mappedHumidity;
+
+
+
+    mappedPresence = this.dashboard.cleanMotianData(mappedPresence);
+
+
+
+    // console.log("CLEANED", mappedPresence);
+
+
+    //var finalGantt = this.dashboard.generateMotionDataset(mappedPresence);
+
+    // console.log("GANTT", finalGantt);
+
+
+    let ganttArr = this.dashboard.gantArray(mappedPresence)
+
+
+
+    //Convert Date to ISO String
+    mappedAir = this.dashboard.convertMappedDate(mappedAir)
+    mappedHumidity = this.dashboard.convertMappedDate(mappedHumidity)
+    mappedHumidity = this.dashboard.convertMappedDate(mappedHumidity)
+    ganttArr = this.dashboard.convertMappedDate(ganttArr)
+    mappedAirQuality = this.dashboard.convertMappedDate(mappedAirQuality)
+
+    //New instances of LineChartDataSeries 
+    let newAir: LineChartDataSeries = this.dashboard.lineChartData("AirPressure", mappedAir);
+    let newTemp: LineChartDataSeries = this.dashboard.lineChartData("Temperature", mappedTemp);
+    let newHumidity: LineChartDataSeries = this.dashboard.lineChartData("Humidity", mappedHumidity);
 
     this.AirPresure = newAir;
     this.Temperature = newTemp;
     this.Humidity = newHumidity;
 
+
+    let newPresence = this.dashboard.gantData(ganttArr);
+    //APPLY NEW FIX newPresence.xAxis = finalGantt;
+    this.ganttData = newPresence;
+
+    //console.log("ganttdata", newPresence);
+
+
+
+    //AirQuality Part:
+    //log all the timestamps in an array
+    var timestamps = resultAirQuality.map(function (el) {
+      return el.timestamp;
+    });
+
+    //New instance of AirQualityData
+    var newAirQuality: AirQualityData = {
+      data: mappedAirQuality
+    };
+
+    this.AirQuality = newAirQuality;
+
+    var newAirQualityTable = this.dashboard.calculateAirQualityTableData(this.AirQuality);
+    this.AirQualityList = newAirQualityTable;
   }
 
+
+
+
   private subscription: Subscription;
-  private SensorNodeId: string;
+  SensorNodeId: string;
 
   async ngOnInit(): Promise<void> {
-    this.subscription = this.route.paramMap.subscribe(async params => { 
+    this.subscription = this.route.paramMap.subscribe(async params => {
       var id = params.get('id');
-      this.SensorNodeId = id;       
+      this.SensorNodeId = id;
+      this.sharedData.updateSensorNode(id);
 
       //Check if the Nodeid mathces one in the database, redirect to 404 if not
       var validNodes = await this.backendApi.getSensorNodes();
@@ -316,38 +283,29 @@ export class SensorNodeDashboardComponent implements OnDestroy, OnInit {
       //if the nodeId does not match one of the valid nodes, redirect to 404
       var found = validNodes.some(function (el) {
         return el == id;
-      }); 
-      if(!found){
+      });
+      if (!found) {
         this.router.navigate(['/pages/not-found']);
       }
-
-
       this.getData();
-  });
+    });
 
-  this.timespan.currentData.subscribe(data => {
-    this.selectedTimespan = data;
-    this.getData();
-  });
+    this.sharedData.currentTimespan.subscribe(data => {
+      this.selectedTimespan = data;
+      this.getData();
+    });
   }
 
-  isCorrectDate(date) {
-    if (date instanceof Date) {
-        var text = Date.prototype.toString.call(date);
-        return text !== 'Invalid Date';
-    }
-    return false;
-}
 
   async ngAfterViewInit() {
   }
 
-  test(){
+  test() {
   }
 
-  fromChange(){  }
+  fromChange() { }
 
-  test2(){  }
+  test2() { }
 
 
 }

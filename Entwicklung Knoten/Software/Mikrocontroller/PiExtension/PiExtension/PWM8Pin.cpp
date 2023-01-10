@@ -69,20 +69,21 @@ ERROR_t	PWM8Pin::playFrequency(float frequency, uint32_t duration_us) {
 	uint8_t ocrval = (F_CPU >> 1) / (frequency * presc) - 0.5;
 
 	if (duration_us > 0)	_offTimeout.startTimeout(duration_us);
-	else					_offTimeout.stopTimeout();
+	else					_offTimeout.stopTimeout();		
 
 	//Timer bereits mit gleichem Prescaler und gleichem PWM-Wert konfiguriert? -> Nothing todo
 	if ((_tReg->tccrb & 0b111) == prescRegVal && *ocr == ocrval) return ERROR_t::GENERAL_OK;
 
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		_tReg->tccra |= (0b01 << com);	//Output auf Pin schalten
+		
 		_tReg->tccrb = 0;				//Timer temporär anhalten, um Race-Condition zu vermeiden
 		*ocr = ocrval;					//Neuen OCR Wert setzen
 		if (_tReg->tcnt > ocrval) {		//OCR Wert Änderung hat dafür gesort, dass es zu einem Timer overflow gekommen ist? -> Manuell Forcen
 			_tReg->tcnt   = 0;
-			_tReg->tccra |= foc;
+			_tReg->tccrb  = foc;
 		}
 		_tReg->tccrb  = prescRegVal;	//Timer (wieder) freigeben
-		_tReg->tccra |= (0b01 << com);	//Output auf Pin schalten
 	}
 
 	return ERROR_t::GENERAL_OK;
