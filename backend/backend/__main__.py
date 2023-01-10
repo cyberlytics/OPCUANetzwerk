@@ -6,6 +6,7 @@ from backend.routes.sensor_routes import db_sensors
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from backend import app
+from opcua_client import OPCUAClient
 
 
 @app.on_event("startup")
@@ -13,6 +14,11 @@ from backend import app
 def collect_and_insert_data():
     sensor_values = opcua_client.get_sensor_values()
     db_sensors.insert_many(sensor_values)
+
+@app.on_event("startup")
+@repeat_every(seconds=config.COLLECT_TIMEWINDOW_SECONDS)
+def refresh_opcua_client():
+    opcua_client = OPCUAClient(config.SENSOR_NETWORK_URL)
 
 @app.on_event("startup")
 @repeat_every(seconds=config.COLLECT_TIMEWINDOW_SECONDS)
