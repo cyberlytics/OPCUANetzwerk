@@ -4,29 +4,49 @@ Das Frontend wurde mithilfe des Admin-Dashboard ngx-admin auf Basis von Angular 
 
 \subsection{Architektur}
 
-In der UNTEREN ABBILDUNG ist die Architektur des Frontend zu sehen. Eine Komponente besteht aus einem Template (HTML-Datei) und einem Style (SCSS-Datei). Diese werden als Metadaten im Dekorator der Komponente festgelegt und stellen die Ansicht dar. Mithilfe der Datenbindung kann das Template mit der Komponente Daten austauschen und gegebenenfalls Events ausführen. Bei Bedarf können Komponenten durch die Dependency Injection Zugriff auf eine Serviceklasse erhalten. Somit können wiederverwendbare Funktionen oder Daten aus dem Backend zur Verfügung gestellt werden. In den Modulen werden Komponenten, Module, Services usw. gruppiert und verwaltet. In Angular werden zwei Modularten unterschieden. Jedes Angular Projekt besitzt ein Root-Modul, das app.module.ts heißt. Diese ist dazu da, um die gesamte Webanwendung zu verwalten und diese wird beim Start der Anwendung als erstes geladen und initialisiert. Mit Feature-Modulen kann der Code, der sich auf eine bestimmte Funktionalität oder ein bestimmtes Feature bezieht, von anderem Code getrennt werden und bleibt somit organisiert.
-
+In der unteren Abbildung \ref{fig:frontend} ist die Architektur des Frontends zu sehen. Eine Komponente besteht aus einem Template (HTML-Datei) und einem Style (SCSS-Datei). Diese werden als Metadaten im Dekorator der Komponente festgelegt und stellen die Ansicht dar. Mithilfe der Datenbindung kann das Template mit der Komponente Daten austauschen und gegebenenfalls Events ausführen. Bei Bedarf können Komponenten durch die Dependency Injection Zugriff auf eine Serviceklasse erhalten. Somit können wiederverwendbare Funktionen oder Daten aus dem Backend zur Verfügung gestellt werden. In den Modulen werden Komponenten, Module, Services usw. gruppiert und verwaltet. In Angular werden zwei Modularten unterschieden. Jedes Angular Projekt besitzt ein Root-Modul, das app.module.ts heißt. Diese ist dazu da, um die gesamte Webanwendung zu verwalten und diese wird beim Start der Anwendung als erstes geladen und initialisiert. Mit Feature-Modulen kann der Code, der sich auf eine bestimmte Funktionalität oder ein bestimmtes Feature bezieht, von anderem Code getrennt werden und bleibt somit organisiert.
+Das Frontend wird auf dem Raspberry Pi Server gehostet. Für das Hosting wird ein Apache 2 Webserver verwendet.
 \begin{figure}[thpb]
       \centering
-      \includegraphics[scale=0.55]{img/frontend_architecture.png}
+      \includegraphics[scale=0.55]{abbildungen/frontend_architecture.PNG}
       \caption{Angular Architektur des Projektes}
       \label{fig:frontend}
  \end{figure}
 
 
 \subsection{Entwickelte Komponenten}
+Für alle Diagramme wurde die Bibliothek ECharts verwendet.
+Zusätzlich zu den vorhandenen Komponenten vom ngx-admin wurden folgende weitere Komponenten entwickelt.
 
-\item \textbf{AirQuality}:
-\item \textbf{Gantt}:
-Das Gantt-Diagramm zeigt an, ob jemand im Raum anwesend war oder nicht. Die Anwesenheit wird mit rot als abwesend und grün als anwesend dargestellt.
-\item \textbf{lcd-input}:
-\item \textbf{lineChartComponent}:
-\item \textbf{switch}:
-Ein Knopf, der an- und ausgeschaltet werden kann.
-\item \textbf{temperatureGauge}:
-Zeigt die Temperatur, Luftfeuchtigkeit und Luftdruck in einem Tachometer an.
-\item \textbf{tempSensorCard}:
-\item \textbf{sensornode-dashbord}:
-In dieser Komponente werden die oben genannten Komponenten des jeweiligen Sensorknotens dargestellt.
+\begin{itemize}
+ \item \textbf{AirQualityChart} Bildet die Werte des Luftqualitätssensors in einem Liniendiagramm ab.
+ \item \textbf{AirQuality} Visualisiert die Werte des Luftqualitätssensors unter Verwendung der AirQualityChart Komponente.
+ \item \textbf{buzzer-frequenzy}	Ein Eingabefeld zum Festsetzen der Frequenz des Piezoelements.
+ \item \textbf{gant} Das Gantt-Diagramm zeigt an, von wann bis wann der Bewegungsmelder Anwesenheit, bzw. Abwesenheit erkannt hat. 
+ \item \textbf{lcd-input} Ein Eingabefeld zum Festsetzen des LCD-Displays auf dem Sensorknoten.
+ \item \textbf{lineChartComponent} Ein universell verwendbares Liniendiagramm.
+ \item \textbf{switch} Ein Knopf, der an- und ausgeschaltet werden kann.
+ \item \textbf{temperatureGauge} Ein Tachometer zum Visualisieren von verschiedenen Werten.
+ \item \textbf{tempSensorCard} Kombination aus dem LineChartComponent und dem temperatureGauge Komponente. Stellt eine zweiseitige Karte dar, die auf der einen Seite Luftdruck, Luftfeuchtigkeit und Temperatur in einem Liniendiagramm darstellt und auf der anderen Seite ein Tachometer mit den aktuellen Werten.
+ \item \textbf{sensornode-dashbord} Stellt das eigentliche Dasboard für jeden Knoten dar. In dieser Komponente werden die oben genannten Komponenten des jeweiligen Sensorknotens dargestellt. Jede Komponente wird als einzelne Karte dargestellt. Diese können sich je nach Bildschirmgröße passend anordnen.
+ \item \textbf{led-display} Zeigt die LED-Anzeige des aktuellen Knotens.
+ \item \textbf{Header (modifiziert)} Der vorhandene Header wurde modifiziert, um eine Zeitspanne auswählen zu können.
+\end{itemize}
 
-!!!TODO Services? und ggf Tests?
+\subsection{Entwickelte Services}
+
+\begin{itemize}
+ \item \textbf{BackendDataService} Ist für die Kommunikation mit dem Backend zuständig. Zum Abfragen und Senden von Daten.
+ \item \textbf{DashboardFunctionalityService} Auslagerung der Funktionen für die sensornode-dashboard Komponente.
+ \item \textbf{SharedDataService} Stellt allen Komponenten ein Observable des ausgewählten Zeitraums und der aktuellen Sensorknoten-ID zur Verfügung.
+\end{itemize}
+\subsection{Routing}
+Alle verfügbaren Seiten im Projekt repräsentieren ein Dashboard eines Sensorknotens.
+Zugänglich sind diese über die URL: /pages/{Knoten-ID}. Siehe Listing 5.
+\begin{lstlisting}[caption={Knoten-ID Routing},captionpos=b,showstringspaces=false, basicstyle=\small]
+    {
+      path: ':id',
+      component: SensorNodeDashboardComponent
+    }
+\end{lstlisting}
+Alle verfügbaren Knoten werden am Anfang aus dem Backend abgerufen, und anschließend links im Navigator als Menüpunkt angezeigt. Auf dem Dashboard des einzelnen Knotens werden über die aktuelle Knoten-ID die Anfragen an das Backend gesendet.
