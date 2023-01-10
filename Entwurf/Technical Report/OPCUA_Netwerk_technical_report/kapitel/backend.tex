@@ -1,0 +1,94 @@
+\section{BACKEND + DATENBANK}\label{ch:backend}
+
+Das Backend wurde mit dem Framework \textbf{FastAPI} in Python umgesetzt und ist die einzige Schnittstelle zur Datenbank \textbf{MongoDB}.
+
+\subsection{Datenbank}
+Um eine MongoDB lokal (für die Entwicklung) zu starten:
+\begin{itemize}
+\item Herunterladen von MongoDB über die offizielle Website oder einen Package Manager (z.B. ABT)
+\item Ausführung der in der ReadMe-Datei hinterlegten Konsolenbefehle
+\end{itemize}
+Die Datenbank wird dabei in der Standardkonfiguration genutzt, somit ist es nicht erforderlich Nutzer oder anderes anzulegen.
+Lediglich sollte die Datenbank über den Standardport 27017 erreichbar sein.
+
+MongoDB enthält zu Beginn einige Tabellen die zur Konfiguration und zur internen Konsistenz genutzt werden.
+Die eigentlichen Daten werden dabei in einer neuen Datenbank (der Name dieser kann konfiguriert werden) gespeichert.
+Eine solche Datenbank kann mehrere Collectionen beinhalten, das Äquivalent zu Tabellen in einer SQL Datenbank.
+Diese Collectionen beinhalten i.d.R ähnliche Documente im Format BSON (Binary JSON). 
+
+\subsection{Datenformat}
+Es werden Datenformate genutzt, die jeweils in Collections gespeichert werden : \textbf{Sensoren}.
+
+Listing \ref{lst:sensor_dtype} zeigt ein Sensor Objekt, wie es in der Datenbank gespeichert sein könnte.
+\begin{lstlisting}[caption={Sensor Objekt},captionpos=b,showstringspaces=false, basicstyle=\small,label={lst:sensor_dtype}]
+{
+    "_id": ObjectID(abc123def456),
+    "sensornode": "SensorNode_1",
+    "sensorname": "BME280",
+    "sensortyp" : "AirPressure",
+    "unit"      : "hPa,
+    "value"     : 1040.6999999999991,
+    "timestamp" : "2022-12-06T15:15:28.112Z"
+}
+\end{lstlisting}
+
+Das Feld \textbf{'\_id'} ist ein Primärschlüssel, welcher einzigartig ist und automatisch von MongoDB vergeben wird. 
+Mit diesem können Objekte eindeutig referenziert werden.
+Über \textbf{'sensornode'} wird die Bezeichnung der Nodes gespeichert.
+Das Feld \textbf{'sensorname'} speichert den technischen Namen eines Sensors als String und das Feld \textbf{'sensortyp'} die tatsächliche Sensorbezeichnung. 
+Durch Kombination dieser drei Werte können die Sensoren eindeutig zugeordnet, sowie im Frontend passend der per Name angezeigt werden.
+
+Die Datenbankobjekte werden im Code als Pydantic Dataclasses hinterlegt, was das Parsen dieser Objekte (z.B. als JSON Payload) erleichtert. 
+Dabei werden die Klassen mit dem Decorator \textbf{@dataclass} verziert und erhalten \textbf{TypeHints} mit entsprechden Datentypen
+
+\begin{lstlisting}[language=python,caption={Sensor Dataclass},captionpos=b,showstringspaces=false, basicstyle=\small]
+@dataclass
+class Sensor_value_dto():
+    sensornode: str
+    sensorname: str
+    sensortyp: str
+    value: Union[float,bool]
+    timestamp: datetime.datetime
+    unit: str = ""
+\end{lstlisting}
+
+\begin{lstlisting}[language=python,caption={Actuator Dataclass},captionpos=b,showstringspaces=false, basicstyle=\small]
+@dataclass
+class actuator_list_dto:
+    actuator_node : str
+    actuator_act  : str
+    actuator_value: Union[str,float,bool,None]
+    actuator_dtype: str
+\end{lstlisting}
+
+\subsection{Backend}
+Mittels dem Python Framework \textbf{FastAPI} werden diverse Endpoints bereitgestellt, die das Erstellen und Ausgeben der Datenobjekte ermöglichen.
+
+Die Sensoren können über folgende Routen ausgegeben werden:
+\begin{itemize}
+\item \textbf{GET /sensornames}: Gibt eine Liste aller zur Verfügung stehenden Sensoren zurück.
+\item \textbf{GET /sensornodes}: Gibt eine Liste aller zur Verfügung stehenden Knoten zurück.
+\item \textbf{GET /sensorvalues/current}: Gibt den aktuellen Wert jedes Sensors zurück.
+\item \textbf{GET /sensorvalues}: Gibt eine Liste von Sensoren zurück, welche sich nach ihren Attributen filtern lassen.
+\end{itemize}
+
+Die Aktoren können über folgende Routen ausgelesen und gesteuert werden:
+\begin{itemize}
+\item \textbf{GET /actuatornames}: Gibt eine Liste aller zur Verfügung stehenden Aktorenbezeichnungen zurück.
+\item \textbf{GET /actuators}: Gibt eine Liste von JSON-Objekten zurück mit entsprechenden Informationen einzelner Aktoren.
+\item \textbf{GET /actuators/filter\_by\_actuatorname}: Gibt eine Liste von JSON-Objekten, gefiltert bei Aktorbezeichnung zurück.
+\item \textbf{PUT /actuators}: Ermöglicht per Übergabe von Aktorenknoten und Bezeichnung den Wert des Aktors zu ändern.
+\end{itemize}
+
+Die Endpunkte nutzen dabei ein automatisiertes Umwandeln zu entsprechenden Dataclasses.
+Dies sorgt dafür, dass Pflichtfelder übergeben und nicht benötigte Elemente verworfen werden.
+Über einen PyMongo Client werden diese Dataclasses also entweder von der Clientanfrage zur Datenbank weitergeleitet, oder umgekehrt aus der Datenbank zum Client.
+Die Verbindung erfolgt dabei über eine \textbf{MONGO\_URI}, welche Hostnamen und Port beinhaltet. Dieser String sieht wie folgt aus: \textit{mongodb://localhost:27017/}. \\
+Als tatsächlicher Webserver wird \textbf{uvicorn} genutzt, welcher im \textbf{\_\_main\_\_.py} gestartet wird. Dies ermöglicht es, das Backend mittels des Befehlt \textit{python -m backend} zu starten.
+
+%\subsection{Tests}
+%In einem separaten Testscript \textbf{test\_backend.py} werden die Routen getestet. 
+%Hierbei wird jedoch eine Testtabelle in der Datenbank genutzt, um nicht mit anderen Daten zu interferieren. 
+%In einer Setup-Methode werden dabei die Referenzen auf die Tabelle ausgetauscht. 
+%Der Server wird ebenfalls durch einen \textbf{TestClient} ersetzt, welcher in dem FastAPI Framework integriert ist.
+%Die Tests können mittels des Befehls \textit{python -m pytest -s} gestartet werden.
