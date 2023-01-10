@@ -150,13 +150,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   setDefaultTimespan() {
     this.ToDate = new Date();
-
-    var today = new Date();
-    var day = today.getDay();
-    var diff = today.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
-    var monday = new Date(today.setDate(diff));
-    monday.setHours(0, 0, 0, 0);
-    this.FromDate = monday;
+    this.FromDate =  new Date()
+    this.FromDate.setHours(0, 0, 0, 0);
+    // var today = new Date();
+    // var day = today.getDay();
+    // var diff = today.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+    // var monday = new Date(today.setDate(diff));
+    // monday.setHours(0, 0, 0, 0);
+    // this.FromDate = monday;
 
     this.timespanservice.updateTimespanData(this.FromDate, this.ToDate);
   }

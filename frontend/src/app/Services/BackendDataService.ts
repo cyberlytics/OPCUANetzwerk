@@ -8,9 +8,19 @@ import { NbGlobalPhysicalPosition, NbToastrService } from "@nebular/theme";
 export class BackendDataService implements OnInit {
 
     //new http client
-    constructor(private http: HttpClient,private toastrService: NbToastrService) { }
+    constructor(private http: HttpClient,private toastrService: NbToastrService) {
+        this.ngOnInit();
+     }
 
-    ngOnInit(): void {}
+    ApiEndpoint = "http://"+ window.location.hostname+":8000";
+
+    //USE THIS IF YOU ARE ON LOCALHOST IN THE VPN:
+    //ApiEndpoint = AppSettings.API_ENDPOINT_PI;
+
+
+    ngOnInit(): void {
+        console.log("API ENDPOINT", this.ApiEndpoint);
+    }
 
    /**
    * function to get data from backend the host is defined in the folder static in the file AppSettings.ts
@@ -42,7 +52,7 @@ export class BackendDataService implements OnInit {
         }
 
         try{
-            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensorvalues', { params: params }).toPromise<any>();
+            var response = await this.http.get(this.ApiEndpoint + '/sensorvalues', { params: params }).toPromise<any>();
         }
         catch(error){
             if(error instanceof HttpErrorResponse){
@@ -55,7 +65,7 @@ export class BackendDataService implements OnInit {
 
     async getSensorNodes() {
         try{
-            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/sensornodes').toPromise<any>();
+            var response = await this.http.get(this.ApiEndpoint + '/sensornodes').toPromise<any>();
         }
         catch(error){
             if(error instanceof HttpErrorResponse){
@@ -68,7 +78,7 @@ export class BackendDataService implements OnInit {
 
     async getActorValue(sensornode: string, actuatorname: string, actuator_act: string) {
         try{
-            var response = await this.http.get(AppSettings.API_ENDPOINT_PI + '/actuators/').toPromise<any>();
+            var response = await this.http.get(this.ApiEndpoint + '/actuators/').toPromise<any>();
         }
         catch(error){
             if(error instanceof HttpErrorResponse){
@@ -107,7 +117,7 @@ export class BackendDataService implements OnInit {
         }
 
         try{
-            var response = await this.http.put(AppSettings.API_ENDPOINT_PI + '/actuators/', payload).toPromise<any>();
+            var response = await this.http.put(this.ApiEndpoint + '/actuators/', payload).toPromise<any>();
         }
         catch(error){
             if(error instanceof HttpErrorResponse){
