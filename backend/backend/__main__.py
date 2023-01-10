@@ -1,12 +1,11 @@
 import uvicorn
 from backend import config
 from backend.database import conn
-from backend.opcua_client import opcua_client
+from backend.opcua_client import opcua_client, OPCUAClient
 from backend.routes.sensor_routes import db_sensors
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 from backend import app
-from opcua_client import OPCUAClient
 
 
 @app.on_event("startup")
