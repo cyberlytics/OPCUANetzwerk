@@ -5,7 +5,7 @@ import sys, re, time
 NOTES          = { "c":0, "c#":1, "db":1, "d":2, "d#":3, "eb":3, "e":4, "f":5, "f#":6, "gb":6, "g":7, "g#":8, "ab":8, "a":9, "a#":10, "b":10, "h":11 }
 NOTE_LETTERS   = "|".join(re.escape(n) for n in NOTES.keys())
 
-LENGTHS        = { "g":1, "h":.5, "v":.25, "a":.125, "t": .5/3 }
+LENGTHS        = { "g":1, "h":.5, "v":.25, "a":.125, "s":0.0625, "t": .5/3 }
 LENGTH_LETTERS = "|".join(re.escape(l) for l in LENGTHS.keys())               
 RE_NOTE        = re.compile(fr"^(?:({NOTE_LETTERS})(-?\d):)?((?:{LENGTH_LETTERS})+)$")
 
@@ -38,9 +38,6 @@ def play(uc, pin, sequence, bpm, node_length):
             
     for freq, dur in seq:
         dur_on  = dur * node_length
-        dur_off = dur - dur_on
         
-        uc.playFrequency(pin, freq)
-        time.sleep(dur_on)
-        uc.playFrequency(pin, 0)
-        time.sleep(dur_off)
+        uc.playFrequency(pin, freq, int(dur_on * 1000000))
+        time.sleep(dur)
