@@ -21,7 +21,9 @@
 
 
 
-#define OSC_CALIBRATION		128
+//#define OSC_CALIBRATION		112	//NODE 1
+//#define OSC_CALIBRATION		132	//NODE 2
+//#define OSC_CALIBRATION		128	//NODE 3
 #define IIC_ADDRESS			100
 #define N_GPIOS				5
 
