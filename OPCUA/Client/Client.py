@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from sqlite3 import connect
 from opcua import Client
 from threading import Thread
 import smbus2, time, sys, socket, json
@@ -86,17 +87,18 @@ def measurement_thread(args):
             print(f'Reading of BME280 values error: {ex}')
 
         # MQ135
-        if temperature != None and humidity != None:
+        if temperature[0] != None and humidity[0] != None:
             try:
                 airquality = mq135.get_corrected_ppm(temperature[0], humidity[0])
             except Exception as ex:
                 print(f'Getting Air Quality failed: {ex}')
 
-        vprint('-----------------------------------------------')
-        vprint(f'Temperatur:       {temperature[0]:.2f} C')
-        vprint(f'Luftfeuchtigkeit: {humidity[0]:.2f} %')
-        vprint(f'Lufdruck:         {airpressure[0]:.2f} hPa')
-        vprint(f'CO2-Gehalt:       {airquality:.2f} ppm')
+        if temperature[0] != None and humidity[0] != None and airpressure[0] != None and airquality != None:
+            vprint('-----------------------------------------------')
+            vprint(f'Temperatur:       {temperature[0]:.2f} C')
+            vprint(f'Luftfeuchtigkeit: {humidity[0]:.2f} %')
+            vprint(f'Lufdruck:         {airpressure[0]:.2f} hPa')
+            vprint(f'CO2-Gehalt:       {airquality:.2f} ppm')
 
         # Set LEDS according to air value
         led_red     = False
@@ -245,9 +247,24 @@ def write_systeminformation_to_server(opc, sys_info):
     opc.write_value('OperatingSystem'   , 'ReleaseName' , sys_info.ReleaseName)
     opc.write_value('OperatingSystem'   , 'Version'     , sys_info.Version)
 
+import os
+def wait_for_server(server_address):
+    connected = False
+    error_count = 0
+
+    while not connected:
+        time.sleep(10)
+        response = os.system("ping -c 1 " + server_address)
+        if response == 0:
+            connected = True
+        else:
+            error_count += 1
+            if error_count > 18:
+                os.system("echo Connection Timeout > error.log")
+
 if __name__ == "__main__":
     # Wait for RPi to be fully powered on
-    time.sleep(30)
+    wait_for_server(SERVER_ADDRESS)
 
     # Initialize I2C
     bus = smbus2.SMBus(1)
