@@ -1,4 +1,5 @@
 import music.shenanigans as shenanigans
+import music.rickroll as rickroll
 
 from sensors.buttons import Buttons
 
@@ -45,7 +46,7 @@ class Menu(object):
             while self.__buttons.Button2.Status and self.__buttons.Button3.Status:
                 if time.time() - start > 5:
                     pass
-                    self.__music.play(shenanigans.shenanigans)
+                    self.__music.play(rickroll.rickroll)
     # ----------------------------------------------------------
     # ----------------------------------------------------------
 

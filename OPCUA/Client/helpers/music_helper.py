@@ -9,7 +9,7 @@ class MusicHelper(object):
         self.__NOTES          = { "c":0, "c#":1, "db":1, "d":2, "d#":3, "eb":3, "e":4, "f":5, "f#":6, "gb":6, "g":7, "g#":8, "ab":8, "a":9, "a#":10, "b":10, "h":11 }
         self.__NOTE_LETTERS   = "|".join(re.escape(n) for n in self.__NOTES.keys())
 
-        self.__LENGTHS        = { "g":1, "h":.5, "v":.25, "a":.125, "t": .5/3 }
+        self.__LENGTHS        = { "g":1, "h":.5, "v":.25, "a":.125, "s": 0.0625, "t": .5/3 }
         self.__LENGTH_LETTERS = "|".join(re.escape(l) for l in self.__LENGTHS.keys())               
         self.__RE_NOTE        = re.compile(fr"^(?:({self.__NOTE_LETTERS})(-?\d):)?((?:{self.__LENGTH_LETTERS})+)$")
 
@@ -42,9 +42,6 @@ class MusicHelper(object):
             
         for freq, dur in seq:
             dur_on  = dur * node_length
-            dur_off = dur - dur_on
         
-            self.__piezo.playFrequency(freq)
-            time.sleep(dur_on)
-            self.__piezo.playFrequency(0)
-            time.sleep(dur_off)
+            self.__piezo.playFrequency(freq, int(dur_on * 1e6))
+            time.sleep(dur)
